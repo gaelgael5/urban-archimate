@@ -1,0 +1,15 @@
+urban-archimate
+===============
+
+This repository incorporates code from archimate-js
+(https://github.com/archimodel/archimate-js), imported at commit
+9c73897140199e0071dafcc6cd5e513ffb2dfc2a (version 0.0.4, last upstream commit of 2024-11-04).
+
+archimate-js is licensed under the MIT License:
+Copyright (c) 2022 Vincent Boulet
+
+The bundled ArchiMate symbol font (vendor/archimate-font) is
+archimate-font by Vincent Boulet, licensed under the SIL Open Font
+License 1.1 (see vendor/archimate-font/LICENSE).
+
+ArchiMate(R) is a registered trademark of The Open Group.
