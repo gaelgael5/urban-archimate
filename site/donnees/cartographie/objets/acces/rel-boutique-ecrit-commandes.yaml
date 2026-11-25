@@ -1,0 +1,7 @@
+cle: REL-BOUTIQUE-ECRIT-COMMANDES
+type: acces
+source: APP-BOUTIQUE
+cible: DAT-COMMANDES
+nom: Écrit les commandes
+proprietes:
+  acces: Write

@@ -1,0 +1,5 @@
+cle: REL-BOUTIQUE-REALISE-CATALOGUE
+type: realisation
+source: APP-BOUTIQUE
+cible: SAP-CATALOGUE
+nom: réalise

@@ -1,0 +1,5 @@
+cle: REL-CONSEILLER-PRISE
+type: affectation
+source: ROL-CONSEILLER
+cible: PRC-PRISE-COMMANDE
+nom: réalise

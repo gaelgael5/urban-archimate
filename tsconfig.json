@@ -12,7 +12,7 @@
     "isolatedModules": true,
     "verbatimModuleSyntax": true,
     "allowJs": false,
-    "types": []
+    "types": [ "vite/client" ]
   },
-  "include": [ "src/**/*.ts" ]
+  "include": [ "src/**/*.ts", "site/**/*.ts" ]
 }

@@ -1,0 +1,5 @@
+cle: REL-EVT-DECLENCHE-PRISE
+type: declenchement
+source: EVT-COMMANDE-RECUE
+cible: PRC-PRISE-COMMANDE
+nom: déclenche

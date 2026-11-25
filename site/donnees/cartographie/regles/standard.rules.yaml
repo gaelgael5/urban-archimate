@@ -1,0 +1,31 @@
+lang: fr
+defaut:
+  name: $.nom
+  documentation: $.documentation
+elements:
+  - type: processus-de-vente
+    name: $.nom
+    documentation: $.documentation
+    properties:
+      - propertyDefinitionRef: canal
+        value: $.proprietes.canal
+      - propertyDefinitionRef: volume_jour
+        value: $.proprietes.volume_jour
+  - type: application
+    name: $.nom
+    documentation: $.documentation
+    properties:
+      - propertyDefinitionRef: responsable
+        value: $.proprietes.responsable
+  - type: client
+    name: $.nom
+    documentation: $.documentation
+    properties:
+      - propertyDefinitionRef: segment
+        value: $.proprietes.segment
+relationships:
+  - type: acces
+    name: $.nom
+    accessType: $.proprietes.acces
+  - type: flux
+    name: $.nom

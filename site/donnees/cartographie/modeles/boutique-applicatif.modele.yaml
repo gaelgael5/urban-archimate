@@ -1,0 +1,46 @@
+id: MOD-BOUTIQUE-APPLICATIF
+nom: Boutique — du métier à la technologie
+description: Le processus de vente, les services et applications qui le servent, et leur socle technique.
+regles: cartographie/regles/standard.rules.yaml
+graphique: cartographie/modeles/boutique-applicatif.graphique.yaml
+documents:
+  - cartographie/objets/processus-de-vente/prc-prise-commande.yaml
+  - cartographie/objets/service-applicatif/sap-catalogue.yaml
+  - cartographie/objets/service-applicatif/sap-encaissement.yaml
+  - cartographie/objets/application/app-boutique.yaml
+  - cartographie/objets/application/app-paiement.yaml
+  - cartographie/objets/donnees/dat-commandes.yaml
+  - cartographie/objets/serveur/srv-web-01.yaml
+  - cartographie/objets/service/rel-catalogue-sert-prise.yaml
+  - cartographie/objets/realisation/rel-boutique-realise-catalogue.yaml
+  - cartographie/objets/realisation/rel-paiement-realise-encaissement.yaml
+  - cartographie/objets/acces/rel-boutique-ecrit-commandes.yaml
+  - cartographie/objets/flux/rel-flux-boutique-paiement.yaml
+  - cartographie/objets/affectation/rel-serveur-boutique.yaml
+elements: [ PRC-PRISE-COMMANDE, SAP-CATALOGUE, SAP-ENCAISSEMENT, APP-BOUTIQUE,
+  APP-PAIEMENT, DAT-COMMANDES, SRV-WEB-01 ]
+relationships: [ REL-CATALOGUE-SERT-PRISE, REL-BOUTIQUE-REALISE-CATALOGUE,
+  REL-PAIEMENT-REALISE-ENCAISSEMENT, REL-BOUTIQUE-ECRIT-COMMANDES,
+  REL-FLUX-BOUTIQUE-PAIEMENT, REL-SERVEUR-BOUTIQUE ]
+vues:
+  - id: VUE-COUCHES
+    nom: Du métier à la technologie
+    point_de_vue: layered
+    noeuds:
+      - { id: N-PRISE, element: PRC-PRISE-COMMANDE }
+      - { id: N-CATALOGUE, element: SAP-CATALOGUE }
+      - { id: N-ENCAISSEMENT, element: SAP-ENCAISSEMENT }
+      - id: N-BOUTIQUE
+        element: APP-BOUTIQUE
+        enfants:
+          - { id: N-DONNEES, element: DAT-COMMANDES }
+      - { id: N-PAIEMENT, element: APP-PAIEMENT }
+      - { id: N-SERVEUR, element: SRV-WEB-01 }
+      - { id: N-CADRE, cadre: "Couche application" }
+    connexions:
+      - { id: C-SERT, relationship: REL-CATALOGUE-SERT-PRISE, de: N-CATALOGUE, vers: N-PRISE }
+      - { id: C-REAL1, relationship: REL-BOUTIQUE-REALISE-CATALOGUE, de: N-BOUTIQUE, vers: N-CATALOGUE }
+      - { id: C-REAL2, relationship: REL-PAIEMENT-REALISE-ENCAISSEMENT, de: N-PAIEMENT, vers: N-ENCAISSEMENT }
+      - { id: C-ECRIT, relationship: REL-BOUTIQUE-ECRIT-COMMANDES, de: N-BOUTIQUE, vers: N-DONNEES }
+      - { id: C-FLUX, relationship: REL-FLUX-BOUTIQUE-PAIEMENT, de: N-BOUTIQUE, vers: N-PAIEMENT }
+      - { id: C-HEBERGE, relationship: REL-SERVEUR-BOUTIQUE, de: N-SERVEUR, vers: N-BOUTIQUE }

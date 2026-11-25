@@ -1,0 +1,7 @@
+cle: REL-FLUX-BOUTIQUE-PAIEMENT
+type: flux
+source: APP-BOUTIQUE
+cible: APP-PAIEMENT
+nom: Demandes de paiement
+proprietes:
+  frequence: continu

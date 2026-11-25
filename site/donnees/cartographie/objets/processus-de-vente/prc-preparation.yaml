@@ -1,0 +1,5 @@
+cle: PRC-PREPARATION
+type: processus-de-vente
+nom: Préparation de la commande
+proprietes:
+  canal: entrepôt

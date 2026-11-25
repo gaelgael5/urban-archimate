@@ -1,0 +1,5 @@
+cle: REL-PREPARATION-PUIS-LIVRAISON
+type: declenchement
+source: PRC-PREPARATION
+cible: PRC-LIVRAISON
+nom: puis

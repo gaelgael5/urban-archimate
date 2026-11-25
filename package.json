@@ -23,7 +23,9 @@
     "lib"
   ],
   "sideEffects": [
-    "*.css"
+    "*.css",
+    "src/index.ts",
+    "src/web-component/UrbanArchimateElement.ts"
   ],
   "scripts": {
     "lint": "eslint .",
@@ -32,7 +34,8 @@
     "build": "vite build",
     "all": "npm run lint && npm run typecheck && npm test && npm run build",
     "typecheck": "tsc --noEmit",
-    "build:python": "node scripts/build-python-package.mjs"
+    "build:python": "node scripts/build-python-package.mjs",
+    "build:site": "vite build --config site/vite.config.js"
   },
   "dependencies": {
     "ajv": "^8.20.0",

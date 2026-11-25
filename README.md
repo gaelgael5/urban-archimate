@@ -75,6 +75,28 @@ PyPI est faite par la CI à chaque étiquette `vx.y.z` (versionnage
 sémantique, [CHANGELOG](./CHANGELOG.md)) — configurer le dépôt comme
 « trusted publisher » du projet PyPI, environnement `pypi`.
 
+## Démonstration
+
+Le dépôt embarque un **site de démonstration** (`site/`) : un hôte
+statique dans un domaine neutre (une boutique en ligne) qui possède
+les fichiers (un objet par fichier, types, règles, deux modèles et
+leurs graphiques), hydrate un modèle, fournit la boîte à outils et
+répond aux délégués de pose et de relations permises. Boutons :
+lecture seule, affichage du modèle enregistré (sans `data`), du
+graphique et des nouvelles relations tels que le composant les rend,
+export Open Group.
+
+```bash
+npx vite --config site/vite.config.js   # développement
+npm run build:site                      # construction (dist-site/)
+```
+
+Il est publié sur **GitHub Pages** par la CI (`.github/workflows/pages.yml`)
+à chaque poussée sur `main` et à chaque version — activer Pages sur le
+dépôt : Settings → Pages → Source « GitHub Actions ». Aperçus :
+[docs/captures/site-demonstration.png](./docs/captures/site-demonstration.png),
+[docs/captures/site-demonstration-couches.png](./docs/captures/site-demonstration-couches.png).
+
 ## Development
 
 ```bash

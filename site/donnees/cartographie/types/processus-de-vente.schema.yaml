@@ -1,0 +1,9 @@
+title: Processus de vente
+x-archimate: BusinessProcess
+properties:
+  canal:
+    title: Canal
+    type: string
+  volume_jour:
+    title: Volume par jour
+    type: number

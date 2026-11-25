@@ -1,0 +1,5 @@
+cle: REL-PAIEMENT-REALISE-ENCAISSEMENT
+type: realisation
+source: APP-PAIEMENT
+cible: SAP-ENCAISSEMENT
+nom: réalise
