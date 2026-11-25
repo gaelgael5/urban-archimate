@@ -75,9 +75,6 @@ export class RuleResolutionError extends Error {
   }
 }
 
-/** ArchiMate attributes a rule block may set on a relationship. */
-const RELATIONSHIP_ATTRIBUTES = [ 'accessType', 'isDirected', 'modifier' ];
-
 /** Keys of a rule block that are not ArchiMate attributes. */
 const BLOCK_META_KEYS = new Set([ 'type', 'name', 'documentation', 'properties' ]);
 
@@ -91,13 +88,13 @@ export function propertyDefinitionIdOf(ref: string): string {
   return `propid-${ ref }`;
 }
 
-interface RuleIndex {
+export interface RuleIndex {
   elementsByType: Map<string, RuleBlock>;
   relationshipsByType: Map<string, RuleBlock>;
   defaut?: RuleBlock;
 }
 
-function indexRules(rules: RulesFile): RuleIndex {
+export function indexRules(rules: RulesFile): RuleIndex {
   return {
     elementsByType: new Map(
       (rules.elements || [])
@@ -252,6 +249,59 @@ function dataTypeOf(
   return 'string';
 }
 
+/** Translation of a single object through its rule block. */
+export interface TranslatedObject {
+  archimateType: string;
+  name?: string;
+  documentation?: string;
+
+  /** propertyDefinitionRef (raw) -> value. */
+  properties: { definition: string, value: string }[];
+
+  /** ArchiMate attributes (relationships only). */
+  attributes: Record<string, string>;
+}
+
+/**
+ * Translates one object through the rules: finds its block (host
+ * type, then x-archimate, then defaut — throws naming the object when
+ * nothing applies) and resolves the mapped values.
+ */
+export function translateObject(
+    objet: CartographyObject,
+    isRelationship: boolean,
+    index: RuleIndex,
+    schemasByType: Map<string, TypeSchema>
+): TranslatedObject {
+
+  const bloc = findRuleBlock(objet, isRelationship, index, schemasByType);
+  const translated = translateConcept(objet, bloc);
+
+  const attributes: Record<string, string> = {};
+
+  if (isRelationship) {
+    for (const [ key, raw ] of Object.entries(bloc)) {
+      if (BLOCK_META_KEYS.has(key)) {
+        continue;
+      }
+
+      const value = asString(resolveRuleValue(objet, raw));
+
+      if (value !== undefined) {
+        attributes[ key ] = value;
+      }
+    }
+  }
+
+  return {
+    archimateType: archimateTypeOf(objet, schemasByType),
+    name: translated.name,
+    documentation: translated.documentation,
+    properties: translated.properties,
+    attributes
+  };
+}
+
 /**
  * Applies the rules: translates every retained object of the hydrated
  * model into the ArchiMate model in memory. The component applies the
@@ -296,13 +346,12 @@ export function applyRules(model: HydratedModel): ArchimateModelIR {
       continue;
     }
 
-    const bloc = findRuleBlock(objet, false, index, schemasByType);
-    const translated = translateConcept(objet, bloc);
+    const translated = translateObject(objet, false, index, schemasByType);
 
     elements.push({
       id: archimateIdOf(cle),
       cle,
-      archimateType: archimateTypeOf(objet, schemasByType),
+      archimateType: translated.archimateType,
       name: translated.name,
       documentation: translated.documentation,
       properties: registerProperties(translated.properties)
@@ -316,44 +365,18 @@ export function applyRules(model: HydratedModel): ArchimateModelIR {
       continue;
     }
 
-    const bloc = findRuleBlock(objet, true, index, schemasByType);
-    const translated = translateConcept(objet, bloc);
-
-    const attributes: Record<string, string> = {};
-
-    for (const attribute of RELATIONSHIP_ATTRIBUTES) {
-      if (bloc[ attribute ] !== undefined) {
-        const value = asString(resolveRuleValue(objet, bloc[ attribute ]));
-
-        if (value !== undefined) {
-          attributes[ attribute ] = value;
-        }
-      }
-    }
-
-    // any other non-meta key of the block is carried as an attribute
-    for (const [ key, raw ] of Object.entries(bloc)) {
-      if (BLOCK_META_KEYS.has(key) || RELATIONSHIP_ATTRIBUTES.includes(key)) {
-        continue;
-      }
-
-      const value = asString(resolveRuleValue(objet, raw));
-
-      if (value !== undefined) {
-        attributes[ key ] = value;
-      }
-    }
+    const translated = translateObject(objet, true, index, schemasByType);
 
     relationships.push({
       id: archimateIdOf(cle),
       cle,
-      archimateType: archimateTypeOf(objet, schemasByType),
+      archimateType: translated.archimateType,
       name: translated.name,
       documentation: translated.documentation,
       properties: registerProperties(translated.properties),
       source: archimateIdOf(objet.source),
       target: archimateIdOf(objet.cible),
-      attributes
+      attributes: translated.attributes
     });
   }
 

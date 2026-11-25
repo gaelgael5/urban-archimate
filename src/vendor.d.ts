@@ -13,3 +13,13 @@ declare module '*lib/NavigatedViewer.js' {
   const NavigatedViewer: new (options: Record<string, unknown>) => unknown;
   export default NavigatedViewer;
 }
+
+declare module '*lib/features/palette/index.js' {
+  const PaletteModule: Record<string, unknown>;
+  export default PaletteModule;
+}
+
+declare module '*lib/features/canvas-create/index.js' {
+  const CanvasCreateModule: Record<string, unknown>;
+  export default CanvasCreateModule;
+}

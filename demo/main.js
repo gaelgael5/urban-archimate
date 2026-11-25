@@ -2,6 +2,7 @@ import Modeler from '../lib/Modeler.js';
 import { UrbanArchimateEditor } from '../src/editor/UrbanArchimateEditor.ts';
 
 import '../assets/archimate-js.css';
+import '../assets/urban-archimate-ui.css';
 
 const params = new URLSearchParams(window.location.search);
 const exemple = params.get('exemple');
