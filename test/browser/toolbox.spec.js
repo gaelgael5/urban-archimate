@@ -1,7 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 
-import { load as parseYaml } from 'js-yaml';
-
 import { UrbanArchimateEditor } from '../../src/editor/UrbanArchimateEditor.ts';
 
 import exampleYaml from '../../examples/boutique/modele-hydrate.yaml?raw';

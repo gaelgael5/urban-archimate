@@ -352,7 +352,6 @@ export class UrbanArchimateEditor {
 
     let base = 'VUE-' + nom
       .normalize('NFD')
-      // eslint-disable-next-line no-misleading-character-class
       .replace(/[\u0300-\u036f]/g, '')
       .toUpperCase()
       .replace(/[^A-Z0-9]+/g, '-')

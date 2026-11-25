@@ -88,10 +88,8 @@ UaContextPadProvider.prototype.getContextPadEntries = function(element: any) {
 function UaConnectBehavior(this: any, eventBus: any) {
   this._handler = null;
 
-  const self = this;
-
   // priority above the default connect.end listener (1000)
-  eventBus.on('connect.end', 1250, function(event: any) {
+  eventBus.on('connect.end', 1250, (event: any) => {
     const context = event.context,
         source = context.source,
         target = context.target;
@@ -108,8 +106,8 @@ function UaConnectBehavior(this: any, eventBus: any) {
     const targetIsNode = targetKey !== undefined &&
       target.businessObject.hostConnexionId === undefined;
 
-    if (sourceIsNode && targetIsNode && self._handler) {
-      self._handler(source, target);
+    if (sourceIsNode && targetIsNode && this._handler) {
+      this._handler(source, target);
 
       // preempt the default free connection creation
       return false;

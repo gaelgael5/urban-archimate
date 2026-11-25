@@ -233,7 +233,7 @@ export function placeExistingRelation(
     objet: CartographyObject
 ): any {
 
-  const { viewer, hydrated, vue, view } = context;
+  const { viewer, hydrated, view } = context;
 
   const sourceNode = findNodeOfKey(view, objet.source!);
   const targetNode = findNodeOfKey(view, objet.cible!);

@@ -1,4 +1,4 @@
-import type { Tool, ToolGroup } from '../contract/types.ts';
+import type { ToolGroup } from '../contract/types.ts';
 
 /** A tool armed for placement. */
 export interface ArmedTool {

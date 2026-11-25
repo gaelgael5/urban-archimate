@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 /**
  * `<urban-archimate>` : the component as a custom element, usable
  * without any framework and from React.
