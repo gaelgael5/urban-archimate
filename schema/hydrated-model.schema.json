@@ -1,0 +1,251 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/gaelgael5/urban-archimate/schema/hydrated-model.schema.json",
+  "title": "Modèle hydraté urban-archimate",
+  "description": "Document du modèle dont chaque référence (règles, graphique, types, documents d'objets) porte son contenu en `data`. Les contrôles croisés (clé retenue absente des documents, ...) sont faits par le composant en plus de ce schéma.",
+  "type": "object",
+  "properties": {
+    "id": { "$ref": "#/$defs/cle" },
+    "nom": { "type": "string" },
+    "description": { "type": "string" },
+    "regles": {
+      "type": "object",
+      "properties": {
+        "chemin": { "type": "string", "minLength": 1 },
+        "data": { "$ref": "#/$defs/regles" }
+      },
+      "required": [ "chemin", "data" ],
+      "additionalProperties": false
+    },
+    "graphique": {
+      "type": "object",
+      "properties": {
+        "chemin": { "type": "string", "minLength": 1 },
+        "data": { "$ref": "#/$defs/graphique" }
+      },
+      "required": [ "chemin", "data" ],
+      "additionalProperties": false
+    },
+    "types": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "chemin": { "type": "string", "minLength": 1 },
+          "data": { "$ref": "#/$defs/schemaType" }
+        },
+        "required": [ "chemin", "data" ],
+        "additionalProperties": false
+      }
+    },
+    "documents": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "chemin": { "type": "string", "minLength": 1 },
+          "data": { "$ref": "#/$defs/objet" }
+        },
+        "required": [ "chemin", "data" ],
+        "additionalProperties": false
+      }
+    },
+    "elements": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/cle" }
+    },
+    "relationships": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/cle" }
+    },
+    "vues": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/vue" }
+    }
+  },
+  "required": [ "id", "regles", "graphique" ],
+  "additionalProperties": false,
+  "$defs": {
+    "cle": {
+      "type": "string",
+      "pattern": "^[A-Z0-9][A-Z0-9-]*$"
+    },
+    "objet": {
+      "type": "object",
+      "properties": {
+        "cle": { "$ref": "#/$defs/cle" },
+        "type": { "type": "string", "minLength": 1 },
+        "nom": { "type": "string" },
+        "documentation": { "type": "string" },
+        "source": { "$ref": "#/$defs/cle" },
+        "cible": { "$ref": "#/$defs/cle" },
+        "proprietes": { "type": "object" }
+      },
+      "required": [ "cle", "type" ],
+      "dependentRequired": {
+        "source": [ "cible" ],
+        "cible": [ "source" ]
+      },
+      "additionalProperties": false
+    },
+    "schemaType": {
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "x-archimate": { "type": "string", "minLength": 1 },
+        "properties": { "type": "object" },
+        "required": { "type": "array", "items": { "type": "string" } }
+      },
+      "required": [ "x-archimate" ]
+    },
+    "regles": {
+      "type": "object",
+      "properties": {
+        "lang": { "type": "string" },
+        "defaut": { "$ref": "#/$defs/blocRegle" },
+        "elements": { "type": "array", "items": { "$ref": "#/$defs/blocRegleType" } },
+        "relationships": { "type": "array", "items": { "$ref": "#/$defs/blocRegleType" } }
+      },
+      "additionalProperties": false
+    },
+    "blocRegle": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "documentation": { "type": "string" },
+        "properties": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "propertyDefinitionRef": { "type": "string", "minLength": 1 },
+              "value": { "type": "string", "minLength": 1 }
+            },
+            "required": [ "propertyDefinitionRef", "value" ],
+            "additionalProperties": false
+          }
+        }
+      }
+    },
+    "blocRegleType": {
+      "allOf": [ { "$ref": "#/$defs/blocRegle" } ],
+      "type": "object",
+      "properties": {
+        "type": { "type": "string", "minLength": 1 }
+      },
+      "required": [ "type" ]
+    },
+    "vue": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "nom": { "type": "string" },
+        "point_de_vue": { "type": "string" },
+        "noeuds": { "type": "array", "items": { "$ref": "#/$defs/noeud" } },
+        "connexions": { "type": "array", "items": { "$ref": "#/$defs/connexion" } }
+      },
+      "required": [ "id" ],
+      "additionalProperties": false
+    },
+    "noeud": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "element": { "$ref": "#/$defs/cle" },
+        "note": { "type": "string" },
+        "cadre": { "type": "string" },
+        "enfants": { "type": "array", "items": { "$ref": "#/$defs/noeud" } }
+      },
+      "required": [ "id" ],
+      "oneOf": [
+        { "required": [ "element" ] },
+        { "required": [ "note" ] },
+        { "required": [ "cadre" ] }
+      ],
+      "additionalProperties": false
+    },
+    "connexion": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "relationship": { "$ref": "#/$defs/cle" },
+        "de": { "type": "string", "minLength": 1 },
+        "vers": { "type": "string", "minLength": 1 }
+      },
+      "required": [ "id", "relationship", "de", "vers" ],
+      "additionalProperties": false
+    },
+    "graphique": {
+      "type": "object",
+      "properties": {
+        "vues": {
+          "type": "object",
+          "additionalProperties": { "$ref": "#/$defs/vueGraphique" }
+        }
+      },
+      "additionalProperties": false
+    },
+    "vueGraphique": {
+      "type": "object",
+      "properties": {
+        "noeuds": {
+          "type": "object",
+          "additionalProperties": { "$ref": "#/$defs/geometrieNoeud" }
+        },
+        "connexions": {
+          "type": "object",
+          "additionalProperties": { "$ref": "#/$defs/geometrieConnexion" }
+        }
+      },
+      "additionalProperties": false
+    },
+    "geometrieNoeud": {
+      "type": "object",
+      "properties": {
+        "x": { "type": "number" },
+        "y": { "type": "number" },
+        "relatif": { "type": "string" },
+        "dx": { "type": "number" },
+        "dy": { "type": "number" },
+        "l": { "type": "number", "exclusiveMinimum": 0 },
+        "h": { "type": "number", "exclusiveMinimum": 0 }
+      },
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": { "required": [ "relatif" ] },
+          "then": { "not": { "anyOf": [ { "required": [ "x" ] }, { "required": [ "y" ] } ] } }
+        }
+      ]
+    },
+    "geometrieConnexion": {
+      "type": "object",
+      "properties": {
+        "ancre_source": { "enum": [ "gauche", "droite", "haut", "bas" ] },
+        "ancre_cible": { "enum": [ "gauche", "droite", "haut", "bas" ] },
+        "points": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "x": { "type": "number" },
+              "y": { "type": "number" }
+            },
+            "required": [ "x", "y" ],
+            "additionalProperties": false
+          }
+        },
+        "libelle": {
+          "type": "object",
+          "properties": {
+            "position": { "type": "number", "minimum": 0, "maximum": 1 },
+            "dx": { "type": "number" },
+            "dy": { "type": "number" }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

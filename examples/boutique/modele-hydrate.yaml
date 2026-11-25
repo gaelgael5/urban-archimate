@@ -1,0 +1,107 @@
+# Modèle hydraté d'exemple — domaine neutre « boutique en ligne ».
+# C'est le document du modèle dont chaque référence porte son contenu
+# en `data`, tel que l'hôte le passe au composant.
+id: MOD-BOUTIQUE-APPLICATIF
+nom: Boutique — vue applicative
+description: Ce que la boutique expose et ce qu'elle manipule.
+regles:
+  chemin: cartographie/regles/standard.rules.yaml
+  data:
+    lang: fr
+    defaut:
+      name: $.nom
+      documentation: $.documentation
+    elements:
+      - type: application
+        name: $.nom
+        documentation: $.documentation
+        properties:
+          - propertyDefinitionRef: responsable
+            value: $.proprietes.responsable
+      - type: document-metier
+        name: $.nom
+        documentation: $.documentation
+    relationships:
+      - type: acces
+        name: $.nom
+        accessType: $.proprietes.acces
+graphique:
+  chemin: cartographie/modeles/boutique-applicatif.graphique.yaml
+  data:
+    vues:
+      VUE-COOPERATION:
+        noeuds:
+          N1: { x: 40, y: 60, l: 320, h: 180 }
+          N2: { relatif: N1, dx: 20, dy: 50, l: 140, h: 60 }
+          N3: { relatif: N1, dx: 420, dy: 40, l: 160, h: 70 }
+        connexions:
+          C1:
+            ancre_source: droite
+            ancre_cible: gauche
+            points: [ { x: 400, y: 95 } ]
+            libelle: { position: 0.5, dx: 0, dy: -12 }
+types:
+  - chemin: cartographie/types/application.schema.yaml
+    data:
+      title: Application
+      x-archimate: ApplicationComponent
+      properties:
+        responsable:
+          type: string
+          title: Responsable
+  - chemin: cartographie/types/interface-applicative.schema.yaml
+    data:
+      title: Interface applicative
+      x-archimate: ApplicationInterface
+  - chemin: cartographie/types/document-metier.schema.yaml
+    data:
+      title: Document métier
+      x-archimate: BusinessObject
+  - chemin: cartographie/types/acces.schema.yaml
+    data:
+      title: Accès
+      x-archimate: Access
+documents:
+  - chemin: cartographie/objets/application/app-boutique.yaml
+    data:
+      cle: APP-BOUTIQUE
+      type: application
+      nom: Boutique en ligne
+      documentation: |
+        Le front de vente : catalogue, panier, commande.
+      proprietes:
+        responsable: Équipe vente
+  - chemin: cartographie/objets/interface-applicative/api-catalogue.yaml
+    data:
+      cle: API-CATALOGUE
+      type: interface-applicative
+      nom: API Catalogue
+  - chemin: cartographie/objets/document-metier/obj-commande.yaml
+    data:
+      cle: OBJ-COMMANDE
+      type: document-metier
+      nom: Commande
+  - chemin: cartographie/objets/acces/rel-boutique-ecrit-commande.yaml
+    data:
+      cle: REL-BOUTIQUE-ECRIT-COMMANDE
+      type: acces
+      source: APP-BOUTIQUE
+      cible: OBJ-COMMANDE
+      nom: Écrit la commande
+      proprietes:
+        acces: Write
+elements: [ APP-BOUTIQUE, API-CATALOGUE, OBJ-COMMANDE ]
+relationships: [ REL-BOUTIQUE-ECRIT-COMMANDE ]
+vues:
+  - id: VUE-COOPERATION
+    nom: Coopération applicative
+    point_de_vue: application-cooperation
+    noeuds:
+      - id: N1
+        element: APP-BOUTIQUE
+        enfants:
+          - { id: N2, element: API-CATALOGUE }
+      - { id: N3, element: OBJ-COMMANDE }
+      - { id: N4, note: "Source : atelier du 2 décembre" }
+    connexions:
+      - { id: C1, relationship: REL-BOUTIQUE-ECRIT-COMMANDE, de: N1, vers: N3 }

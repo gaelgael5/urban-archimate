@@ -30,9 +30,11 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "build": "vite build",
-    "all": "npm run lint && npm run test && npm run build"
+    "all": "npm run lint && npm run typecheck && npm test && npm run build",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "ajv": "^8.20.0",
     "archimate-font": "file:./vendor/archimate-font",
     "css.escape": "^1.5.1",
     "diagram-js": "^15.30.1",
@@ -40,6 +42,7 @@
     "hex-and-rgba": "^2.0.0",
     "ids": "^3.0.2",
     "inherits-browser": "^0.1.0",
+    "js-yaml": "^5.5.0",
     "min-dash": "^5.1.0",
     "min-dom": "^5.3.0",
     "moddle": "^8.2.1",
@@ -49,10 +52,13 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.0",
+    "@types/js-yaml": "^4.0.9",
     "@vitest/browser-playwright": "^5.1.2",
     "eslint": "^10.15.0",
     "globals": "^16.0.0",
     "playwright": "^1.65.1",
+    "typescript": "~6.0.0",
+    "typescript-eslint": "^8.74.0",
     "vite": "^8.3.8",
     "vite-node": "^6.0.0",
     "vitest": "^5.1.2"
