@@ -108,6 +108,23 @@ Le composant garde le modèle **propre** : il ne rend pas un document
 dont aucun objet n'est retenu, ni un nœud qui désigne une clé non
 retenue.
 
+## Attributs ArchiMate de base des relations
+
+Convention partagée avec Ossie-studio (« les attributs propres à
+ArchiMate sont stockés avec les valeurs ArchiMate, l'écran affichant
+les libellés français ») :
+
+| Type ArchiMate | Propriété de l'objet | Valeurs | Libellés affichés |
+|---|---|---|---|
+| `Access` | `proprietes.acces` | `Read`, `Write`, `ReadWrite` (absente = non précisé) | lecture, écriture, lecture-écriture |
+| `Influence` | `proprietes.modificateur` | texte libre (`+`, `++`, `-`, …) | — |
+| `Association` | `proprietes.dirigee` | `true` (absente = non dirigée) | dirigée |
+
+La grille de propriétés d'une nouvelle relation est construite à
+partir du schéma du type rendu par le délégué `allowedRelations`
+(chaînes, nombres, énumérations, booléens, obligatoires) et de ces
+attributs de base. Une valeur facultative vide n'est pas envoyée.
+
 ## Autres
 
 - **Lecture seule** : option `readOnly` ; aucune modification possible

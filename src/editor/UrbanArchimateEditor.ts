@@ -35,6 +35,9 @@ import {
 } from './placement.ts';
 
 import { Toolbox, type ArmedTool } from '../toolbox/Toolbox.ts';
+import { PropertyGrid } from '../property-grid/PropertyGrid.ts';
+
+import { archimateIdOf, schemasOf } from '../rules/engine.ts';
 
 export interface EditorOptions {
 
@@ -74,6 +77,7 @@ export class UrbanArchimateEditor {
   private _importing = false;
 
   private _toolbox: Toolbox | null = null;
+  private _grid: PropertyGrid | null = null;
   private _canvasHost: HTMLElement;
   private _armedTool: ArmedTool | null = null;
   private _placing = false;
@@ -91,9 +95,9 @@ export class UrbanArchimateEditor {
     this._canvasHost.style.flex = '1 1 auto';
     this._canvasHost.style.height = '100%';
 
-    if (!this._readOnly) {
-      root.style.display = 'flex';
+    root.style.display = 'flex';
 
+    if (!this._readOnly) {
       const toolboxHost = document.createElement('div');
       toolboxHost.style.flex = '0 0 auto';
       root.appendChild(toolboxHost);
@@ -114,6 +118,12 @@ export class UrbanArchimateEditor {
       root.appendChild(this._canvasHost);
     }
 
+    // property grid panel (read-only display in every mode)
+    const gridHost = document.createElement('div');
+    gridHost.style.flex = '0 0 auto';
+    root.appendChild(gridHost);
+    this._grid = new PropertyGrid(gridHost);
+
     // the component never creates free elements: the legacy palette
     // and double-click creation are replaced by the host toolbox
     const modeler: any = Modeler;
@@ -133,11 +143,14 @@ export class UrbanArchimateEditor {
       const selected = (event.newSelection && event.newSelection[ 0 ]) || null;
 
       if (!selected) {
+        this._grid?.clear();
         this._emit('selection', { cle: undefined, viewElementId: undefined, kind: null });
         return;
       }
 
       const businessObject = selected.businessObject || {};
+
+      this._showSelectionInGrid(businessObject.hostKey);
 
       this._emit('selection', {
         cle: businessObject.hostKey,
@@ -242,6 +255,171 @@ export class UrbanArchimateEditor {
     }
 
     this._toolbox.setGroups(groups || []);
+  }
+
+  /** Shows the selected object, read-only, in the property grid. */
+  private _showSelectionInGrid(cle: string | undefined): void {
+    if (!this._grid) {
+      return;
+    }
+
+    if (!cle || !this._hydrated) {
+      this._grid.clear();
+      return;
+    }
+
+    const document_ = (this._hydrated.documents || []).find(
+      (doc) => doc.data.cle === cle);
+
+    const objet = document_
+      ? document_.data
+      : this._newRelationships.find((relation) => relation.cle === cle);
+
+    if (!objet) {
+      this._grid.clear();
+      return;
+    }
+
+    const schemas = schemasOf(this._hydrated);
+    const schema = schemas.get(objet.type);
+
+    const archimateType = schema
+      ? schema[ 'x-archimate' ]
+      : objet.type;
+
+    this._grid.showReadOnly(objet, schema, archimateType);
+  }
+
+  /**
+   * Connects two placed nodes with a NEW relation: asks the host,
+   * once, which relation types are allowed between the two objects;
+   * refuses the link (naming both objects) when the host returns
+   * none; otherwise the relation is filled in the property grid and
+   * only added once the grid is valid. It goes to the
+   * `nouvellesRelations` output — the host creates the file.
+   */
+  async connectNodes(source: any, target: any): Promise<void> {
+    if (!this._hydrated || !this._currentVue || !this._built) {
+      throw new Error('aucun modèle chargé');
+    }
+
+    const registry = this._viewer.get('elementRegistry');
+
+    const sourceShape = typeof source === 'string' ? registry.get(source) : source;
+    const targetShape = typeof target === 'string' ? registry.get(target) : target;
+
+    const cleSource = sourceShape?.businessObject?.hostKey;
+    const cleCible = targetShape?.businessObject?.hostKey;
+
+    if (!cleSource || !cleCible) {
+      this._toolbox?.showError(
+        'seuls des objets de l\'hôte peuvent être reliés');
+      return;
+    }
+
+    if (!this._delegates.allowedRelations) {
+      this._toolbox?.showError(
+        'aucun délégué des relations permises n\'est fourni par l\'hôte');
+      return;
+    }
+
+    const typesPermis = await this._delegates.allowedRelations(cleSource, cleCible);
+
+    const nomSource = sourceShape.name || cleSource;
+    const nomCible = targetShape.name || cleCible;
+
+    if (!typesPermis || !typesPermis.length) {
+      this._toolbox?.showError(
+        `aucune relation n'est autorisée entre « ${ nomSource } » et « ${ nomCible } »`);
+      return;
+    }
+
+    return new Promise((resolve) => {
+      this._grid!.openNewRelation({
+        cleSource,
+        cleCible,
+        nomSource,
+        nomCible,
+        typesPermis,
+        onValidate: (objet) => {
+          this._addNewRelation(objet, typesPermis, sourceShape, targetShape);
+          resolve();
+        },
+        onCancel: () => resolve()
+      });
+    });
+  }
+
+  private _addNewRelation(
+      objet: CartographyObject,
+      typesPermis: { type: string, archimate: string }[],
+      sourceShape: any,
+      targetShape: any
+  ): void {
+
+    const hydrated = this._hydrated!;
+    const vue = this._currentVue!;
+
+    const allowed = typesPermis.find((type) => type.type === objet.type)!;
+
+    const moddle = this._viewer._moddle;
+
+    // ArchiMate translation of the drawn relation: base attributes are
+    // stored with their ArchiMate values, nothing to convert
+    const attributes: Record<string, string> = {};
+    const proprietes = objet.proprietes || {};
+
+    if (allowed.archimate === 'Access' && proprietes.acces) {
+      attributes.accessType = String(proprietes.acces);
+    }
+    if (allowed.archimate === 'Influence' && proprietes.modificateur) {
+      attributes.modifier = String(proprietes.modificateur);
+    }
+    if (allowed.archimate === 'Association' && proprietes.dirigee) {
+      attributes.isDirected = String(proprietes.dirigee);
+    }
+
+    const relationship = moddle.create('archimate:Relationship', {
+      id: archimateIdOf(objet.cle),
+      type: allowed.archimate,
+      name: objet.nom,
+      source: sourceShape.businessObject.elementRef,
+      target: targetShape.businessObject.elementRef,
+      ...attributes
+    });
+
+    if (this._viewer._elementsById) {
+      this._viewer._elementsById[ relationship.id ] = relationship;
+    }
+
+    // retained, drawn in the view — but NOT in the documents: the host
+    // has not created the file yet
+    const relationships = hydrated.relationships || (hydrated.relationships = []);
+    relationships.push(objet.cle);
+
+    const hostConnexionId = `C-${ objet.cle }`;
+    const connexions = vue.connexions || (vue.connexions = []);
+    connexions.push({
+      id: hostConnexionId,
+      relationship: objet.cle,
+      de: sourceShape.businessObject.hostNodeId,
+      vers: targetShape.businessObject.hostNodeId
+    });
+
+    const modeling = this._viewer.get('modeling');
+
+    const connection = modeling.connect(sourceShape, targetShape, {
+      type: allowed.archimate,
+      relationshipRef: relationship
+    });
+
+    connection.businessObject.hostConnexionId = hostConnexionId;
+    connection.businessObject.hostKey = objet.cle;
+
+    relationship.name = objet.nom;
+    Object.assign(relationship, attributes);
+
+    this._newRelationships.push(objet);
   }
 
   private _placementContext(): PlacementContext {
@@ -374,6 +552,7 @@ export class UrbanArchimateEditor {
   destroy(): void {
     this._viewer.destroy();
     this._toolbox?.destroy();
+    this._grid?.destroy();
     this._listeners.clear();
   }
 

@@ -112,3 +112,95 @@
 .ua-toolbox-statut.ua-toolbox-occupe::before {
   content: '⏳ ';
 }
+
+/* --- grille de propriétés ------------------------------------------ */
+
+.ua-grille {
+  width: 260px;
+  height: 100%;
+  overflow-y: auto;
+  background: var(--ua-fond-panneau);
+  border-left: 1px solid var(--ua-bordure);
+  padding: 8px;
+  box-sizing: border-box;
+}
+
+.ua-grille-titre {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  opacity: 0.7;
+  margin-bottom: 8px;
+}
+
+.ua-grille-vide {
+  font-size: 12px;
+  opacity: 0.6;
+}
+
+.ua-grille-lignes {
+  margin: 0;
+  font-size: 13px;
+}
+
+.ua-grille-lignes dt {
+  font-weight: 600;
+  margin-top: 8px;
+}
+
+.ua-grille-lignes dd {
+  margin: 2px 0 0;
+  white-space: pre-wrap;
+}
+
+.ua-grille-intro {
+  font-size: 13px;
+  margin-bottom: 10px;
+}
+
+.ua-grille-ligne {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 13px;
+}
+
+.ua-grille-libelle {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.ua-grille-champ {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 5px 6px;
+  border: 1px solid var(--ua-bordure);
+  border-radius: 4px;
+  font: inherit;
+}
+
+.ua-grille-boutons {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.ua-grille-boutons button {
+  padding: 6px 12px;
+  border-radius: 4px;
+  border: 1px solid var(--ua-bordure);
+  font: inherit;
+  cursor: pointer;
+}
+
+.ua-bouton-valider {
+  background: var(--ua-accent);
+  border-color: var(--ua-accent);
+  color: white;
+}
+
+.ua-bouton-valider:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
