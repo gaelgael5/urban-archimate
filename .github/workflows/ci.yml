@@ -43,7 +43,7 @@ jobs:
         run: |
           node scripts/build-python-package.mjs
           python -m pip install --quiet starlette httpx pytest
-          python -m pytest python/tests -q
+          PYTHONPATH=python python -m pytest python/tests -q
 
       - name: Check relationship tables export is up to date
         run: |
