@@ -47,6 +47,7 @@ import {
 
 import { Toolbox, type ArmedTool } from '../toolbox/Toolbox.ts';
 import { PropertyGrid } from '../property-grid/PropertyGrid.ts';
+import { ViewTabs } from '../view-tabs/ViewTabs.ts';
 
 import { archimateIdOf, schemasOf } from '../rules/engine.ts';
 
@@ -90,6 +91,7 @@ export class UrbanArchimateEditor {
 
   private _toolbox: Toolbox | null = null;
   private _grid: PropertyGrid | null = null;
+  private _viewTabs: ViewTabs | null = null;
   private _canvasHost: HTMLElement;
   private _armedTool: ArmedTool | null = null;
   private _placing = false;
@@ -105,15 +107,23 @@ export class UrbanArchimateEditor {
     this._canvasHost = document.createElement('div');
     this._canvasHost.className = 'ua-canvas';
     this._canvasHost.style.flex = '1 1 auto';
-    this._canvasHost.style.height = '100%';
+    this._canvasHost.style.minHeight = '0';
 
     root.style.display = 'flex';
+
+    // middle column: view tabs above the canvas
+    const middle = document.createElement('div');
+    middle.className = 'ua-colonne-centrale';
+    middle.style.flex = '1 1 auto';
+    middle.style.display = 'flex';
+    middle.style.flexDirection = 'column';
+    middle.style.minWidth = '0';
+    middle.style.height = '100%';
 
     if (!this._readOnly) {
       const toolboxHost = document.createElement('div');
       toolboxHost.style.flex = '0 0 auto';
       root.appendChild(toolboxHost);
-      root.appendChild(this._canvasHost);
 
       this._toolbox = new Toolbox({
         container: toolboxHost,
@@ -126,9 +136,40 @@ export class UrbanArchimateEditor {
       this._canvasHost.addEventListener('click', (event) => {
         this._onCanvasClick(event);
       });
-    } else {
-      root.appendChild(this._canvasHost);
     }
+
+    root.appendChild(middle);
+
+    this._viewTabs = new ViewTabs({
+      container: middle,
+      onSelect: (vueId) => {
+        this.setCurrentVue(vueId).catch((error) =>
+          this._toolbox?.showError(String(error.message || error)));
+      },
+      onAdd: (nom, pointDeVue) => {
+        if (!this._readOnly) {
+          this.addVue(nom, pointDeVue).catch((error) =>
+            this._toolbox?.showError(String(error.message || error)));
+        }
+      },
+      onRename: (vueId, nom) => {
+        if (!this._readOnly) {
+          this.renameVue(vueId, nom);
+        }
+      },
+      onDelete: (vueId) => {
+        if (!this._readOnly) {
+          this.deleteVue(vueId).catch((error) =>
+            this._toolbox?.showError(String(error.message || error)));
+        }
+      }
+    });
+
+    if (this._readOnly) {
+      middle.classList.add('ua-vues-lecture');
+    }
+
+    middle.appendChild(this._canvasHost);
 
     // property grid panel (read-only display in every mode)
     const gridHost = document.createElement('div');
@@ -252,6 +293,7 @@ export class UrbanArchimateEditor {
     this._currentVue = (model.vues && model.vues[ 0 ]) || null;
     this._newRelationships = [];
 
+    this._updateViewTabs();
     await this._refreshToolbox();
 
     this._emit('import.done', { warnings });
@@ -262,6 +304,163 @@ export class UrbanArchimateEditor {
   /** The view currently displayed. */
   get currentVue(): ModelView | null {
     return this._currentVue;
+  }
+
+  private _updateViewTabs(): void {
+    this._viewTabs?.update(
+      (this._hydrated && this._hydrated.vues) || [],
+      this._currentVue ? this._currentVue.id : null);
+  }
+
+  /** Switches to another view of the model. */
+  async setCurrentVue(vueId: string): Promise<void> {
+    if (!this._hydrated || !this._built) {
+      throw new Error('aucun modèle chargé');
+    }
+
+    const vue = (this._hydrated.vues || []).find((v) => v.id === vueId);
+    const view = this._built.viewsByVueId.get(vueId);
+
+    if (!vue || !view) {
+      throw new Error(`vue inconnue : ${ vueId }`);
+    }
+
+    this._importing = true;
+    try {
+      await this._viewer.openView(view);
+    } finally {
+      this._importing = false;
+    }
+
+    this._currentVue = vue;
+    this._grid?.clear();
+    this._updateViewTabs();
+
+    // the toolbox of this view is asked to the host, with its viewpoint
+    await this._refreshToolbox();
+
+    this._emit('vue.changed', { vueId });
+  }
+
+  /** Adds a view (name, optional ArchiMate viewpoint) and opens it. */
+  async addVue(nom: string, pointDeVue?: string): Promise<ModelView> {
+    if (!this._hydrated || !this._built) {
+      throw new Error('aucun modèle chargé');
+    }
+
+    const vues = this._hydrated.vues || (this._hydrated.vues = []);
+
+    let base = 'VUE-' + nom
+      .normalize('NFD')
+      // eslint-disable-next-line no-misleading-character-class
+      .replace(/[\u0300-\u036f]/g, '')
+      .toUpperCase()
+      .replace(/[^A-Z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '');
+
+    if (base === 'VUE-') {
+      base = 'VUE-SANS-NOM';
+    }
+
+    let id = base;
+    let suffix = 2;
+    while (vues.some((v) => v.id === id)) {
+      id = `${ base }-${ suffix++ }`;
+    }
+
+    const vue: ModelView = { id, nom };
+
+    if (pointDeVue) {
+      vue.point_de_vue = pointDeVue;
+    }
+
+    vues.push(vue);
+
+    // its moddle view joins the model's diagrams
+    const moddle = this._viewer._moddle;
+    const view = moddle.create('archimate:View', { id: `v-${ id }`, name: nom });
+    view.hostVueId = id;
+
+    if (pointDeVue) {
+      view.hostViewpoint = pointDeVue;
+    }
+
+    const diagrams = this._built.model.views.diagrams;
+    diagrams.get('viewsList').push(view);
+    view.$parent = diagrams;
+
+    this._built.viewsByVueId.set(id, view);
+
+    this._emit('changed', { scope: 'views' });
+
+    await this.setCurrentVue(id);
+
+    return vue;
+  }
+
+  /** Renames a view. */
+  renameVue(vueId: string, nom: string): void {
+    if (!this._hydrated || !this._built) {
+      throw new Error('aucun modèle chargé');
+    }
+
+    const vue = (this._hydrated.vues || []).find((v) => v.id === vueId);
+    const view = this._built.viewsByVueId.get(vueId);
+
+    if (!vue || !view) {
+      throw new Error(`vue inconnue : ${ vueId }`);
+    }
+
+    vue.nom = nom;
+    view.name = nom;
+
+    this._updateViewTabs();
+    this._emit('changed', { scope: 'views' });
+  }
+
+  /**
+   * Deletes a view: its nodes and connections disappear with it, and
+   * an object that no longer appears in any view leaves the retained
+   * elements at save time. Its graphics entry disappears too.
+   */
+  async deleteVue(vueId: string): Promise<void> {
+    if (!this._hydrated || !this._built) {
+      throw new Error('aucun modèle chargé');
+    }
+
+    const vues = this._hydrated.vues || [];
+    const index = vues.findIndex((v) => v.id === vueId);
+
+    if (index === -1) {
+      throw new Error(`vue inconnue : ${ vueId }`);
+    }
+
+    vues.splice(index, 1);
+
+    const view = this._built.viewsByVueId.get(vueId);
+    this._built.viewsByVueId.delete(vueId);
+
+    const viewsList = this._built.model.views.diagrams.get('viewsList');
+    const viewIndex = viewsList.indexOf(view);
+    if (viewIndex !== -1) {
+      viewsList.splice(viewIndex, 1);
+    }
+
+    this._emit('changed', { scope: 'views' });
+
+    if (this._currentVue && this._currentVue.id === vueId) {
+      if (vues.length) {
+        await this.setCurrentVue(vues[ 0 ].id);
+      } else {
+        this._currentVue = null;
+        this._viewer.clear();
+        this._grid?.clear();
+        this._updateViewTabs();
+        await this._refreshToolbox();
+      }
+    } else {
+      this._updateViewTabs();
+    }
   }
 
   /**
@@ -579,6 +778,7 @@ export class UrbanArchimateEditor {
     this._viewer.destroy();
     this._toolbox?.destroy();
     this._grid?.destroy();
+    this._viewTabs?.destroy();
     this._listeners.clear();
   }
 

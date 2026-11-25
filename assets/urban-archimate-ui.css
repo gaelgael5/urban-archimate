@@ -204,3 +204,88 @@
   opacity: 0.5;
   cursor: not-allowed;
 }
+
+/* --- onglets des vues ---------------------------------------------- */
+
+.ua-vues {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: 0 0 auto;
+  padding: 4px 8px;
+  background: var(--ua-fond-panneau);
+  border-bottom: 1px solid var(--ua-bordure);
+  overflow-x: auto;
+}
+
+.ua-vue-onglet {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  border: 1px solid var(--ua-bordure);
+  border-radius: 4px 4px 0 0;
+  background: white;
+  cursor: pointer;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.ua-vue-active {
+  border-bottom-color: white;
+  font-weight: 600;
+  border-color: var(--ua-accent);
+}
+
+.ua-vue-point-de-vue {
+  font-size: 11px;
+  opacity: 0.6;
+  font-style: italic;
+}
+
+.ua-vue-supprimer {
+  border: none;
+  background: none;
+  cursor: pointer;
+  font: inherit;
+  opacity: 0.5;
+  padding: 0 2px;
+}
+
+.ua-vue-supprimer:hover {
+  opacity: 1;
+  color: var(--ua-erreur);
+}
+
+.ua-vue-supprimer-confirmation {
+  color: var(--ua-erreur);
+  opacity: 1;
+  font-size: 12px;
+}
+
+.ua-vue-ajouter {
+  border: 1px dashed var(--ua-bordure);
+  background: none;
+  border-radius: 4px;
+  cursor: pointer;
+  padding: 2px 8px;
+  font: inherit;
+}
+
+.ua-vue-ajout-formulaire {
+  display: inline-flex;
+  gap: 4px;
+}
+
+.ua-vue-ajout-formulaire input {
+  font: inherit;
+  font-size: 12px;
+  padding: 2px 6px;
+  border: 1px solid var(--ua-bordure);
+  border-radius: 4px;
+}
+
+.ua-vues-lecture .ua-vue-supprimer,
+.ua-vues-lecture .ua-vue-ajout {
+  display: none;
+}
