@@ -41,6 +41,40 @@ generated from
 [examples/tous-elements](./examples/tous-elements/modele-hydrate.yaml)
 by `node scripts/capture-examples.mjs`.
 
+## Utilisation
+
+Le composant est publié sur **PyPI** (paquet `urban-archimate`), qui
+embarque le JS construit, les types TypeScript du contrat et le JSON
+Schema du modèle hydraté :
+
+```bash
+pip install urban-archimate==x.y.z
+```
+
+```python
+import urban_archimate
+urban_archimate.mount(app, "/api/archimate")   # FastAPI / Starlette
+```
+
+```html
+<script type="module" src="/api/archimate/urban-archimate.js"></script>
+<urban-archimate></urban-archimate>
+<script>
+  const editeur = document.querySelector('urban-archimate');
+  editeur.delegates = { toolbox, drop, allowedRelations };
+  editeur.addEventListener('changed', (e) => ...);
+  await editeur.loadModel(modeleHydrate);
+  const { modele, graphique, nouvellesRelations } = editeur.save();
+</script>
+```
+
+Styles isolés (shadow DOM), thème par variables CSS `--ua-*` ; les
+couleurs de notation ArchiMate restent celles de la spécification.
+Contrat complet : [docs/contrat.md](./docs/contrat.md). La publication
+PyPI est faite par la CI à chaque étiquette `vx.y.z` (versionnage
+sémantique, [CHANGELOG](./CHANGELOG.md)) — configurer le dépôt comme
+« trusted publisher » du projet PyPI, environnement `pypi`.
+
 ## Development
 
 ```bash

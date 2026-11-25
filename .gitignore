@@ -5,3 +5,6 @@ coverage/
 __pycache__/
 *.egg-info/
 python/dist/
+python/urban_archimate/static/
+python/.pytest_cache/
+.pytest_cache/

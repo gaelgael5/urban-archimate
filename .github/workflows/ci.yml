@@ -35,6 +35,16 @@ jobs:
       - name: Build
         run: npm run build
 
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Assemble the Python package and test mount()
+        run: |
+          node scripts/build-python-package.mjs
+          python -m pip install --quiet starlette httpx pytest
+          python -m pytest python/tests -q
+
       - name: Check relationship tables export is up to date
         run: |
           npx vite-node scripts/export-relationship-tables.mjs
