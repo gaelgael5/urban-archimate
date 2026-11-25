@@ -31,6 +31,16 @@ with it:
 
 ArchiMate® is a registered trademark of The Open Group.
 
+## Notation
+
+The full ArchiMate 3.2 notation (every element of every layer,
+junctions included, every relationship, notes, group frames, nesting)
+is rendered by the component. Visual control:
+[docs/captures/tous-elements.png](./docs/captures/tous-elements.png),
+generated from
+[examples/tous-elements](./examples/tous-elements/modele-hydrate.yaml)
+by `node scripts/capture-examples.mjs`.
+
 ## Development
 
 ```bash
