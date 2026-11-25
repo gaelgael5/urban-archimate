@@ -7,7 +7,7 @@ import { load as parseYaml } from 'js-yaml';
 
 import { loadHydratedModel } from '../../src/model/load.ts';
 import { validateHydratedModel } from '../../src/model/validate.ts';
-import { dehydrateModel, cleanHydratedModel } from '../../src/model/dehydrate.ts';
+import { dehydrateModel } from '../../src/model/dehydrate.ts';
 import { ModelValidationError } from '../../src/model/errors.ts';
 
 const exampleYaml = readFileSync(
@@ -141,20 +141,4 @@ describe('contract — dehydration (save)', () => {
     expect(JSON.stringify(dehydrated)).not.toContain('"data"');
   });
 
-  it('drops nodes, connections and documents of a key no longer retained', () => {
-    const { model } = loadHydratedModel(exampleYaml);
-
-    // the host removed OBJ-COMMANDE from the retained elements
-    model.elements = model.elements.filter((cle) => cle !== 'OBJ-COMMANDE');
-    model.relationships = [];
-
-    cleanHydratedModel(model);
-
-    const vue = model.vues[0];
-    expect(vue.noeuds.map((n) => n.id)).toEqual([ 'N1', 'N4' ]);
-    expect(vue.connexions).toEqual([]);
-    expect(model.documents.map((d) => d.data.cle)).toEqual([
-      'APP-BOUTIQUE', 'API-CATALOGUE'
-    ]);
-  });
 });

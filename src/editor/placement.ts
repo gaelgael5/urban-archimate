@@ -11,8 +11,7 @@ import type {
   CartographyObject,
   DropResult,
   HydratedModel,
-  ModelView,
-  ViewNode
+  ModelView
 } from '../contract/types.ts';
 
 import {
@@ -40,20 +39,43 @@ export class PlacementError extends Error {
 
 let nodeSeq = 0;
 
-function nextNodeId(vue: ModelView): string {
+/** Ids already used by the live view (nodes and connections). */
+function liveIds(view: any): Set<string> {
   const existing = new Set<string>();
 
-  const collect = (noeuds: ViewNode[] | undefined) => {
-    for (const noeud of noeuds || []) {
-      existing.add(noeud.id);
-      collect(noeud.enfants);
+  const walk = (elements: any[]) => {
+    for (const element of elements || []) {
+      if (element.hostNodeId !== undefined) {
+        existing.add(element.hostNodeId);
+      }
+      if (element.hostConnexionId !== undefined) {
+        existing.add(element.hostConnexionId);
+      }
+      walk(element.nodes);
     }
   };
-  collect(vue.noeuds);
+  walk(view.viewElements);
+
+  return existing;
+}
+
+function nextNodeId(view: any): string {
+  const existing = liveIds(view);
 
   let id;
   do {
     id = `N${ ++nodeSeq }`;
+  } while (existing.has(id));
+
+  return id;
+}
+
+function nextConnectionId(view: any): string {
+  const existing = liveIds(view);
+
+  let id;
+  do {
+    id = `C${ ++nodeSeq }`;
   } while (existing.has(id));
 
   return id;
@@ -93,19 +115,8 @@ export function absorbDropResult(
     documents.push(result.objet);
   }
 
-  const isRelationship = !!(objet.source && objet.cible);
-
-  if (isRelationship) {
-    const relationships = hydrated.relationships || (hydrated.relationships = []);
-    if (!relationships.includes(objet.cle)) {
-      relationships.push(objet.cle);
-    }
-  } else {
-    const elements = hydrated.elements || (hydrated.elements = []);
-    if (!elements.includes(objet.cle)) {
-      elements.push(objet.cle);
-    }
-  }
+  // the retained keys (elements / relationships) are derived from the
+  // live diagram at save time, so that undo / redo stays exact
 
   return objet;
 }
@@ -180,8 +191,9 @@ export function placeElement(
   }
 
   // the view node (semantic attachment handled by NodeUpdater on
-  // shape.create)
-  const hostNodeId = nextNodeId(vue);
+  // shape.create; the document form is derived from the live view at
+  // save time)
+  const hostNodeId = nextNodeId(view);
 
   const node = moddle.create('archimate:Node', {
     id: `n-${ vue.id }-${ hostNodeId }`,
@@ -191,10 +203,6 @@ export function placeElement(
 
   node.hostNodeId = hostNodeId;
   node.hostKey = objet.cle;
-
-  // document form: the view gains the node
-  const noeuds = vue.noeuds || (vue.noeuds = []);
-  noeuds.push({ id: hostNodeId, element: objet.cle });
 
   const elementFactory = viewer.get('elementFactory');
   const modeling = viewer.get('modeling');
@@ -272,16 +280,7 @@ export function placeExistingRelation(
     }
   }
 
-  const hostConnexionId = nextNodeId(vue).replace('N', 'C');
-
-  // document form: the view gains the connection
-  const connexions = vue.connexions || (vue.connexions = []);
-  connexions.push({
-    id: hostConnexionId,
-    relationship: objet.cle,
-    de: sourceNode.hostNodeId,
-    vers: targetNode.hostNodeId
-  });
+  const hostConnexionId = nextConnectionId(view);
 
   const registry = viewer.get('elementRegistry');
   const modeling = viewer.get('modeling');
@@ -339,10 +338,10 @@ function placeViewOnly(
     size: { width: number, height: number }
 ): any {
 
-  const { viewer, vue } = context;
+  const { viewer, vue, view } = context;
 
   const moddle = viewer._moddle;
-  const hostNodeId = nextNodeId(vue);
+  const hostNodeId = nextNodeId(view);
 
   const node = moddle.create('archimate:Node', {
     id: `n-${ vue.id }-${ hostNodeId }`,
@@ -351,9 +350,6 @@ function placeViewOnly(
   });
 
   node.hostNodeId = hostNodeId;
-
-  const noeuds = vue.noeuds || (vue.noeuds = []);
-  noeuds.push({ id: hostNodeId, ...attributes });
 
   const elementFactory = viewer.get('elementFactory');
   const modeling = viewer.get('modeling');

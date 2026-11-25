@@ -23,3 +23,24 @@ declare module '*lib/features/canvas-create/index.js' {
   const CanvasCreateModule: Record<string, unknown>;
   export default CanvasCreateModule;
 }
+
+declare module '*lib/features/context-pad/index.js' {
+  const ArchimateContextPadModule: Record<string, unknown>;
+  export default ArchimateContextPadModule;
+}
+
+declare module '*lib/features/copy-paste/index.js' {
+  const CopyPasteModule: Record<string, unknown>;
+  export default CopyPasteModule;
+}
+
+declare module '*lib/features/replace-preview/index.js' {
+  const ReplacePreviewModule: Record<string, unknown>;
+  export default ReplacePreviewModule;
+}
+
+declare module 'diagram-js/lib/features/context-pad/index.js' {
+  const ContextPadModule: Record<string, unknown>;
+  export default ContextPadModule;
+}
+declare module 'diagram-js/lib/features/rules/RuleProvider.js' { const RuleProvider: unknown; export default RuleProvider; }

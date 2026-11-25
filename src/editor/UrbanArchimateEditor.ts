@@ -4,6 +4,11 @@ import NavigatedViewer from '../../lib/NavigatedViewer.js';
 
 import PaletteModule from '../../lib/features/palette/index.js';
 import CanvasCreateModule from '../../lib/features/canvas-create/index.js';
+import ArchimateContextPadModule from '../../lib/features/context-pad/index.js';
+import CopyPasteModule from '../../lib/features/copy-paste/index.js';
+import ReplacePreviewModule from '../../lib/features/replace-preview/index.js';
+
+import EditingModule from './editing-module.ts';
 
 import type {
   CartographyObject,
@@ -16,9 +21,15 @@ import type {
 } from '../contract/types.ts';
 
 import { loadHydratedModel } from '../model/load.ts';
-import { dehydrateModel, cleanHydratedModel } from '../model/dehydrate.ts';
 import { applyRules } from '../rules/engine.ts';
 import { exportExchange } from '../exchange/export.ts';
+
+import {
+  deriveModel,
+  deriveViews,
+  snapshotOf,
+  type LoadSnapshot
+} from './derive-model.ts';
 
 import { buildModdleModel, type BuiltModel } from './build-moddle.ts';
 import { saveGraphics } from './save-graphics.ts';
@@ -70,6 +81,7 @@ export class UrbanArchimateEditor {
 
   private _hydrated: HydratedModel | null = null;
   private _built: BuiltModel | null = null;
+  private _snapshot: LoadSnapshot | null = null;
   private _currentVue: ModelView | null = null;
   private _newRelationships: CartographyObject[] = [];
 
@@ -124,11 +136,21 @@ export class UrbanArchimateEditor {
     root.appendChild(gridHost);
     this._grid = new PropertyGrid(gridHost);
 
-    // the component never creates free elements: the legacy palette
-    // and double-click creation are replaced by the host toolbox
+    // the component never creates free elements: the legacy palette,
+    // double-click creation, copy-paste and the catalogue-driven
+    // context pad are replaced by the host toolbox and a minimal pad
     const modeler: any = Modeler;
-    const editingModules = (modeler.prototype._modules as any[]).filter(
-      (module) => module !== PaletteModule && module !== CanvasCreateModule);
+    const excluded = new Set<any>([
+      PaletteModule,
+      CanvasCreateModule,
+      ArchimateContextPadModule,
+      CopyPasteModule,
+      ReplacePreviewModule
+    ]);
+
+    const editingModules = (modeler.prototype._modules as any[])
+      .filter((module) => !excluded.has(module))
+      .concat([ EditingModule ]);
 
     this._viewer = this._readOnly
       ? new (NavigatedViewer as any)({ container: this._canvasHost })
@@ -136,6 +158,16 @@ export class UrbanArchimateEditor {
         container: this._canvasHost,
         modules: editingModules
       });
+
+    if (!this._readOnly) {
+      // the connect gesture asks the host which relations are allowed
+      this._viewer.get('uaConnectBehavior').setHandler(
+        (source: any, target: any) => {
+          this.connectNodes(source, target).catch((error: Error) => {
+            this._toolbox?.showError(String(error.message || error));
+          });
+        });
+    }
 
     const eventBus = this._viewer.get('eventBus');
 
@@ -216,6 +248,7 @@ export class UrbanArchimateEditor {
 
     this._hydrated = model;
     this._built = built;
+    this._snapshot = snapshotOf(model);
     this._currentVue = (model.vues && model.vues[ 0 ]) || null;
     this._newRelationships = [];
 
@@ -357,9 +390,6 @@ export class UrbanArchimateEditor {
       targetShape: any
   ): void {
 
-    const hydrated = this._hydrated!;
-    const vue = this._currentVue!;
-
     const allowed = typesPermis.find((type) => type.type === objet.type)!;
 
     const moddle = this._viewer._moddle;
@@ -392,19 +422,9 @@ export class UrbanArchimateEditor {
       this._viewer._elementsById[ relationship.id ] = relationship;
     }
 
-    // retained, drawn in the view — but NOT in the documents: the host
-    // has not created the file yet
-    const relationships = hydrated.relationships || (hydrated.relationships = []);
-    relationships.push(objet.cle);
-
+    // drawn in the view, derived as retained at save time — but NOT
+    // in the documents: the host has not created the file yet
     const hostConnexionId = `C-${ objet.cle }`;
-    const connexions = vue.connexions || (vue.connexions = []);
-    connexions.push({
-      id: hostConnexionId,
-      relationship: objet.cle,
-      de: sourceShape.businessObject.hostNodeId,
-      vers: targetShape.businessObject.hostNodeId
-    });
 
     const modeling = this._viewer.get('modeling');
 
@@ -513,18 +533,24 @@ export class UrbanArchimateEditor {
    * graphics file, and the new relationships drawn on the diagram.
    */
   save(): SaveResult {
-    if (!this._hydrated || !this._built) {
+    if (!this._hydrated || !this._built || !this._snapshot) {
       throw new Error('aucun modèle chargé');
     }
 
-    cleanHydratedModel(this._hydrated);
+    // the saved document form is derived from the live diagram, so
+    // that posing, drawing, removing, undo and redo stay exact
+    const derived = deriveViews(this._hydrated, this._built.viewsByVueId);
 
     return {
-      modele: dehydrateModel(this._hydrated),
+      modele: deriveModel(this._hydrated, this._snapshot, derived),
       graphique: saveGraphics(
         this._hydrated.graphique.data, this._built.viewsByVueId),
-      nouvellesRelations: this._newRelationships.map(
-        (relation) => ({ ...relation }))
+
+      // a drawn relation only leaves with the save while its
+      // connection still exists (an undone or removed one does not)
+      nouvellesRelations: this._newRelationships
+        .filter((relation) => derived.placedRelationships.has(relation.cle))
+        .map((relation) => ({ ...relation }))
     };
   }
 
