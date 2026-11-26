@@ -1,5 +1,8 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 
+// la feuille du composant, pour tester les états pilotés par le CSS
+import '../../assets/urban-archimate-ui.css';
+
 import { UrbanArchimateEditor } from '../../src/editor/UrbanArchimateEditor.ts';
 
 import exampleYaml from '../../examples/boutique/modele-hydrate.yaml?raw';
@@ -63,6 +66,76 @@ describe('grille de propriétés pilotée par le schéma du type', () => {
   function grille() {
     return container.querySelector('.ua-grille');
   }
+
+  it('le panneau se masque ; l\'icône à droite du dessin le ramène', () => {
+    const rouvrir = container.querySelector('.ua-canvas .ua-grille-rouvrir');
+
+    expect(getComputedStyle(grille()).display).not.toBe('none');
+    expect(getComputedStyle(rouvrir).display).toBe('none');
+
+    grille().querySelector('.ua-grille-replier').click();
+
+    expect(getComputedStyle(grille()).display).toBe('none');
+    expect(getComputedStyle(rouvrir).display).not.toBe('none');
+
+    rouvrir.click();
+
+    expect(getComputedStyle(grille()).display).not.toBe('none');
+    expect(getComputedStyle(rouvrir).display).toBe('none');
+  });
+
+  it('panneau masqué : le formulaire de nouvelle relation l\'affiche le temps de la saisie', async () => {
+    grille().querySelector('.ua-grille-replier').click();
+    expect(getComputedStyle(grille()).display).toBe('none');
+
+    const promise = editor.connectNodes(
+      'n-VUE-COOPERATION-N1', 'n-VUE-COOPERATION-N3');
+    await new Promise((resolve) => setTimeout(resolve, 20));
+
+    // le formulaire a besoin du panneau : il est revenu
+    expect(getComputedStyle(grille()).display).not.toBe('none');
+    expect(grille().querySelector('form')).toBeTruthy();
+
+    grille().querySelector('.ua-bouton-annuler').click();
+    await promise;
+
+    // la saisie finie, le panneau retrouve son état masqué
+    expect(getComputedStyle(grille()).display).toBe('none');
+  });
+
+  it('un hôte avec sa propre grille coupe le panneau (propertyPanel: false), sans icône de réouverture', async () => {
+    const container2 = createContainer();
+    const editor2 = new UrbanArchimateEditor({
+      container: container2,
+      delegates: { allowedRelations },
+      propertyPanel: false
+    });
+
+    try {
+      await editor2.load(exampleYaml);
+
+      const panneau = container2.querySelector('.ua-grille');
+      const rouvrir = container2.querySelector('.ua-grille-rouvrir');
+
+      expect(getComputedStyle(panneau).display).toBe('none');
+      expect(getComputedStyle(rouvrir).display).toBe('none');
+
+      // le formulaire de nouvelle relation reste utilisable
+      const promise = editor2.connectNodes(
+        'n-VUE-COOPERATION-N1', 'n-VUE-COOPERATION-N3');
+      await new Promise((resolve) => setTimeout(resolve, 20));
+
+      expect(getComputedStyle(panneau).display).not.toBe('none');
+
+      panneau.querySelector('.ua-bouton-annuler').click();
+      await promise;
+
+      expect(getComputedStyle(panneau).display).toBe('none');
+    } finally {
+      editor2.destroy();
+      container2.remove();
+    }
+  });
 
   it('tracer un accès : clé, nom et sens demandés ; Valider inactif tant que la clé est vide ou mal formée (critère 1)', async () => {
     const promise = editor.connectNodes(

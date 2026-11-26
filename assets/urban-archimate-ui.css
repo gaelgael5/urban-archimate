@@ -140,6 +140,7 @@
 
 /* The paper of a plan: the dotted grid lives on the canvas only. */
 .ua-canvas {
+  position: relative;
   background-color: var(--ua-fond);
   background-image: radial-gradient(circle, var(--ua-trame-point) 1px, transparent 1.3px);
   background-size: 22px 22px;
@@ -205,6 +206,174 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
+}
+
+.ua-toolbox-entete {
+  display: flex;
+  justify-content: flex-end;
+  flex: 0 0 auto;
+}
+
+.ua-toolbox-replier {
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 1px solid var(--ua-bordure-forte);
+  border-radius: var(--ua-rayon-sm);
+  background: none;
+  color: var(--ua-texte-secondaire);
+  font: inherit;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.ua-toolbox-replier:hover {
+  background: var(--ua-fond);
+  color: var(--ua-texte);
+}
+
+/* Collapsed: the panel goes away entirely; a floating icon at the
+   top left of the drawing (below) brings it back. */
+.ua-toolbox-repliee {
+  display: none;
+}
+
+.ua-toolbox-rouvrir {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 10;
+  display: none;
+  width: 30px;
+  height: 30px;
+  padding: 5px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--ua-bordure-forte);
+  border-radius: var(--ua-rayon-sm);
+  background: var(--ua-fond-panneau);
+  color: var(--ua-texte-secondaire);
+  cursor: pointer;
+}
+
+.ua-toolbox-rouvrir:hover {
+  background: var(--ua-fond);
+  color: var(--ua-texte);
+}
+
+.ua-toolbox-rouvrir-visible {
+  display: inline-flex;
+}
+
+.ua-toolbox-rouvrir svg {
+  width: 100%;
+  height: 100%;
+  fill: none;
+  stroke: currentColor;
+}
+
+/* The property panel collapses the same way, from the right side. */
+.ua-grille-repliee {
+  display: none;
+}
+
+.ua-grille-entete {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.ua-grille-replier {
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  flex: 0 0 auto;
+  border: 1px solid var(--ua-bordure-forte);
+  border-radius: var(--ua-rayon-sm);
+  background: none;
+  color: var(--ua-texte-secondaire);
+  font: inherit;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.ua-grille-replier:hover {
+  background: var(--ua-fond);
+  color: var(--ua-texte);
+}
+
+.ua-grille-rouvrir {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 10;
+  display: none;
+  width: 30px;
+  height: 30px;
+  padding: 5px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--ua-bordure-forte);
+  border-radius: var(--ua-rayon-sm);
+  background: var(--ua-fond-panneau);
+  color: var(--ua-texte-secondaire);
+  cursor: pointer;
+}
+
+.ua-grille-rouvrir:hover {
+  background: var(--ua-fond);
+  color: var(--ua-texte);
+}
+
+.ua-grille-rouvrir-visible {
+  display: inline-flex;
+}
+
+.ua-grille-rouvrir svg {
+  width: 100%;
+  height: 100%;
+  fill: none;
+  stroke: currentColor;
+}
+
+/* --- zoom controls --------------------------------------------------- */
+
+.ua-zoom {
+  position: absolute;
+  bottom: 14px;
+  right: 14px;
+  z-index: 10;
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  border: 1px solid var(--ua-bordure-forte);
+  border-radius: var(--ua-rayon-sm);
+  background: var(--ua-fond-panneau);
+}
+
+.ua-zoom-bouton {
+  min-width: 26px;
+  height: 26px;
+  padding: 0 6px;
+  border: none;
+  border-radius: var(--ua-rayon-sm);
+  background: none;
+  color: var(--ua-texte-secondaire);
+  font: inherit;
+  font-size: 0.85rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.ua-zoom-bouton:hover {
+  background: var(--ua-fond);
+  color: var(--ua-texte);
+}
+
+.ua-zoom-niveau {
+  min-width: 52px;
+  font-variant-numeric: tabular-nums;
 }
 
 .ua-toolbox-recherche {

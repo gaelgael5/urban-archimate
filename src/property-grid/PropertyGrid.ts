@@ -43,25 +43,57 @@ interface SchemaProperty {
  * - an EXISTING object or relation shows its values read-only: they
  *   are modified in the host, not in the diagram.
  */
+export interface PropertyGridOptions {
+
+  /** Called when the panel is collapsed (true) or reopened (false). */
+  onCollapse?: (repliee: boolean) => void;
+}
+
 export class PropertyGrid {
 
   private _container: HTMLElement;
   private _body: HTMLElement;
+  private _onCollapse: PropertyGridOptions['onCollapse'];
 
-  constructor(container: HTMLElement) {
+  constructor(container: HTMLElement, options: PropertyGridOptions = {}) {
     this._container = container;
+    this._onCollapse = options.onCollapse;
     this._container.classList.add('ua-grille');
+
+    const header = document.createElement('div');
+    header.className = 'ua-grille-entete';
 
     const title = document.createElement('div');
     title.className = 'ua-grille-titre';
     title.textContent = 'Propriétés';
-    this._container.appendChild(title);
+    header.appendChild(title);
+
+    const collapse = document.createElement('button');
+    collapse.type = 'button';
+    collapse.className = 'ua-grille-replier';
+    collapse.title = 'Masquer le panneau des propriétés';
+    collapse.textContent = '›';
+    collapse.addEventListener('click', () => this.setCollapsed(true));
+    header.appendChild(collapse);
+
+    this._container.appendChild(header);
 
     this._body = document.createElement('div');
     this._body.className = 'ua-grille-corps';
     this._container.appendChild(this._body);
 
     this.clear();
+  }
+
+  /** Collapses the panel entirely, or brings it back. */
+  setCollapsed(repliee: boolean): void {
+    this._container.classList.toggle('ua-grille-repliee', repliee);
+    this._onCollapse?.(repliee);
+  }
+
+  /** Whether the panel is currently collapsed. */
+  isCollapsed(): boolean {
+    return this._container.classList.contains('ua-grille-repliee');
   }
 
   clear(): void {
@@ -74,7 +106,7 @@ export class PropertyGrid {
   }
 
   destroy(): void {
-    this._container.classList.remove('ua-grille');
+    this._container.classList.remove('ua-grille', 'ua-grille-repliee');
     this._container.innerHTML = '';
   }
 

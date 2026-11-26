@@ -1,5 +1,8 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 
+// la feuille du composant, pour tester les états pilotés par le CSS
+import '../../assets/urban-archimate-ui.css';
+
 import { UrbanArchimateEditor } from '../../src/editor/UrbanArchimateEditor.ts';
 
 import exampleYaml from '../../examples/boutique/modele-hydrate.yaml?raw';
@@ -170,6 +173,26 @@ describe('boîte à outils fournie par l\'hôte', () => {
     expect(modele.documents).toContain(
       'cartographie/objets/document-metier/obj-facture.yaml');
     expect(modele.vues[0].noeuds.some((n) => n.element === 'OBJ-FACTURE')).toBe(true);
+  });
+
+  it('masquer la boîte à outils la fait disparaître ; l\'icône sur le dessin la ramène', () => {
+    const toolbox = container.querySelector('.ua-toolbox');
+    const rouvrir = container.querySelector('.ua-canvas .ua-toolbox-rouvrir');
+
+    // dépliée : panneau visible, icône de réouverture cachée
+    expect(getComputedStyle(toolbox).display).not.toBe('none');
+    expect(getComputedStyle(rouvrir).display).toBe('none');
+
+    toolbox.querySelector('.ua-toolbox-replier').click();
+
+    // repliée : plus de panneau du tout, l'icône flotte sur le dessin
+    expect(getComputedStyle(toolbox).display).toBe('none');
+    expect(getComputedStyle(rouvrir).display).not.toBe('none');
+
+    rouvrir.click();
+
+    expect(getComputedStyle(toolbox).display).not.toBe('none');
+    expect(getComputedStyle(rouvrir).display).toBe('none');
   });
 
   it('glisser-déposer un outil sur le dessin le pose à l\'endroit du dépôt', async () => {

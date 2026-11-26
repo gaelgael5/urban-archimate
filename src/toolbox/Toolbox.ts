@@ -20,6 +20,9 @@ export interface ToolboxOptions {
 
   /** Called when a tool is dragged and dropped (viewport coordinates). */
   onDrop?: (tool: ArmedTool, clientX: number, clientY: number) => void;
+
+  /** Called when the panel is collapsed (true) or reopened (false). */
+  onCollapse?: (repliee: boolean) => void;
 }
 
 /**
@@ -33,6 +36,7 @@ export class Toolbox {
   private _container: HTMLElement;
   private _onArm: ToolboxOptions['onArm'];
   private _onDrop: ToolboxOptions['onDrop'];
+  private _onCollapse: ToolboxOptions['onCollapse'];
 
   private _groups: ToolGroup[] = [];
   private _filter = '';
@@ -47,8 +51,24 @@ export class Toolbox {
     this._container = options.container;
     this._onArm = options.onArm;
     this._onDrop = options.onDrop;
+    this._onCollapse = options.onCollapse;
 
     this._container.classList.add('ua-toolbox');
+
+    // header: the collapse button; collapsed, the whole panel goes
+    // away and the host of the panel shows its own reopen control
+    const header = document.createElement('div');
+    header.className = 'ua-toolbox-entete';
+
+    const collapse = document.createElement('button');
+    collapse.type = 'button';
+    collapse.className = 'ua-toolbox-replier';
+    collapse.title = 'Masquer la boîte à outils';
+    collapse.textContent = '‹';
+    collapse.addEventListener('click', () => this.setCollapsed(true));
+
+    header.appendChild(collapse);
+    this._container.appendChild(header);
 
     const search = document.createElement('input');
     search.type = 'search';
@@ -95,6 +115,12 @@ export class Toolbox {
     this._status.classList.remove('ua-toolbox-erreur');
   }
 
+  /** Collapses the panel entirely, or brings it back. */
+  setCollapsed(repliee: boolean): void {
+    this._container.classList.toggle('ua-toolbox-repliee', repliee);
+    this._onCollapse?.(repliee);
+  }
+
   /** Clears the armed tool (after a placement or an escape). */
   disarm(): void {
     if (this._armed) {
@@ -110,7 +136,7 @@ export class Toolbox {
   }
 
   destroy(): void {
-    this._container.classList.remove('ua-toolbox');
+    this._container.classList.remove('ua-toolbox', 'ua-toolbox-repliee');
     this._container.innerHTML = '';
   }
 

@@ -174,6 +174,38 @@ describe('affichage — toutes les vues ArchiMate 3.2', () => {
     expect(enfant.y).toBe(avant.y + 40);
   });
 
+  it('la barre de zoom : plus, moins, pourcentage et ajustement à la fenêtre', async () => {
+    editor = new UrbanArchimateEditor({ container });
+    await editor.load(tousElementsYaml);
+
+    const canvas = editor.getDiagram().get('canvas');
+    const barre = container.querySelector('.ua-zoom');
+    expect(barre).toBeTruthy();
+
+    const boutons = [ ...barre.querySelectorAll('.ua-zoom-bouton') ];
+    const plus = boutons.find((bouton) => bouton.textContent === '+');
+    const moins = boutons.find((bouton) => bouton.textContent === '−');
+    const niveau = barre.querySelector('.ua-zoom-niveau');
+    const ajuster = boutons.find((bouton) => bouton.textContent === '⤢');
+
+    const avant = canvas.zoom();
+    plus.click();
+    expect(canvas.zoom()).toBeCloseTo(avant * 1.25, 5);
+    expect(niveau.textContent).toBe(
+      `${ Math.round(canvas.zoom() * 100) } %`);
+
+    moins.click();
+    expect(canvas.zoom()).toBeCloseTo(avant, 5);
+
+    // revenir à 100 % en cliquant le pourcentage
+    niveau.click();
+    expect(canvas.zoom()).toBe(1);
+
+    // ajuster à la fenêtre reprend toute la vue
+    ajuster.click();
+    expect(canvas.zoom()).toBeLessThan(1);
+  });
+
   it('zoom, ajustement à la fenêtre et déplacement de la vue', async () => {
     editor = new UrbanArchimateEditor({ container });
     await editor.load(tousElementsYaml);
