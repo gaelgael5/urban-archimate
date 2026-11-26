@@ -34,10 +34,12 @@ const browser = await chromium.connectOverCDP(BROWSERLESS_WS);
 try {
   const context = await browser.newContext({ viewport: { width: 1600, height: 900 } });
   const page = await context.newPage();
-  // Par connectOverCDP, le viewport du contexte n'est pas appliqué par
-  // browserless (page rendue en 800×600, capture en 1600×900 : diagramme
-  // ajusté pour l'une, photographié dans l'autre). On le pose sur la page.
-  await page.setViewportSize({ width: 1600, height: 900 });
+  // Par connectOverCDP, browserless ignore le viewport du contexte comme
+  // setViewportSize (page rendue en 800×600, capture en 1600×900 : diagramme
+  // ajusté pour l'une, photographié dans l'autre). On le pose par CDP.
+  const cdp = await context.newCDPSession(page);
+  await cdp.send('Emulation.setDeviceMetricsOverride',
+    { width: 1600, height: 900, deviceScaleFactor: 1, mobile: false });
 
   const erreurs = [];
   page.on('pageerror', (error) => erreurs.push(error.message));
