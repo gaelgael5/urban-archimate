@@ -55,7 +55,11 @@ describe('page de démonstration — l\'hôte boutique en ligne', () => {
   it('la boîte à outils de la démo fournit groupes, libellés, icônes et clés', () => {
     const groupes = toolbox();
 
-    expect(groupes.length).toBe(3);
+    expect(groupes.length).toBe(4);
+
+    const jonctions = groupes.find((groupe) => groupe.id === 'jonctions');
+    expect(jonctions.outils.map((outil) => outil.cle)).toEqual(
+      [ 'JCT-MODE-LIVRAISON', 'JCT-SYNCHRO' ]);
 
     const outils = groupes.flatMap((groupe) => groupe.outils);
     expect(outils.length).toBeGreaterThanOrEqual(12);

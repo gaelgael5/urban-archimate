@@ -10,19 +10,24 @@ documents:
   - cartographie/objets/processus-de-vente/prc-prise-commande.yaml
   - cartographie/objets/processus-de-vente/prc-preparation.yaml
   - cartographie/objets/processus-de-vente/prc-livraison.yaml
+  - cartographie/objets/processus-de-vente/prc-retrait.yaml
+  - cartographie/objets/jonction/jct-mode-livraison.yaml
   - cartographie/objets/service-metier/srv-vente-en-ligne.yaml
   - cartographie/objets/document-metier/obj-commande.yaml
   - cartographie/objets/declenchement/rel-evt-declenche-prise.yaml
   - cartographie/objets/declenchement/rel-prise-puis-preparation.yaml
-  - cartographie/objets/declenchement/rel-preparation-puis-livraison.yaml
+  - cartographie/objets/declenchement/rel-prep-vers-choix.yaml
+  - cartographie/objets/declenchement/rel-choix-livraison.yaml
+  - cartographie/objets/declenchement/rel-choix-retrait.yaml
   - cartographie/objets/affectation/rel-conseiller-prise.yaml
   - cartographie/objets/acces/rel-prise-ecrit-commande.yaml
   - cartographie/objets/realisation/rel-prise-realise-vente.yaml
 elements: [ ACT-CLIENT, ROL-CONSEILLER, EVT-COMMANDE-RECUE, PRC-PRISE-COMMANDE,
-  PRC-PREPARATION, PRC-LIVRAISON, SRV-VENTE-EN-LIGNE, OBJ-COMMANDE ]
+  PRC-PREPARATION, PRC-LIVRAISON, PRC-RETRAIT, JCT-MODE-LIVRAISON,
+  SRV-VENTE-EN-LIGNE, OBJ-COMMANDE ]
 relationships: [ REL-EVT-DECLENCHE-PRISE, REL-PRISE-PUIS-PREPARATION,
-  REL-PREPARATION-PUIS-LIVRAISON, REL-CONSEILLER-PRISE,
-  REL-PRISE-ECRIT-COMMANDE, REL-PRISE-REALISE-VENTE ]
+  REL-PREP-VERS-CHOIX, REL-CHOIX-LIVRAISON, REL-CHOIX-RETRAIT,
+  REL-CONSEILLER-PRISE, REL-PRISE-ECRIT-COMMANDE, REL-PRISE-REALISE-VENTE ]
 vues:
   - id: VUE-PARCOURS
     nom: Parcours de commande
@@ -33,14 +38,18 @@ vues:
       - { id: N-EVT, element: EVT-COMMANDE-RECUE }
       - { id: N-PRISE, element: PRC-PRISE-COMMANDE }
       - { id: N-PREP, element: PRC-PREPARATION }
+      - { id: N-JCT, element: JCT-MODE-LIVRAISON }
       - { id: N-LIVR, element: PRC-LIVRAISON }
+      - { id: N-RETRAIT, element: PRC-RETRAIT }
       - { id: N-SRV, element: SRV-VENTE-EN-LIGNE }
       - { id: N-CMD, element: OBJ-COMMANDE }
       - { id: N-NOTE, note: "Source : atelier métier du 2 décembre." }
     connexions:
       - { id: C-EVT, relationship: REL-EVT-DECLENCHE-PRISE, de: N-EVT, vers: N-PRISE }
       - { id: C-SUITE1, relationship: REL-PRISE-PUIS-PREPARATION, de: N-PRISE, vers: N-PREP }
-      - { id: C-SUITE2, relationship: REL-PREPARATION-PUIS-LIVRAISON, de: N-PREP, vers: N-LIVR }
+      - { id: C-CHOIX, relationship: REL-PREP-VERS-CHOIX, de: N-PREP, vers: N-JCT }
+      - { id: C-LIVR, relationship: REL-CHOIX-LIVRAISON, de: N-JCT, vers: N-LIVR }
+      - { id: C-RETRAIT, relationship: REL-CHOIX-RETRAIT, de: N-JCT, vers: N-RETRAIT }
       - { id: C-ROLE, relationship: REL-CONSEILLER-PRISE, de: N-CONSEILLER, vers: N-PRISE }
       - { id: C-ECRIT, relationship: REL-PRISE-ECRIT-COMMANDE, de: N-PRISE, vers: N-CMD }
       - { id: C-REALISE, relationship: REL-PRISE-REALISE-VENTE, de: N-PRISE, vers: N-SRV }

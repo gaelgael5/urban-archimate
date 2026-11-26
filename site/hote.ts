@@ -107,6 +107,15 @@ const LAYER_OF: Record<string, string> = {
 };
 
 function iconeOf(objet: CartographyObject): string {
+  if (objet.type === 'jonction') {
+    // « et » plein, « ou » creux, comme dans le diagramme
+    const creux = objet.proprietes?.jonction === 'Or';
+
+    return '<svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">' +
+      '<circle cx="8" cy="8" r="4.5" style="fill: var(--ua-notation-' +
+      `${ creux ? 'element' : 'trait' }); stroke: var(--ua-notation-trait)"/></svg>`;
+  }
+
   const couche = LAYER_OF[ objet.type ] || 'autre';
 
   // le bloc blanc et sa bande de couche, comme dans le diagramme
@@ -122,6 +131,8 @@ const GROUPES: { id: string, libelle: string, types: string[] }[] = [
       'service-metier', 'document-metier' ] },
   { id: 'application', libelle: 'Objets — Application & technologie',
     types: [ 'application', 'service-applicatif', 'donnees', 'serveur' ] },
+  { id: 'jonctions', libelle: 'Jonctions',
+    types: [ 'jonction' ] },
   { id: 'relations', libelle: 'Relations existantes',
     types: [ 'acces', 'declenchement', 'affectation', 'realisation',
       'service', 'flux' ] }
@@ -176,6 +187,10 @@ const RELATIONS_PERMISES: { de: string[], vers: string[], types: string[] }[] = 
   { de: [ 'application' ], vers: [ 'donnees' ], types: [ 'acces' ] },
   { de: [ 'evenement-metier', 'processus-de-vente' ],
     vers: [ 'processus-de-vente' ], types: [ 'declenchement' ] },
+  { de: [ 'evenement-metier', 'processus-de-vente', 'jonction' ],
+    vers: [ 'jonction' ], types: [ 'declenchement' ] },
+  { de: [ 'jonction' ], vers: [ 'processus-de-vente', 'evenement-metier' ],
+    types: [ 'declenchement' ] },
   { de: [ 'client', 'vendeur', 'serveur' ],
     vers: [ 'processus-de-vente', 'application' ], types: [ 'affectation' ] },
   { de: [ 'processus-de-vente' ], vers: [ 'service-metier' ], types: [ 'realisation' ] },

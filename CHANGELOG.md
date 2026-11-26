@@ -13,6 +13,10 @@ Versionnage sémantique. Le paquet est publié sur PyPI
   `tous-elements` sous cette forme.
 - Un objet dont le type est déjà un type ArchiMate ne déclenche plus
   l'avertissement « schéma non fourni ».
+- Site de démonstration : la vue « Parcours de commande » passe par une
+  jonction « ou » (livraison ou retrait en boutique), et la boîte à
+  outils gagne un groupe « Jonctions » (une « et », une « ou ») à poser
+  et relier soi-même.
 
 ## 0.1.1 — 26 novembre 2026
 

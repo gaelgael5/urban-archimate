@@ -1,0 +1,5 @@
+cle: REL-CHOIX-LIVRAISON
+type: declenchement
+source: JCT-MODE-LIVRAISON
+cible: PRC-LIVRAISON
+nom: livraison

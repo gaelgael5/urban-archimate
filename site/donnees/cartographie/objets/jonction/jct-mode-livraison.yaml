@@ -1,0 +1,5 @@
+cle: JCT-MODE-LIVRAISON
+type: jonction
+nom: Choix du mode
+proprietes:
+  jonction: Or
