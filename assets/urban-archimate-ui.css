@@ -232,6 +232,9 @@
   font-size: 0.875rem;
   text-align: left;
   cursor: pointer;
+
+  /* a horizontal pointer drag starts a tool drag; vertical stays scroll */
+  touch-action: pan-y;
 }
 
 .ua-outil:hover {
@@ -245,6 +248,25 @@
   color: var(--ua-accent-fond-texte);
   border-color: var(--ua-accent);
   font-weight: 600;
+}
+
+/* The dragged tool: dimmed at its place, a ghost follows the pointer. */
+.ua-outil-glisse {
+  opacity: 0.55;
+  cursor: grabbing;
+}
+
+.ua-outil-fantome {
+  position: fixed;
+  z-index: 10;
+  padding: 3px 10px;
+  border: 1px solid var(--ua-accent);
+  border-radius: var(--ua-rayon-sm);
+  background: var(--ua-accent-fond);
+  color: var(--ua-accent-fond-texte);
+  font-size: 0.8rem;
+  white-space: nowrap;
+  pointer-events: none;
 }
 
 .ua-outil-icone {

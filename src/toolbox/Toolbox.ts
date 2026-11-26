@@ -17,6 +17,9 @@ export interface ToolboxOptions {
 
   /** Called when a tool is selected (armed) or cleared (null). */
   onArm: (tool: ArmedTool | null) => void;
+
+  /** Called when a tool is dragged and dropped (viewport coordinates). */
+  onDrop?: (tool: ArmedTool, clientX: number, clientY: number) => void;
 }
 
 /**
@@ -29,10 +32,13 @@ export class Toolbox {
 
   private _container: HTMLElement;
   private _onArm: ToolboxOptions['onArm'];
+  private _onDrop: ToolboxOptions['onDrop'];
 
   private _groups: ToolGroup[] = [];
   private _filter = '';
   private _armed: { element: HTMLElement, tool: ArmedTool } | null = null;
+  private _armMessage = '';
+  private _suppressClick = false;
 
   private _list: HTMLElement;
   private _status: HTMLElement;
@@ -40,6 +46,7 @@ export class Toolbox {
   constructor(options: ToolboxOptions) {
     this._container = options.container;
     this._onArm = options.onArm;
+    this._onDrop = options.onDrop;
 
     this._container.classList.add('ua-toolbox');
 
@@ -94,6 +101,12 @@ export class Toolbox {
       this._armed.element.classList.remove('ua-outil-arme');
       this._armed = null;
     }
+
+    // only clear the status when it still shows the arming hint
+    if (this._armMessage && this._status.textContent === this._armMessage) {
+      this._status.textContent = '';
+    }
+    this._armMessage = '';
   }
 
   destroy(): void {
@@ -101,7 +114,7 @@ export class Toolbox {
     this._container.innerHTML = '';
   }
 
-  private _arm(element: HTMLElement, tool: ArmedTool): void {
+  private _arm(element: HTMLElement, tool: ArmedTool, libelle: string): void {
     if (this._armed && this._armed.element === element) {
       // clicking the armed tool again disarms it
       this.disarm();
@@ -114,7 +127,79 @@ export class Toolbox {
 
     element.classList.add('ua-outil-arme');
     this._armed = { element, tool };
+
+    this._armMessage =
+      `Cliquez sur le dessin pour poser « ${ libelle } » (Échap pour annuler).`;
+    this._status.textContent = this._armMessage;
+
     this._onArm(tool);
+  }
+
+  /**
+   * Drag of a tool button: past a small threshold the button follows
+   * the pointer as a ghost, and releasing it hands the drop point to
+   * the host of the panel. A plain click (no movement) still arms.
+   */
+  private _beginDrag(
+      button: HTMLElement,
+      entry: { tool: ArmedTool, libelle: string },
+      down: PointerEvent
+  ): void {
+
+    const threshold = 6;
+    let ghost: HTMLElement | null = null;
+
+    const move = (event: PointerEvent) => {
+      if (!ghost) {
+        if (Math.hypot(event.clientX - down.clientX,
+          event.clientY - down.clientY) < threshold) {
+          return;
+        }
+
+        ghost = document.createElement('div');
+        ghost.className = 'ua-outil-fantome';
+        ghost.textContent = entry.libelle;
+        this._container.appendChild(ghost);
+
+        button.classList.add('ua-outil-glisse');
+
+        try {
+          button.setPointerCapture(down.pointerId);
+        } catch {
+          // synthetic pointers (tests) cannot be captured; the window
+          // listeners still see every move and the release
+        }
+      }
+
+      ghost.style.left = `${ event.clientX + 12 }px`;
+      ghost.style.top = `${ event.clientY + 12 }px`;
+    };
+
+    const up = (event: PointerEvent) => {
+      window.removeEventListener('pointermove', move);
+      window.removeEventListener('pointerup', up);
+      window.removeEventListener('pointercancel', up);
+
+      if (!ghost) {
+        return; // no movement: the click event will arm the tool
+      }
+
+      ghost.remove();
+      button.classList.remove('ua-outil-glisse');
+
+      // the browser fires a click on the capturing button right after
+      // pointerup: it must not arm the tool we just dropped
+      this._suppressClick = true;
+      setTimeout(() => { this._suppressClick = false; }, 0);
+
+      if (event.type === 'pointerup') {
+        this._onDrop!(entry.tool, event.clientX, event.clientY);
+      }
+    };
+
+    window.addEventListener('pointermove', move);
+    window.addEventListener('pointerup', up);
+    window.addEventListener('pointercancel', up);
   }
 
   private _render(): void {
@@ -190,7 +275,21 @@ export class Toolbox {
       button.appendChild(icon);
       button.appendChild(label);
 
-      button.addEventListener('click', () => this._arm(button, entry.tool));
+      button.addEventListener('click', () => {
+        if (this._suppressClick) {
+          this._suppressClick = false;
+          return;
+        }
+        this._arm(button, entry.tool, entry.libelle);
+      });
+
+      if (this._onDrop) {
+        button.addEventListener('pointerdown', (event) => {
+          if (event.button === 0) {
+            this._beginDrag(button, entry, event);
+          }
+        });
+      }
 
       section.appendChild(button);
     }
