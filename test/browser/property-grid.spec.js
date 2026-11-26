@@ -84,6 +84,26 @@ describe('grille de propriétés pilotée par le schéma du type', () => {
     expect(getComputedStyle(rouvrir).display).toBe('none');
   });
 
+  it('le panneau des propriétés se redimensionne par sa poignée', () => {
+    const poignee = grille().previousElementSibling;
+    expect(poignee.classList.contains('ua-poignee')).toBe(true);
+
+    const avant = grille().getBoundingClientRect().width;
+
+    poignee.dispatchEvent(new PointerEvent('pointerdown', {
+      bubbles: true, button: 0, pointerId: 1, clientX: 1100, clientY: 300
+    }));
+    // vers la gauche : le panneau de droite s'élargit
+    window.dispatchEvent(new PointerEvent('pointermove', {
+      bubbles: true, pointerId: 1, clientX: 1040, clientY: 300
+    }));
+    window.dispatchEvent(new PointerEvent('pointerup', {
+      bubbles: true, pointerId: 1, clientX: 1040, clientY: 300
+    }));
+
+    expect(grille().getBoundingClientRect().width).toBeCloseTo(avant + 60, 0);
+  });
+
   it('panneau masqué : le formulaire de nouvelle relation l\'affiche le temps de la saisie', async () => {
     grille().querySelector('.ua-grille-replier').click();
     expect(getComputedStyle(grille()).display).toBe('none');

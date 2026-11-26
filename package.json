@@ -1,6 +1,6 @@
 {
   "name": "urban-archimate",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "ArchiMate diagram editor web component built on diagram-js. Based on archimate-js by Vincent Boulet (MIT).",
   "type": "module",
   "main": "index.js",
