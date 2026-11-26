@@ -128,11 +128,29 @@ export class UrbanArchimateEditor {
       toolboxHost.style.flex = '0 0 auto';
       root.appendChild(toolboxHost);
 
+      // collapsed toolbox: a floating icon at the top left of the
+      // drawing brings the panel back
+      const reopen = document.createElement('button');
+      reopen.type = 'button';
+      reopen.className = 'ua-toolbox-rouvrir';
+      reopen.title = 'Afficher la boîte à outils';
+      reopen.innerHTML =
+        '<svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">' +
+        '<rect x="1.5" y="2.5" width="13" height="11" rx="1.5"/>' +
+        '<line x1="6" y1="2.5" x2="6" y2="13.5"/></svg>';
+      reopen.addEventListener('click', () => {
+        this._toolbox?.setCollapsed(false);
+      });
+      this._canvasHost.appendChild(reopen);
+
       this._toolbox = new Toolbox({
         container: toolboxHost,
         onArm: (tool) => {
           this._armedTool = tool;
           this._canvasHost.style.cursor = tool ? 'crosshair' : '';
+        },
+        onCollapse: (repliee) => {
+          reopen.classList.toggle('ua-toolbox-rouvrir-visible', repliee);
         },
         onDrop: (tool, clientX, clientY) => {
           const rect = this._canvasHost.getBoundingClientRect();

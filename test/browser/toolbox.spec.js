@@ -175,25 +175,24 @@ describe('boîte à outils fournie par l\'hôte', () => {
     expect(modele.vues[0].noeuds.some((n) => n.element === 'OBJ-FACTURE')).toBe(true);
   });
 
-  it('la boîte à outils se replie en barre fine et se déplie', () => {
+  it('masquer la boîte à outils la fait disparaître ; l\'icône sur le dessin la ramène', () => {
     const toolbox = container.querySelector('.ua-toolbox');
-    const bouton = toolbox.querySelector('.ua-toolbox-replier');
-    const largeurDepliee = toolbox.getBoundingClientRect().width;
+    const rouvrir = container.querySelector('.ua-canvas .ua-toolbox-rouvrir');
 
-    bouton.click();
+    // dépliée : panneau visible, icône de réouverture cachée
+    expect(getComputedStyle(toolbox).display).not.toBe('none');
+    expect(getComputedStyle(rouvrir).display).toBe('none');
 
-    expect(toolbox.classList.contains('ua-toolbox-repliee')).toBe(true);
-    expect(bouton.getAttribute('aria-expanded')).toBe('false');
-    expect(getComputedStyle(
-      toolbox.querySelector('.ua-toolbox-groupes')).display).toBe('none');
+    toolbox.querySelector('.ua-toolbox-replier').click();
 
-    bouton.click();
+    // repliée : plus de panneau du tout, l'icône flotte sur le dessin
+    expect(getComputedStyle(toolbox).display).toBe('none');
+    expect(getComputedStyle(rouvrir).display).not.toBe('none');
 
-    expect(toolbox.classList.contains('ua-toolbox-repliee')).toBe(false);
-    expect(bouton.getAttribute('aria-expanded')).toBe('true');
-    expect(getComputedStyle(
-      toolbox.querySelector('.ua-toolbox-groupes')).display).not.toBe('none');
-    expect(toolbox.getBoundingClientRect().width).toBe(largeurDepliee);
+    rouvrir.click();
+
+    expect(getComputedStyle(toolbox).display).not.toBe('none');
+    expect(getComputedStyle(rouvrir).display).toBe('none');
   });
 
   it('glisser-déposer un outil sur le dessin le pose à l\'endroit du dépôt', async () => {
