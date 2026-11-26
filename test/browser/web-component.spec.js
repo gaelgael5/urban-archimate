@@ -100,6 +100,48 @@ describe('<urban-archimate> (composant web)', () => {
     hostileStyle.remove();
   });
 
+  it('est dans le ton d\'Ossie sans réglage de l\'hôte (valeurs par défaut sur :host)', async () => {
+    element = createElement();
+    await element.loadModel(exampleYaml);
+
+    const shadow = element.shadowRoot;
+
+    // panneau blanc, filet --ua-bordure-forte : les tokens sont bien définis
+    // dans le shadow root (déclarés sur `:root` seul, ils ne l'étaient pas)
+    const toolbox = getComputedStyle(shadow.querySelector('.ua-toolbox'));
+    expect(toolbox.backgroundColor).toBe('rgb(255, 255, 255)');
+    expect(toolbox.borderRightColor).toBe('rgb(180, 195, 204)');
+
+    // l'onglet actif est dans la couleur de ligne (sarcelle) et porte sa station
+    const active = shadow.querySelector('.ua-vue-active');
+    expect(getComputedStyle(active).color).toBe('rgb(11, 110, 106)');
+    expect(getComputedStyle(active, '::after').borderTopColor).toBe('rgb(11, 110, 106)');
+
+    // étiquette de panneau en chasse fixe
+    expect(getComputedStyle(shadow.querySelector('.ua-toolbox-groupe-titre')).fontFamily)
+      .toContain('IBM Plex Mono');
+
+    // libellés du diagramme dans la police du thème, plus « Quicksand »
+    const label = shadow.querySelector('.djs-visual text');
+    expect(label.style.fontFamily).toContain('IBM Plex Sans');
+  });
+
+  it('suit les tokens posés par l\'hôte (raccord Ossie)', async () => {
+    const hostStyle = document.createElement('style');
+    hostStyle.textContent =
+      'urban-archimate { --ua-accent: rgb(1, 2, 3); --ua-police-diagramme: "Courier New", monospace; }';
+    document.head.appendChild(hostStyle);
+
+    element = createElement();
+    await element.loadModel(exampleYaml);
+
+    const shadow = element.shadowRoot;
+    expect(getComputedStyle(shadow.querySelector('.ua-vue-active')).color).toBe('rgb(1, 2, 3)');
+    expect(shadow.querySelector('.djs-visual text').style.fontFamily).toContain('Courier New');
+
+    hostStyle.remove();
+  });
+
   it('mode lecture seule par attribut', async () => {
     element = createElement({ 'read-only': '' });
 

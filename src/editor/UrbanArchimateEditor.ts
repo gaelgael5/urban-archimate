@@ -193,11 +193,17 @@ export class UrbanArchimateEditor {
       .filter((module) => !excluded.has(module))
       .concat([ EditingModule ]);
 
+    // labels drawn in the diagram follow the host theme
+    // (--ua-police-diagramme); the renderer also measures text with this
+    // font, so it is set at creation rather than overridden in CSS
+    const textRenderer = { defaultStyle: { fontFamily: diagramFont(this._canvasHost) } };
+
     this._viewer = this._readOnly
-      ? new (NavigatedViewer as any)({ container: this._canvasHost })
+      ? new (NavigatedViewer as any)({ container: this._canvasHost, textRenderer })
       : new (Modeler as any)({
         container: this._canvasHost,
-        modules: editingModules
+        modules: editingModules,
+        textRenderer
       });
 
     if (!this._readOnly) {
@@ -791,3 +797,21 @@ export class UrbanArchimateEditor {
     }
   }
 }
+
+
+/** Default font of the diagram labels when no theme is reachable. */
+export const DIAGRAM_FONT_DEFAULT = '\'IBM Plex Sans\', system-ui, sans-serif';
+
+/**
+ * Font of the labels drawn in the diagram: the `--ua-police-diagramme`
+ * token as resolved on the canvas (the host may override it), else the
+ * component default.
+ */
+function diagramFont(element: HTMLElement): string {
+  const value = element.isConnected
+    ? getComputedStyle(element).getPropertyValue('--ua-police-diagramme').trim()
+    : '';
+
+  return value || DIAGRAM_FONT_DEFAULT;
+}
+

@@ -5,65 +5,272 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>urban-archimate — démonstration</title>
   <style>
+    /*
+     * Hôte de démonstration habillé comme un écran d'Ossie Studio
+     * (identité « Cartographe ») : c'est l'intégration visée. Les tokens
+     * ci-dessous reprennent ceux d'Ossie (frontend/src/styles.css) ; le
+     * bloc `urban-archimate { … }` est exactement le raccord qu'Ossie
+     * écrira (docs/contrat.md, « Thème »).
+     */
     :root {
-      --ua-police: system-ui, sans-serif;
+      --font-ui: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+      --mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      --nav-bg: #0b1a24;
+      --nav-fg: #9fb3c0;
+      --nav-fg-active: #ffffff;
+      --nav-accent: #2dd4bf;
+      --nav-line: #1c3a49;
+      --nav-chip-bg: #132b38;
+      --nav-chip-fg: #d2e4ea;
+      --nav-chip-border: #25475a;
+      --bg: #f1f5f7;
+      --grid-dot: rgba(13, 28, 38, 0.11);
+      --panel: #ffffff;
+      --border: #d3dde3;
+      --border-strong: #b4c3cc;
+      --text: #0d1c26;
+      --muted: #4f626e;
+      --surface-muted: #e6edf1;
+      --primary: #0b6e6a;
+      --primary-hover: #095955;
+      --primary-fg: #ffffff;
+      --danger-fg: #b42318;
+      --danger-bg: #fdecec;
+      --chip-bg: #dcf1ee;
+      --chip-fg: #0a5a56;
+      --radius: 4px;
+      --radius-sm: 3px;
+      --shadow: 0 6px 18px rgba(13, 28, 38, 0.14);
+    }
+
+    /* Le raccord : les tokens du composant pointent sur ceux de l'hôte. */
+    urban-archimate {
+      --ua-police: var(--font-ui);
+      --ua-police-mono: var(--mono);
+      --ua-texte: var(--text);
+      --ua-texte-secondaire: var(--muted);
+      --ua-fond: var(--bg);
+      --ua-trame-point: var(--grid-dot);
+      --ua-fond-panneau: var(--panel);
+      --ua-fond-discret: var(--surface-muted);
+      --ua-bordure: var(--border);
+      --ua-bordure-forte: var(--border-strong);
+      --ua-accent: var(--primary);
+      --ua-accent-survol: var(--primary-hover);
+      --ua-accent-texte: var(--primary-fg);
+      --ua-accent-fond: var(--chip-bg);
+      --ua-accent-fond-texte: var(--chip-fg);
+      --ua-erreur: var(--danger-fg);
+      --ua-erreur-fond: var(--danger-bg);
+      --ua-rayon: var(--radius);
+      --ua-rayon-sm: var(--radius-sm);
+      --ua-ombre: var(--shadow);
+    }
+
+    * {
+      box-sizing: border-box;
     }
 
     html, body {
       margin: 0;
       height: 100%;
-      font-family: system-ui, sans-serif;
     }
 
     body {
       display: flex;
       flex-direction: column;
+      font-family: var(--font-ui);
+      color: var(--text);
+      background-color: var(--bg);
+      background-image: radial-gradient(circle, var(--grid-dot) 1px, transparent 1.3px);
+      background-size: 22px 22px;
     }
 
-    header {
+    :focus-visible {
+      outline: 2px solid var(--primary);
+      outline-offset: 2px;
+    }
+
+    input[type='checkbox'] {
+      accent-color: var(--primary);
+    }
+
+    /* --- barre de navigation (nuit, ligne turquoise) --- */
+    .topnav {
       flex: 0 0 auto;
       display: flex;
       align-items: center;
-      gap: 12px;
-      padding: 10px 16px;
-      border-bottom: 1px solid #ddd;
-      background: #f6f6f6;
+      gap: 8px;
+      padding: 0 24px;
+      min-height: 56px;
+      background: var(--nav-bg);
+      color: var(--nav-fg);
+      box-shadow: inset 0 -2px 0 var(--nav-line);
+    }
+
+    .topnav-brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-family: var(--mono);
+      font-weight: 600;
+      font-size: 0.9rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--nav-fg-active);
+      margin-right: 12px;
+      white-space: nowrap;
+    }
+
+    .brand-mark {
+      width: 26px;
+      height: 18px;
+      fill: var(--nav-bg);
+      stroke: var(--nav-accent);
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .brand-mark path {
+      fill: none;
+    }
+
+    .brand-mark-end {
+      fill: var(--nav-accent);
+    }
+
+    .topnav-chip {
+      margin-left: auto;
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      color: var(--nav-chip-fg);
+      background: var(--nav-chip-bg);
+      border: 1px solid var(--nav-chip-border);
+      border-radius: var(--radius-sm);
+      padding: 3px 8px;
+    }
+
+    /* --- page --- */
+    main {
+      flex: 1 1 auto;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      padding: 20px 24px 24px;
+    }
+
+    .page-header {
+      flex: 0 0 auto;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 16px;
       flex-wrap: wrap;
     }
 
-    header h1 {
-      font-size: 16px;
-      margin: 0 12px 0 0;
+    .breadcrumb {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin: 0 0 4px;
     }
 
-    header select, header button {
+    .page-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin: 0;
+    }
+
+    .page-subtitle {
+      color: var(--muted);
+      margin: 4px 0 0;
+      font-size: 0.9rem;
+    }
+
+    .toolbar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .field-label {
+      font-family: var(--mono);
+      font-weight: 500;
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    .select {
       font: inherit;
-      padding: 6px 10px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      background: white;
-      cursor: pointer;
+      padding: 8px 10px;
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-sm);
+      background: var(--panel);
+      color: var(--text);
     }
 
-    header label {
+    .check {
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      font-size: 14px;
+      font-size: 0.9rem;
+      margin: 0 8px;
+    }
+
+    .btn {
+      font: inherit;
+      font-weight: 600;
+      border-radius: var(--radius-sm);
+      padding: 9px 16px;
+      cursor: pointer;
+      border: 1px solid var(--border-strong);
+      background: var(--panel);
+      color: var(--text);
+      white-space: nowrap;
+    }
+
+    .btn:hover {
+      background: var(--bg);
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: var(--primary-fg);
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-hover);
+    }
+
+    /* Le composant posé dans un panneau : trait net, pas d'ombre. */
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .panel-editeur {
+      flex: 1 1 auto;
+      min-height: 420px;
+      display: flex;
     }
 
     #editeur {
       flex: 1 1 auto;
-      min-height: 0;
+      min-width: 0;
     }
 
     #sorties {
       flex: 0 0 auto;
       display: none;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 0;
-      max-height: 40%;
-      border-top: 2px solid #ccc;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+      max-height: 38%;
     }
 
     #sorties.visible {
@@ -74,67 +281,91 @@
       min-width: 0;
       display: flex;
       flex-direction: column;
-      border-right: 1px solid #ddd;
     }
 
-    #sorties h2 {
-      font-size: 12px;
+    .panel-label {
+      font-family: var(--mono);
       text-transform: uppercase;
-      letter-spacing: 0.04em;
+      letter-spacing: 0.06em;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--muted);
       margin: 0;
-      padding: 6px 10px;
-      background: #fafafa;
-      border-bottom: 1px solid #eee;
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border);
     }
 
     #sorties pre {
       margin: 0;
-      padding: 10px;
+      padding: 12px 14px;
       overflow: auto;
-      font-size: 12px;
+      font-family: var(--mono);
+      font-size: 0.75rem;
       flex: 1 1 auto;
+    }
+
+    @media (max-width: 820px) {
+      #sorties {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
 <body>
-  <header>
-    <h1>urban-archimate — démonstration</h1>
+  <nav class="topnav">
+    <span class="topnav-brand">
+      <svg class="brand-mark" viewBox="0 0 26 18" aria-hidden="true" focusable="false">
+        <path d="M3 14h8l6-10h6" />
+        <circle cx="3" cy="14" r="2.4" />
+        <circle cx="11" cy="14" r="2.4" />
+        <circle class="brand-mark-end" cx="23" cy="4" r="2.4" />
+      </svg>
+      urban-archimate
+    </span>
+    <span class="topnav-chip">démonstration · boutique en ligne</span>
+  </nav>
 
-    <label>
-      Modèle
-      <select id="choix-modele"></select>
-    </label>
+  <main>
+    <div class="page-header">
+      <div>
+        <p class="breadcrumb">cartographie / modèles</p>
+        <h1 class="page-title">Éditeur ArchiMate</h1>
+        <p class="page-subtitle">Le composant &lt;urban-archimate&gt; dans un hôte au thème Ossie Studio.</p>
+      </div>
 
-    <label>
-      <input type="checkbox" id="lecture-seule">
-      Lecture seule
-    </label>
+      <div class="toolbar">
+        <label class="field-label" for="choix-modele">modèle</label>
+        <select class="select" id="choix-modele"></select>
 
-    <button id="bouton-enregistrer" type="button">
-      Afficher le modèle enregistré
-    </button>
+        <label class="check">
+          <input type="checkbox" id="lecture-seule">
+          Lecture seule
+        </label>
 
-    <button id="bouton-export" type="button">
-      Export Open Group
-    </button>
-  </header>
+        <button class="btn" id="bouton-export" type="button">Export Open Group</button>
+        <button class="btn btn-primary" id="bouton-enregistrer" type="button">Afficher le modèle enregistré</button>
+      </div>
+    </div>
 
-  <urban-archimate id="editeur"></urban-archimate>
+    <div class="panel panel-editeur">
+      <urban-archimate id="editeur"></urban-archimate>
+    </div>
 
-  <div id="sorties">
-    <section>
-      <h2>Modèle (sans data)</h2>
-      <pre id="sortie-modele"></pre>
-    </section>
-    <section>
-      <h2>Graphique</h2>
-      <pre id="sortie-graphique"></pre>
-    </section>
-    <section>
-      <h2>Nouvelles relations</h2>
-      <pre id="sortie-relations"></pre>
-    </section>
-  </div>
+    <div id="sorties">
+      <section class="panel">
+        <h2 class="panel-label">Modèle (sans data)</h2>
+        <pre id="sortie-modele"></pre>
+      </section>
+      <section class="panel">
+        <h2 class="panel-label">Graphique</h2>
+        <pre id="sortie-graphique"></pre>
+      </section>
+      <section class="panel">
+        <h2 class="panel-label">Nouvelles relations</h2>
+        <pre id="sortie-relations"></pre>
+      </section>
+    </div>
+  </main>
 
   <script type="module" src="./main.ts"></script>
 </body>

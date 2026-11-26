@@ -132,6 +132,85 @@ attributs de base. Une valeur facultative vide n'est pas envoyée.
 - **Événements** : `changed` à chaque modification (indicateur
   « modifié » de l'hôte) ; `selection` quand un élément ou une
   connexion est sélectionné, avec la clé de l'objet.
-- **Thème** : variables CSS pour l'interface (panneaux, boîte à
-  outils, grille) ; les couleurs de notation ArchiMate restent celles
-  de la spécification.
+- **Thème** : voir ci-dessous.
+
+## Thème
+
+L'interface du composant (boîte à outils, grille de propriétés,
+onglets des vues, surface de dessin, marques de sélection) suit
+l'identité d'Ossie Studio, « Cartographe » (`docs/identite-visuelle.md`
+d'ossie-studio) : IBM Plex Sans / Mono, lettrage en chasse fixe pour
+les étiquettes courtes et les identifiants, angles vifs et traits d'un
+pixel, pas d'ombre sauf sur ce qui flotte, trame de points sur la
+surface de dessin, onglet actif en « station » sur sa ligne, une seule
+couleur de ligne (sarcelle). **Les valeurs par défaut sont celles de
+cette identité** : sans aucun réglage, le composant est dans le ton.
+
+Les couleurs de notation ArchiMate ne sont pas des tokens : elles
+restent celles de la spécification.
+
+Toute couleur de l'interface est un token `--ua-*` ; l'hôte les pose
+sur l'élément (les propriétés personnalisées traversent le shadow DOM,
+et une règle de l'hôte sur `urban-archimate { … }` l'emporte sur les
+valeurs par défaut). `test/unit/theme.spec.js` refuse une couleur en
+dur, un token non déclaré ou non documenté ici, et un couple
+texte / fond sous le seuil WCAG AA.
+
+| Token | Rôle | Token Ossie |
+|---|---|---|
+| `--ua-police` | police de l'interface | `--font-ui` |
+| `--ua-police-mono` | chasse fixe : étiquettes, identifiants | `--mono` |
+| `--ua-police-diagramme` | libellés dessinés dans le diagramme (lu à la création de l'éditeur) ; défaut : `--ua-police` | — |
+| `--ua-texte` | texte | `--text` |
+| `--ua-texte-secondaire` | texte secondaire, étiquettes | `--muted` |
+| `--ua-fond` | fond de la surface de dessin, survol neutre | `--bg` |
+| `--ua-trame-point` | points de la trame (`transparent` : sans trame) | `--grid-dot` |
+| `--ua-fond-panneau` | panneaux, champs | `--panel` |
+| `--ua-fond-discret` | puces (point de vue) | `--surface-muted` |
+| `--ua-bordure` | filets, ligne des onglets | `--border` |
+| `--ua-bordure-forte` | bordures de panneaux, de champs, de boutons | `--border-strong` |
+| `--ua-accent` | couleur de ligne : bouton principal, sélection, onglet actif | `--primary` |
+| `--ua-accent-survol` | survol du bouton principal | `--primary-hover` |
+| `--ua-accent-texte` | texte sur l'accent | `--primary-fg` |
+| `--ua-accent-fond` | fond d'une entrée sélectionnée (outil armé) | `--chip-bg` |
+| `--ua-accent-fond-texte` | texte sur ce fond | `--chip-fg` |
+| `--ua-erreur` | texte d'erreur | `--danger-fg` |
+| `--ua-erreur-fond` | fond teinté d'erreur | `--danger-bg` |
+| `--ua-focus` | anneau de focus clavier ; défaut : `--ua-accent` | — |
+| `--ua-rayon` | rayon des panneaux | `--radius` |
+| `--ua-rayon-sm` | rayon des boutons, champs, puces | `--radius-sm` |
+| `--ua-ombre` | ombre de ce qui flotte (pad contextuel, menus) | `--shadow` |
+
+Raccord à poser dans Ossie Studio (`frontend/src/styles.css`), pour
+qu'un changement de la palette d'Ossie se propage au composant :
+
+```css
+urban-archimate {
+  --ua-police: var(--font-ui);
+  --ua-police-mono: var(--mono);
+  --ua-texte: var(--text);
+  --ua-texte-secondaire: var(--muted);
+  --ua-fond: var(--bg);
+  --ua-trame-point: var(--grid-dot);
+  --ua-fond-panneau: var(--panel);
+  --ua-fond-discret: var(--surface-muted);
+  --ua-bordure: var(--border);
+  --ua-bordure-forte: var(--border-strong);
+  --ua-accent: var(--primary);
+  --ua-accent-survol: var(--primary-hover);
+  --ua-accent-texte: var(--primary-fg);
+  --ua-accent-fond: var(--chip-bg);
+  --ua-accent-fond-texte: var(--chip-fg);
+  --ua-erreur: var(--danger-fg);
+  --ua-erreur-fond: var(--danger-bg);
+  --ua-rayon: var(--radius);
+  --ua-rayon-sm: var(--radius-sm);
+  --ua-ombre: var(--shadow);
+}
+```
+
+Les polices ne sont pas embarquées dans le composant : il emploie
+celles que la page a chargées (Ossie charge IBM Plex Sans 400/500/600/700
+et Mono 400/500/600 par `@fontsource`, ce qui couvre les graisses
+utilisées ici). Le site de démonstration (`site/`) est habillé comme un
+écran d'Ossie et pose exactement ce raccord.

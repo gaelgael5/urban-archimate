@@ -5,6 +5,14 @@
  * returns at save time (model without data, graphics, new relations).
  */
 
+// Polices de l'identité, embarquées (aucun appel externe), comme dans Ossie.
+import '@fontsource/ibm-plex-sans/400.css';
+import '@fontsource/ibm-plex-sans/500.css';
+import '@fontsource/ibm-plex-sans/600.css';
+import '@fontsource/ibm-plex-mono/400.css';
+import '@fontsource/ibm-plex-mono/500.css';
+import '@fontsource/ibm-plex-mono/600.css';
+
 import { dump } from 'js-yaml';
 
 import { register, type UrbanArchimateElement } from '../src/index.ts';
@@ -97,4 +105,6 @@ function afficherErreur(error: Error): void {
   sorties.classList.add('visible');
 }
 
-charger().catch(afficherErreur);
+// les libellés du diagramme sont mesurés avec la police du thème : on attend
+// qu'elle soit chargée avant le premier rendu
+document.fonts.ready.then(charger).catch(afficherErreur);
