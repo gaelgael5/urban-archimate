@@ -1,0 +1,6 @@
+title: Application
+x-archimate: ApplicationComponent
+properties:
+  responsable:
+    title: Responsable
+    type: string

@@ -1,0 +1,7 @@
+cle: ACT-CLIENT
+type: client
+nom: Client
+documentation: |
+  La personne qui achète sur la boutique.
+proprietes:
+  segment: particulier

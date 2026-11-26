@@ -1,0 +1,16 @@
+vues:
+  VUE-COUCHES:
+    noeuds:
+      N-PRISE: { x: 320, y: 40, l: 180, h: 70 }
+      N-CATALOGUE: { x: 120, y: 180, l: 170, h: 60 }
+      N-ENCAISSEMENT: { x: 560, y: 180, l: 170, h: 60 }
+      N-CADRE: { x: 60, y: 150, l: 760, h: 420 }
+      N-BOUTIQUE: { relatif: N-CADRE, dx: 60, dy: 160, l: 320, h: 180 }
+      N-DONNEES: { relatif: N-BOUTIQUE, dx: 40, dy: 90, l: 150, h: 60 }
+      N-PAIEMENT: { relatif: N-CADRE, dx: 480, dy: 160, l: 200, h: 100 }
+      N-SERVEUR: { x: 320, y: 620, l: 200, h: 80 }
+    connexions:
+      C-ECRIT:
+        libelle: { position: 0.5, dx: 0, dy: -10 }
+      C-FLUX:
+        points: [ { x: 470, y: 420 } ]

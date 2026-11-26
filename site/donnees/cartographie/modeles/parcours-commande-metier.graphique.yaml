@@ -1,0 +1,15 @@
+vues:
+  VUE-PARCOURS:
+    noeuds:
+      N-CLIENT: { x: 40, y: 40, l: 150, h: 60 }
+      N-CONSEILLER: { x: 240, y: 40, l: 150, h: 60 }
+      N-EVT: { x: 40, y: 180, l: 150, h: 60 }
+      N-PRISE: { x: 260, y: 180, l: 170, h: 70 }
+      N-PREP: { x: 500, y: 180, l: 170, h: 70 }
+      N-LIVR: { x: 740, y: 180, l: 170, h: 70 }
+      N-SRV: { x: 460, y: 40, l: 170, h: 60 }
+      N-CMD: { x: 300, y: 330, l: 150, h: 60 }
+      N-NOTE: { x: 940, y: 40, l: 240, h: 60 }
+    connexions:
+      C-ECRIT:
+        libelle: { position: 0.5, dx: 0, dy: -10 }

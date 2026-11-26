@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>urban-archimate — démonstration</title>
+  <style>
+    :root {
+      --ua-police: system-ui, sans-serif;
+    }
+
+    html, body {
+      margin: 0;
+      height: 100%;
+      font-family: system-ui, sans-serif;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      flex: 0 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 16px;
+      border-bottom: 1px solid #ddd;
+      background: #f6f6f6;
+      flex-wrap: wrap;
+    }
+
+    header h1 {
+      font-size: 16px;
+      margin: 0 12px 0 0;
+    }
+
+    header select, header button {
+      font: inherit;
+      padding: 6px 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      background: white;
+      cursor: pointer;
+    }
+
+    header label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 14px;
+    }
+
+    #editeur {
+      flex: 1 1 auto;
+      min-height: 0;
+    }
+
+    #sorties {
+      flex: 0 0 auto;
+      display: none;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 0;
+      max-height: 40%;
+      border-top: 2px solid #ccc;
+    }
+
+    #sorties.visible {
+      display: grid;
+    }
+
+    #sorties section {
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid #ddd;
+    }
+
+    #sorties h2 {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin: 0;
+      padding: 6px 10px;
+      background: #fafafa;
+      border-bottom: 1px solid #eee;
+    }
+
+    #sorties pre {
+      margin: 0;
+      padding: 10px;
+      overflow: auto;
+      font-size: 12px;
+      flex: 1 1 auto;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>urban-archimate — démonstration</h1>
+
+    <label>
+      Modèle
+      <select id="choix-modele"></select>
+    </label>
+
+    <label>
+      <input type="checkbox" id="lecture-seule">
+      Lecture seule
+    </label>
+
+    <button id="bouton-enregistrer" type="button">
+      Afficher le modèle enregistré
+    </button>
+
+    <button id="bouton-export" type="button">
+      Export Open Group
+    </button>
+  </header>
+
+  <urban-archimate id="editeur"></urban-archimate>
+
+  <div id="sorties">
+    <section>
+      <h2>Modèle (sans data)</h2>
+      <pre id="sortie-modele"></pre>
+    </section>
+    <section>
+      <h2>Graphique</h2>
+      <pre id="sortie-graphique"></pre>
+    </section>
+    <section>
+      <h2>Nouvelles relations</h2>
+      <pre id="sortie-relations"></pre>
+    </section>
+  </div>
+
+  <script type="module" src="./main.ts"></script>
+</body>
+</html>

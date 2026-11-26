@@ -1,0 +1,5 @@
+cle: REL-PRISE-REALISE-VENTE
+type: realisation
+source: PRC-PRISE-COMMANDE
+cible: SRV-VENTE-EN-LIGNE
+nom: réalise

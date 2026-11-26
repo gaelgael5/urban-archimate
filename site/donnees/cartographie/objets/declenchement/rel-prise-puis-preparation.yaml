@@ -1,0 +1,5 @@
+cle: REL-PRISE-PUIS-PREPARATION
+type: declenchement
+source: PRC-PRISE-COMMANDE
+cible: PRC-PREPARATION
+nom: puis

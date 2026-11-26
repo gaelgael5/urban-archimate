@@ -1,0 +1,29 @@
+[build-system]
+requires = [ "hatchling" ]
+build-backend = "hatchling.build"
+
+[project]
+name = "urban-archimate"
+dynamic = [ "version" ]
+description = "ArchiMate diagram editor web component (<urban-archimate>), served from FastAPI / Starlette"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.10"
+authors = [ { name = "urban-archimate contributors" } ]
+keywords = [ "archimate", "diagram", "web-component", "fastapi", "starlette" ]
+dependencies = [
+  "starlette>=0.37"
+]
+
+[project.urls]
+Repository = "https://github.com/gaelgael5/urban-archimate"
+
+[tool.hatch.version]
+path = "urban_archimate/__init__.py"
+
+[tool.hatch.build.targets.wheel]
+packages = [ "urban_archimate" ]
+artifacts = [ "urban_archimate/static/**" ]
+
+[tool.hatch.build.targets.sdist]
+include = [ "urban_archimate/**", "README.md" ]

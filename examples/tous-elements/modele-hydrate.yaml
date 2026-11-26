@@ -1,0 +1,1284 @@
+# Généré par scripts/generate-tous-elements.mjs — ne pas éditer à la main.
+id: MOD-TOUS-ELEMENTS
+nom: Toutes les notations ArchiMate 3.2
+description: 'Vue de contrôle : chaque élément, chaque relation, jonction, note, cadre, imbrication.'
+regles:
+  chemin: cartographie/regles/standard.rules.yaml
+  data:
+    lang: fr
+    defaut:
+      name: $.nom
+    relationships:
+      - type: Access
+        name: $.nom
+        accessType: $.proprietes.acces
+      - type: Influence
+        name: $.nom
+        modifier: $.proprietes.modificateur
+      - type: Association
+        name: $.nom
+        isDirected: $.proprietes.dirigee
+graphique:
+  chemin: cartographie/modeles/tous-elements.graphique.yaml
+  data:
+    vues:
+      VUE-TOUS-ELEMENTS:
+        noeuds:
+          N-RESOURCE:
+            x: 40
+            'y': 40
+            l: 150
+            h: 60
+          N-CAPABILITY:
+            x: 230
+            'y': 40
+            l: 150
+            h: 60
+          N-VALUESTREAM:
+            x: 420
+            'y': 40
+            l: 150
+            h: 60
+          N-COURSEOFACTION:
+            x: 610
+            'y': 40
+            l: 150
+            h: 60
+          N-BUSINESSACTOR:
+            x: 800
+            'y': 40
+            l: 150
+            h: 60
+          N-BUSINESSROLE:
+            x: 990
+            'y': 40
+            l: 150
+            h: 60
+          N-BUSINESSCOLLABORATION:
+            x: 40
+            'y': 135
+            l: 150
+            h: 60
+          N-BUSINESSINTERFACE:
+            x: 230
+            'y': 135
+            l: 150
+            h: 60
+          N-BUSINESSPROCESS:
+            x: 420
+            'y': 135
+            l: 150
+            h: 60
+          N-BUSINESSFUNCTION:
+            x: 610
+            'y': 135
+            l: 150
+            h: 60
+          N-BUSINESSINTERACTION:
+            x: 800
+            'y': 135
+            l: 150
+            h: 60
+          N-BUSINESSEVENT:
+            x: 990
+            'y': 135
+            l: 150
+            h: 60
+          N-BUSINESSSERVICE:
+            x: 40
+            'y': 230
+            l: 150
+            h: 60
+          N-BUSINESSOBJECT:
+            x: 230
+            'y': 230
+            l: 150
+            h: 60
+          N-CONTRACT:
+            x: 420
+            'y': 230
+            l: 150
+            h: 60
+          N-REPRESENTATION:
+            x: 610
+            'y': 230
+            l: 150
+            h: 60
+          N-PRODUCT:
+            x: 800
+            'y': 230
+            l: 150
+            h: 60
+          N-APPLICATIONCOMPONENT:
+            x: 990
+            'y': 230
+            l: 150
+            h: 60
+          N-APPLICATIONCOLLABORATION:
+            x: 40
+            'y': 325
+            l: 150
+            h: 60
+          N-APPLICATIONINTERFACE:
+            x: 230
+            'y': 325
+            l: 150
+            h: 60
+          N-APPLICATIONFUNCTION:
+            x: 420
+            'y': 325
+            l: 150
+            h: 60
+          N-APPLICATIONINTERACTION:
+            x: 610
+            'y': 325
+            l: 150
+            h: 60
+          N-APPLICATIONPROCESS:
+            x: 800
+            'y': 325
+            l: 150
+            h: 60
+          N-APPLICATIONEVENT:
+            x: 990
+            'y': 325
+            l: 150
+            h: 60
+          N-APPLICATIONSERVICE:
+            x: 40
+            'y': 420
+            l: 150
+            h: 60
+          N-DATAOBJECT:
+            x: 230
+            'y': 420
+            l: 150
+            h: 60
+          N-NODE:
+            x: 420
+            'y': 420
+            l: 150
+            h: 60
+          N-DEVICE:
+            x: 610
+            'y': 420
+            l: 150
+            h: 60
+          N-SYSTEMSOFTWARE:
+            x: 800
+            'y': 420
+            l: 150
+            h: 60
+          N-TECHNOLOGYCOLLABORATION:
+            x: 990
+            'y': 420
+            l: 150
+            h: 60
+          N-TECHNOLOGYINTERFACE:
+            x: 40
+            'y': 515
+            l: 150
+            h: 60
+          N-PATH:
+            x: 230
+            'y': 515
+            l: 150
+            h: 60
+          N-COMMUNICATIONNETWORK:
+            x: 420
+            'y': 515
+            l: 150
+            h: 60
+          N-TECHNOLOGYFUNCTION:
+            x: 610
+            'y': 515
+            l: 150
+            h: 60
+          N-TECHNOLOGYPROCESS:
+            x: 800
+            'y': 515
+            l: 150
+            h: 60
+          N-TECHNOLOGYINTERACTION:
+            x: 990
+            'y': 515
+            l: 150
+            h: 60
+          N-TECHNOLOGYEVENT:
+            x: 40
+            'y': 610
+            l: 150
+            h: 60
+          N-TECHNOLOGYSERVICE:
+            x: 230
+            'y': 610
+            l: 150
+            h: 60
+          N-ARTIFACT:
+            x: 420
+            'y': 610
+            l: 150
+            h: 60
+          N-DISTRIBUTIONNETWORK:
+            x: 610
+            'y': 610
+            l: 150
+            h: 60
+          N-EQUIPMENT:
+            x: 800
+            'y': 610
+            l: 150
+            h: 60
+          N-FACILITY:
+            x: 990
+            'y': 610
+            l: 150
+            h: 60
+          N-MATERIAL:
+            x: 40
+            'y': 705
+            l: 150
+            h: 60
+          N-ASSESSMENT:
+            x: 230
+            'y': 705
+            l: 150
+            h: 60
+          N-CONSTRAINT:
+            x: 420
+            'y': 705
+            l: 150
+            h: 60
+          N-DRIVER:
+            x: 610
+            'y': 705
+            l: 150
+            h: 60
+          N-GOAL:
+            x: 800
+            'y': 705
+            l: 150
+            h: 60
+          N-MEANING:
+            x: 990
+            'y': 705
+            l: 150
+            h: 60
+          N-OUTCOME:
+            x: 40
+            'y': 800
+            l: 150
+            h: 60
+          N-PRINCIPLE:
+            x: 230
+            'y': 800
+            l: 150
+            h: 60
+          N-REQUIREMENT:
+            x: 420
+            'y': 800
+            l: 150
+            h: 60
+          N-STAKEHOLDER:
+            x: 610
+            'y': 800
+            l: 150
+            h: 60
+          N-VALUE:
+            x: 800
+            'y': 800
+            l: 150
+            h: 60
+          N-DELIVERABLE:
+            x: 990
+            'y': 800
+            l: 150
+            h: 60
+          N-GAP:
+            x: 40
+            'y': 895
+            l: 150
+            h: 60
+          N-IMPLEMENTATIONEVENT:
+            x: 230
+            'y': 895
+            l: 150
+            h: 60
+          N-PLATEAU:
+            x: 420
+            'y': 895
+            l: 150
+            h: 60
+          N-WORKPACKAGE:
+            x: 610
+            'y': 895
+            l: 150
+            h: 60
+          N-GROUPING:
+            x: 800
+            'y': 895
+            l: 150
+            h: 60
+          N-LOCATION:
+            x: 990
+            'y': 895
+            l: 150
+            h: 60
+          N-ANDJUNCTION:
+            x: 105
+            'y': 1012
+            l: 15
+            h: 15
+          N-ORJUNCTION:
+            x: 295
+            'y': 1012
+            l: 15
+            h: 15
+          N-REL-0-S:
+            x: 40
+            'y': 1145
+            l: 150
+            h: 60
+          N-REL-0-T:
+            x: 460
+            'y': 1145
+            l: 150
+            h: 60
+          N-REL-1-S:
+            x: 40
+            'y': 1235
+            l: 150
+            h: 60
+          N-REL-1-T:
+            x: 460
+            'y': 1235
+            l: 150
+            h: 60
+          N-REL-2-S:
+            x: 40
+            'y': 1325
+            l: 150
+            h: 60
+          N-REL-2-T:
+            x: 460
+            'y': 1325
+            l: 150
+            h: 60
+          N-REL-3-S:
+            x: 40
+            'y': 1415
+            l: 150
+            h: 60
+          N-REL-3-T:
+            x: 460
+            'y': 1415
+            l: 150
+            h: 60
+          N-REL-4-S:
+            x: 40
+            'y': 1505
+            l: 150
+            h: 60
+          N-REL-4-T:
+            x: 460
+            'y': 1505
+            l: 150
+            h: 60
+          N-REL-5-S:
+            x: 40
+            'y': 1595
+            l: 150
+            h: 60
+          N-REL-5-T:
+            x: 460
+            'y': 1595
+            l: 150
+            h: 60
+          N-REL-6-S:
+            x: 40
+            'y': 1685
+            l: 150
+            h: 60
+          N-REL-6-T:
+            x: 460
+            'y': 1685
+            l: 150
+            h: 60
+          N-REL-7-S:
+            x: 40
+            'y': 1775
+            l: 150
+            h: 60
+          N-REL-7-T:
+            x: 460
+            'y': 1775
+            l: 150
+            h: 60
+          N-REL-8-S:
+            x: 40
+            'y': 1865
+            l: 150
+            h: 60
+          N-REL-8-T:
+            x: 460
+            'y': 1865
+            l: 150
+            h: 60
+          N-REL-9-S:
+            x: 40
+            'y': 1955
+            l: 150
+            h: 60
+          N-REL-9-T:
+            x: 460
+            'y': 1955
+            l: 150
+            h: 60
+          N-REL-10-S:
+            x: 40
+            'y': 2045
+            l: 150
+            h: 60
+          N-REL-10-T:
+            x: 460
+            'y': 2045
+            l: 150
+            h: 60
+          N-J-A:
+            x: 40
+            'y': 2175
+            l: 150
+            h: 60
+          N-J-AND:
+            x: 300
+            'y': 2197
+            l: 15
+            h: 15
+          N-J-B:
+            x: 460
+            'y': 2125
+            l: 150
+            h: 60
+          N-J-C:
+            x: 460
+            'y': 2225
+            l: 150
+            h: 60
+          N-NOTE:
+            x: 40
+            'y': 2335
+            l: 260
+            h: 70
+          N-CADRE:
+            x: 360
+            'y': 2335
+            l: 420
+            h: 240
+          N-IMBRIQUE-PARENT:
+            relatif: N-CADRE
+            dx: 30
+            dy: 40
+            l: 320
+            h: 160
+          N-IMBRIQUE-ENFANT:
+            relatif: N-IMBRIQUE-PARENT
+            dx: 20
+            dy: 60
+            l: 140
+            h: 60
+        connexions:
+          C-COMPOSITION:
+            libelle:
+              position: 0.5
+              dx: 0
+              dy: -10
+          C-AGGREGATION:
+            libelle:
+              position: 0.5
+              dx: 0
+              dy: -10
+          C-ASSIGNMENT:
+            libelle:
+              position: 0.5
+              dx: 0
+              dy: -10
+          C-REALIZATION:
+            libelle:
+              position: 0.5
+              dx: 0
+              dy: -10
+          C-SERVING:
+            libelle:
+              position: 0.5
+              dx: 0
+              dy: -10
+          C-ACCESS:
+            libelle:
+              position: 0.5
+              dx: 0
+              dy: -10
+          C-INFLUENCE:
+            libelle:
+              position: 0.5
+              dx: 0
+              dy: -10
+          C-TRIGGERING:
+            libelle:
+              position: 0.5
+              dx: 0
+              dy: -10
+          C-FLOW:
+            libelle:
+              position: 0.5
+              dx: 0
+              dy: -10
+          C-SPECIALIZATION:
+            libelle:
+              position: 0.5
+              dx: 0
+              dy: -10
+          C-ASSOCIATION:
+            libelle:
+              position: 0.5
+              dx: 0
+              dy: -10
+documents:
+  - chemin: cartographie/objets/resource/el-resource.yaml
+    data:
+      cle: EL-RESOURCE
+      type: Resource
+      nom: Resource
+  - chemin: cartographie/objets/capability/el-capability.yaml
+    data:
+      cle: EL-CAPABILITY
+      type: Capability
+      nom: Capability
+  - chemin: cartographie/objets/valuestream/el-valuestream.yaml
+    data:
+      cle: EL-VALUESTREAM
+      type: ValueStream
+      nom: ValueStream
+  - chemin: cartographie/objets/courseofaction/el-courseofaction.yaml
+    data:
+      cle: EL-COURSEOFACTION
+      type: CourseOfAction
+      nom: CourseOfAction
+  - chemin: cartographie/objets/businessactor/el-businessactor.yaml
+    data:
+      cle: EL-BUSINESSACTOR
+      type: BusinessActor
+      nom: BusinessActor
+  - chemin: cartographie/objets/businessrole/el-businessrole.yaml
+    data:
+      cle: EL-BUSINESSROLE
+      type: BusinessRole
+      nom: BusinessRole
+  - chemin: cartographie/objets/businesscollaboration/el-businesscollaboration.yaml
+    data:
+      cle: EL-BUSINESSCOLLABORATION
+      type: BusinessCollaboration
+      nom: BusinessCollaboration
+  - chemin: cartographie/objets/businessinterface/el-businessinterface.yaml
+    data:
+      cle: EL-BUSINESSINTERFACE
+      type: BusinessInterface
+      nom: BusinessInterface
+  - chemin: cartographie/objets/businessprocess/el-businessprocess.yaml
+    data:
+      cle: EL-BUSINESSPROCESS
+      type: BusinessProcess
+      nom: BusinessProcess
+  - chemin: cartographie/objets/businessfunction/el-businessfunction.yaml
+    data:
+      cle: EL-BUSINESSFUNCTION
+      type: BusinessFunction
+      nom: BusinessFunction
+  - chemin: cartographie/objets/businessinteraction/el-businessinteraction.yaml
+    data:
+      cle: EL-BUSINESSINTERACTION
+      type: BusinessInteraction
+      nom: BusinessInteraction
+  - chemin: cartographie/objets/businessevent/el-businessevent.yaml
+    data:
+      cle: EL-BUSINESSEVENT
+      type: BusinessEvent
+      nom: BusinessEvent
+  - chemin: cartographie/objets/businessservice/el-businessservice.yaml
+    data:
+      cle: EL-BUSINESSSERVICE
+      type: BusinessService
+      nom: BusinessService
+  - chemin: cartographie/objets/businessobject/el-businessobject.yaml
+    data:
+      cle: EL-BUSINESSOBJECT
+      type: BusinessObject
+      nom: BusinessObject
+  - chemin: cartographie/objets/contract/el-contract.yaml
+    data:
+      cle: EL-CONTRACT
+      type: Contract
+      nom: Contract
+  - chemin: cartographie/objets/representation/el-representation.yaml
+    data:
+      cle: EL-REPRESENTATION
+      type: Representation
+      nom: Representation
+  - chemin: cartographie/objets/product/el-product.yaml
+    data:
+      cle: EL-PRODUCT
+      type: Product
+      nom: Product
+  - chemin: cartographie/objets/applicationcomponent/el-applicationcomponent.yaml
+    data:
+      cle: EL-APPLICATIONCOMPONENT
+      type: ApplicationComponent
+      nom: ApplicationComponent
+  - chemin: cartographie/objets/applicationcollaboration/el-applicationcollaboration.yaml
+    data:
+      cle: EL-APPLICATIONCOLLABORATION
+      type: ApplicationCollaboration
+      nom: ApplicationCollaboration
+  - chemin: cartographie/objets/applicationinterface/el-applicationinterface.yaml
+    data:
+      cle: EL-APPLICATIONINTERFACE
+      type: ApplicationInterface
+      nom: ApplicationInterface
+  - chemin: cartographie/objets/applicationfunction/el-applicationfunction.yaml
+    data:
+      cle: EL-APPLICATIONFUNCTION
+      type: ApplicationFunction
+      nom: ApplicationFunction
+  - chemin: cartographie/objets/applicationinteraction/el-applicationinteraction.yaml
+    data:
+      cle: EL-APPLICATIONINTERACTION
+      type: ApplicationInteraction
+      nom: ApplicationInteraction
+  - chemin: cartographie/objets/applicationprocess/el-applicationprocess.yaml
+    data:
+      cle: EL-APPLICATIONPROCESS
+      type: ApplicationProcess
+      nom: ApplicationProcess
+  - chemin: cartographie/objets/applicationevent/el-applicationevent.yaml
+    data:
+      cle: EL-APPLICATIONEVENT
+      type: ApplicationEvent
+      nom: ApplicationEvent
+  - chemin: cartographie/objets/applicationservice/el-applicationservice.yaml
+    data:
+      cle: EL-APPLICATIONSERVICE
+      type: ApplicationService
+      nom: ApplicationService
+  - chemin: cartographie/objets/dataobject/el-dataobject.yaml
+    data:
+      cle: EL-DATAOBJECT
+      type: DataObject
+      nom: DataObject
+  - chemin: cartographie/objets/node/el-node.yaml
+    data:
+      cle: EL-NODE
+      type: Node
+      nom: Node
+  - chemin: cartographie/objets/device/el-device.yaml
+    data:
+      cle: EL-DEVICE
+      type: Device
+      nom: Device
+  - chemin: cartographie/objets/systemsoftware/el-systemsoftware.yaml
+    data:
+      cle: EL-SYSTEMSOFTWARE
+      type: SystemSoftware
+      nom: SystemSoftware
+  - chemin: cartographie/objets/technologycollaboration/el-technologycollaboration.yaml
+    data:
+      cle: EL-TECHNOLOGYCOLLABORATION
+      type: TechnologyCollaboration
+      nom: TechnologyCollaboration
+  - chemin: cartographie/objets/technologyinterface/el-technologyinterface.yaml
+    data:
+      cle: EL-TECHNOLOGYINTERFACE
+      type: TechnologyInterface
+      nom: TechnologyInterface
+  - chemin: cartographie/objets/path/el-path.yaml
+    data:
+      cle: EL-PATH
+      type: Path
+      nom: Path
+  - chemin: cartographie/objets/communicationnetwork/el-communicationnetwork.yaml
+    data:
+      cle: EL-COMMUNICATIONNETWORK
+      type: CommunicationNetwork
+      nom: CommunicationNetwork
+  - chemin: cartographie/objets/technologyfunction/el-technologyfunction.yaml
+    data:
+      cle: EL-TECHNOLOGYFUNCTION
+      type: TechnologyFunction
+      nom: TechnologyFunction
+  - chemin: cartographie/objets/technologyprocess/el-technologyprocess.yaml
+    data:
+      cle: EL-TECHNOLOGYPROCESS
+      type: TechnologyProcess
+      nom: TechnologyProcess
+  - chemin: cartographie/objets/technologyinteraction/el-technologyinteraction.yaml
+    data:
+      cle: EL-TECHNOLOGYINTERACTION
+      type: TechnologyInteraction
+      nom: TechnologyInteraction
+  - chemin: cartographie/objets/technologyevent/el-technologyevent.yaml
+    data:
+      cle: EL-TECHNOLOGYEVENT
+      type: TechnologyEvent
+      nom: TechnologyEvent
+  - chemin: cartographie/objets/technologyservice/el-technologyservice.yaml
+    data:
+      cle: EL-TECHNOLOGYSERVICE
+      type: TechnologyService
+      nom: TechnologyService
+  - chemin: cartographie/objets/artifact/el-artifact.yaml
+    data:
+      cle: EL-ARTIFACT
+      type: Artifact
+      nom: Artifact
+  - chemin: cartographie/objets/distributionnetwork/el-distributionnetwork.yaml
+    data:
+      cle: EL-DISTRIBUTIONNETWORK
+      type: DistributionNetwork
+      nom: DistributionNetwork
+  - chemin: cartographie/objets/equipment/el-equipment.yaml
+    data:
+      cle: EL-EQUIPMENT
+      type: Equipment
+      nom: Equipment
+  - chemin: cartographie/objets/facility/el-facility.yaml
+    data:
+      cle: EL-FACILITY
+      type: Facility
+      nom: Facility
+  - chemin: cartographie/objets/material/el-material.yaml
+    data:
+      cle: EL-MATERIAL
+      type: Material
+      nom: Material
+  - chemin: cartographie/objets/assessment/el-assessment.yaml
+    data:
+      cle: EL-ASSESSMENT
+      type: Assessment
+      nom: Assessment
+  - chemin: cartographie/objets/constraint/el-constraint.yaml
+    data:
+      cle: EL-CONSTRAINT
+      type: Constraint
+      nom: Constraint
+  - chemin: cartographie/objets/driver/el-driver.yaml
+    data:
+      cle: EL-DRIVER
+      type: Driver
+      nom: Driver
+  - chemin: cartographie/objets/goal/el-goal.yaml
+    data:
+      cle: EL-GOAL
+      type: Goal
+      nom: Goal
+  - chemin: cartographie/objets/meaning/el-meaning.yaml
+    data:
+      cle: EL-MEANING
+      type: Meaning
+      nom: Meaning
+  - chemin: cartographie/objets/outcome/el-outcome.yaml
+    data:
+      cle: EL-OUTCOME
+      type: Outcome
+      nom: Outcome
+  - chemin: cartographie/objets/principle/el-principle.yaml
+    data:
+      cle: EL-PRINCIPLE
+      type: Principle
+      nom: Principle
+  - chemin: cartographie/objets/requirement/el-requirement.yaml
+    data:
+      cle: EL-REQUIREMENT
+      type: Requirement
+      nom: Requirement
+  - chemin: cartographie/objets/stakeholder/el-stakeholder.yaml
+    data:
+      cle: EL-STAKEHOLDER
+      type: Stakeholder
+      nom: Stakeholder
+  - chemin: cartographie/objets/value/el-value.yaml
+    data:
+      cle: EL-VALUE
+      type: Value
+      nom: Value
+  - chemin: cartographie/objets/deliverable/el-deliverable.yaml
+    data:
+      cle: EL-DELIVERABLE
+      type: Deliverable
+      nom: Deliverable
+  - chemin: cartographie/objets/gap/el-gap.yaml
+    data:
+      cle: EL-GAP
+      type: Gap
+      nom: Gap
+  - chemin: cartographie/objets/implementationevent/el-implementationevent.yaml
+    data:
+      cle: EL-IMPLEMENTATIONEVENT
+      type: ImplementationEvent
+      nom: ImplementationEvent
+  - chemin: cartographie/objets/plateau/el-plateau.yaml
+    data:
+      cle: EL-PLATEAU
+      type: Plateau
+      nom: Plateau
+  - chemin: cartographie/objets/workpackage/el-workpackage.yaml
+    data:
+      cle: EL-WORKPACKAGE
+      type: WorkPackage
+      nom: WorkPackage
+  - chemin: cartographie/objets/grouping/el-grouping.yaml
+    data:
+      cle: EL-GROUPING
+      type: Grouping
+      nom: Grouping
+  - chemin: cartographie/objets/location/el-location.yaml
+    data:
+      cle: EL-LOCATION
+      type: Location
+      nom: Location
+  - chemin: cartographie/objets/andjunction/el-andjunction.yaml
+    data:
+      cle: EL-ANDJUNCTION
+      type: AndJunction
+      nom: AndJunction
+  - chemin: cartographie/objets/orjunction/el-orjunction.yaml
+    data:
+      cle: EL-ORJUNCTION
+      type: OrJunction
+      nom: OrJunction
+  - chemin: cartographie/objets/composition/rel-composition.yaml
+    data:
+      cle: REL-COMPOSITION
+      type: Composition
+      nom: Composition
+      source: EL-APPLICATIONCOMPONENT
+      cible: EL-APPLICATIONSERVICE
+  - chemin: cartographie/objets/aggregation/rel-aggregation.yaml
+    data:
+      cle: REL-AGGREGATION
+      type: Aggregation
+      nom: Aggregation
+      source: EL-APPLICATIONCOMPONENT
+      cible: EL-APPLICATIONSERVICE
+  - chemin: cartographie/objets/assignment/rel-assignment.yaml
+    data:
+      cle: REL-ASSIGNMENT
+      type: Assignment
+      nom: Assignment
+      source: EL-APPLICATIONCOMPONENT
+      cible: EL-APPLICATIONSERVICE
+  - chemin: cartographie/objets/realization/rel-realization.yaml
+    data:
+      cle: REL-REALIZATION
+      type: Realization
+      nom: Realization
+      source: EL-APPLICATIONCOMPONENT
+      cible: EL-APPLICATIONSERVICE
+  - chemin: cartographie/objets/serving/rel-serving.yaml
+    data:
+      cle: REL-SERVING
+      type: Serving
+      nom: Serving
+      source: EL-APPLICATIONCOMPONENT
+      cible: EL-APPLICATIONSERVICE
+  - chemin: cartographie/objets/access/rel-access.yaml
+    data:
+      cle: REL-ACCESS
+      type: Access
+      nom: Access
+      source: EL-APPLICATIONCOMPONENT
+      cible: EL-APPLICATIONSERVICE
+      proprietes:
+        acces: Write
+  - chemin: cartographie/objets/influence/rel-influence.yaml
+    data:
+      cle: REL-INFLUENCE
+      type: Influence
+      nom: Influence
+      source: EL-APPLICATIONCOMPONENT
+      cible: EL-APPLICATIONSERVICE
+      proprietes:
+        modificateur: +
+  - chemin: cartographie/objets/triggering/rel-triggering.yaml
+    data:
+      cle: REL-TRIGGERING
+      type: Triggering
+      nom: Triggering
+      source: EL-APPLICATIONCOMPONENT
+      cible: EL-APPLICATIONSERVICE
+  - chemin: cartographie/objets/flow/rel-flow.yaml
+    data:
+      cle: REL-FLOW
+      type: Flow
+      nom: Flow
+      source: EL-APPLICATIONCOMPONENT
+      cible: EL-APPLICATIONSERVICE
+  - chemin: cartographie/objets/specialization/rel-specialization.yaml
+    data:
+      cle: REL-SPECIALIZATION
+      type: Specialization
+      nom: Specialization
+      source: EL-APPLICATIONCOMPONENT
+      cible: EL-APPLICATIONSERVICE
+  - chemin: cartographie/objets/association/rel-association.yaml
+    data:
+      cle: REL-ASSOCIATION
+      type: Association
+      nom: Association
+      source: EL-APPLICATIONCOMPONENT
+      cible: EL-APPLICATIONSERVICE
+      proprietes:
+        dirigee: 'true'
+  - chemin: cartographie/objets/triggering/rel-vers-jonction.yaml
+    data:
+      cle: REL-VERS-JONCTION
+      type: Triggering
+      nom: ''
+      source: EL-BUSINESSEVENT
+      cible: EL-ANDJUNCTION
+  - chemin: cartographie/objets/triggering/rel-jonction-b.yaml
+    data:
+      cle: REL-JONCTION-B
+      type: Triggering
+      nom: ''
+      source: EL-ANDJUNCTION
+      cible: EL-BUSINESSPROCESS
+  - chemin: cartographie/objets/triggering/rel-jonction-c.yaml
+    data:
+      cle: REL-JONCTION-C
+      type: Triggering
+      nom: ''
+      source: EL-ANDJUNCTION
+      cible: EL-BUSINESSFUNCTION
+elements:
+  - EL-RESOURCE
+  - EL-CAPABILITY
+  - EL-VALUESTREAM
+  - EL-COURSEOFACTION
+  - EL-BUSINESSACTOR
+  - EL-BUSINESSROLE
+  - EL-BUSINESSCOLLABORATION
+  - EL-BUSINESSINTERFACE
+  - EL-BUSINESSPROCESS
+  - EL-BUSINESSFUNCTION
+  - EL-BUSINESSINTERACTION
+  - EL-BUSINESSEVENT
+  - EL-BUSINESSSERVICE
+  - EL-BUSINESSOBJECT
+  - EL-CONTRACT
+  - EL-REPRESENTATION
+  - EL-PRODUCT
+  - EL-APPLICATIONCOMPONENT
+  - EL-APPLICATIONCOLLABORATION
+  - EL-APPLICATIONINTERFACE
+  - EL-APPLICATIONFUNCTION
+  - EL-APPLICATIONINTERACTION
+  - EL-APPLICATIONPROCESS
+  - EL-APPLICATIONEVENT
+  - EL-APPLICATIONSERVICE
+  - EL-DATAOBJECT
+  - EL-NODE
+  - EL-DEVICE
+  - EL-SYSTEMSOFTWARE
+  - EL-TECHNOLOGYCOLLABORATION
+  - EL-TECHNOLOGYINTERFACE
+  - EL-PATH
+  - EL-COMMUNICATIONNETWORK
+  - EL-TECHNOLOGYFUNCTION
+  - EL-TECHNOLOGYPROCESS
+  - EL-TECHNOLOGYINTERACTION
+  - EL-TECHNOLOGYEVENT
+  - EL-TECHNOLOGYSERVICE
+  - EL-ARTIFACT
+  - EL-DISTRIBUTIONNETWORK
+  - EL-EQUIPMENT
+  - EL-FACILITY
+  - EL-MATERIAL
+  - EL-ASSESSMENT
+  - EL-CONSTRAINT
+  - EL-DRIVER
+  - EL-GOAL
+  - EL-MEANING
+  - EL-OUTCOME
+  - EL-PRINCIPLE
+  - EL-REQUIREMENT
+  - EL-STAKEHOLDER
+  - EL-VALUE
+  - EL-DELIVERABLE
+  - EL-GAP
+  - EL-IMPLEMENTATIONEVENT
+  - EL-PLATEAU
+  - EL-WORKPACKAGE
+  - EL-GROUPING
+  - EL-LOCATION
+  - EL-ANDJUNCTION
+  - EL-ORJUNCTION
+relationships:
+  - REL-COMPOSITION
+  - REL-AGGREGATION
+  - REL-ASSIGNMENT
+  - REL-REALIZATION
+  - REL-SERVING
+  - REL-ACCESS
+  - REL-INFLUENCE
+  - REL-TRIGGERING
+  - REL-FLOW
+  - REL-SPECIALIZATION
+  - REL-ASSOCIATION
+  - REL-VERS-JONCTION
+  - REL-JONCTION-B
+  - REL-JONCTION-C
+vues:
+  - id: VUE-TOUS-ELEMENTS
+    nom: Toutes les notations
+    noeuds:
+      - id: N-RESOURCE
+        element: EL-RESOURCE
+      - id: N-CAPABILITY
+        element: EL-CAPABILITY
+      - id: N-VALUESTREAM
+        element: EL-VALUESTREAM
+      - id: N-COURSEOFACTION
+        element: EL-COURSEOFACTION
+      - id: N-BUSINESSACTOR
+        element: EL-BUSINESSACTOR
+      - id: N-BUSINESSROLE
+        element: EL-BUSINESSROLE
+      - id: N-BUSINESSCOLLABORATION
+        element: EL-BUSINESSCOLLABORATION
+      - id: N-BUSINESSINTERFACE
+        element: EL-BUSINESSINTERFACE
+      - id: N-BUSINESSPROCESS
+        element: EL-BUSINESSPROCESS
+      - id: N-BUSINESSFUNCTION
+        element: EL-BUSINESSFUNCTION
+      - id: N-BUSINESSINTERACTION
+        element: EL-BUSINESSINTERACTION
+      - id: N-BUSINESSEVENT
+        element: EL-BUSINESSEVENT
+      - id: N-BUSINESSSERVICE
+        element: EL-BUSINESSSERVICE
+      - id: N-BUSINESSOBJECT
+        element: EL-BUSINESSOBJECT
+      - id: N-CONTRACT
+        element: EL-CONTRACT
+      - id: N-REPRESENTATION
+        element: EL-REPRESENTATION
+      - id: N-PRODUCT
+        element: EL-PRODUCT
+      - id: N-APPLICATIONCOMPONENT
+        element: EL-APPLICATIONCOMPONENT
+      - id: N-APPLICATIONCOLLABORATION
+        element: EL-APPLICATIONCOLLABORATION
+      - id: N-APPLICATIONINTERFACE
+        element: EL-APPLICATIONINTERFACE
+      - id: N-APPLICATIONFUNCTION
+        element: EL-APPLICATIONFUNCTION
+      - id: N-APPLICATIONINTERACTION
+        element: EL-APPLICATIONINTERACTION
+      - id: N-APPLICATIONPROCESS
+        element: EL-APPLICATIONPROCESS
+      - id: N-APPLICATIONEVENT
+        element: EL-APPLICATIONEVENT
+      - id: N-APPLICATIONSERVICE
+        element: EL-APPLICATIONSERVICE
+      - id: N-DATAOBJECT
+        element: EL-DATAOBJECT
+      - id: N-NODE
+        element: EL-NODE
+      - id: N-DEVICE
+        element: EL-DEVICE
+      - id: N-SYSTEMSOFTWARE
+        element: EL-SYSTEMSOFTWARE
+      - id: N-TECHNOLOGYCOLLABORATION
+        element: EL-TECHNOLOGYCOLLABORATION
+      - id: N-TECHNOLOGYINTERFACE
+        element: EL-TECHNOLOGYINTERFACE
+      - id: N-PATH
+        element: EL-PATH
+      - id: N-COMMUNICATIONNETWORK
+        element: EL-COMMUNICATIONNETWORK
+      - id: N-TECHNOLOGYFUNCTION
+        element: EL-TECHNOLOGYFUNCTION
+      - id: N-TECHNOLOGYPROCESS
+        element: EL-TECHNOLOGYPROCESS
+      - id: N-TECHNOLOGYINTERACTION
+        element: EL-TECHNOLOGYINTERACTION
+      - id: N-TECHNOLOGYEVENT
+        element: EL-TECHNOLOGYEVENT
+      - id: N-TECHNOLOGYSERVICE
+        element: EL-TECHNOLOGYSERVICE
+      - id: N-ARTIFACT
+        element: EL-ARTIFACT
+      - id: N-DISTRIBUTIONNETWORK
+        element: EL-DISTRIBUTIONNETWORK
+      - id: N-EQUIPMENT
+        element: EL-EQUIPMENT
+      - id: N-FACILITY
+        element: EL-FACILITY
+      - id: N-MATERIAL
+        element: EL-MATERIAL
+      - id: N-ASSESSMENT
+        element: EL-ASSESSMENT
+      - id: N-CONSTRAINT
+        element: EL-CONSTRAINT
+      - id: N-DRIVER
+        element: EL-DRIVER
+      - id: N-GOAL
+        element: EL-GOAL
+      - id: N-MEANING
+        element: EL-MEANING
+      - id: N-OUTCOME
+        element: EL-OUTCOME
+      - id: N-PRINCIPLE
+        element: EL-PRINCIPLE
+      - id: N-REQUIREMENT
+        element: EL-REQUIREMENT
+      - id: N-STAKEHOLDER
+        element: EL-STAKEHOLDER
+      - id: N-VALUE
+        element: EL-VALUE
+      - id: N-DELIVERABLE
+        element: EL-DELIVERABLE
+      - id: N-GAP
+        element: EL-GAP
+      - id: N-IMPLEMENTATIONEVENT
+        element: EL-IMPLEMENTATIONEVENT
+      - id: N-PLATEAU
+        element: EL-PLATEAU
+      - id: N-WORKPACKAGE
+        element: EL-WORKPACKAGE
+      - id: N-GROUPING
+        element: EL-GROUPING
+      - id: N-LOCATION
+        element: EL-LOCATION
+      - id: N-ANDJUNCTION
+        element: EL-ANDJUNCTION
+      - id: N-ORJUNCTION
+        element: EL-ORJUNCTION
+      - id: N-REL-0-S
+        element: EL-APPLICATIONCOMPONENT
+      - id: N-REL-0-T
+        element: EL-APPLICATIONSERVICE
+      - id: N-REL-1-S
+        element: EL-APPLICATIONCOMPONENT
+      - id: N-REL-1-T
+        element: EL-APPLICATIONSERVICE
+      - id: N-REL-2-S
+        element: EL-APPLICATIONCOMPONENT
+      - id: N-REL-2-T
+        element: EL-APPLICATIONSERVICE
+      - id: N-REL-3-S
+        element: EL-APPLICATIONCOMPONENT
+      - id: N-REL-3-T
+        element: EL-APPLICATIONSERVICE
+      - id: N-REL-4-S
+        element: EL-APPLICATIONCOMPONENT
+      - id: N-REL-4-T
+        element: EL-APPLICATIONSERVICE
+      - id: N-REL-5-S
+        element: EL-APPLICATIONCOMPONENT
+      - id: N-REL-5-T
+        element: EL-APPLICATIONSERVICE
+      - id: N-REL-6-S
+        element: EL-APPLICATIONCOMPONENT
+      - id: N-REL-6-T
+        element: EL-APPLICATIONSERVICE
+      - id: N-REL-7-S
+        element: EL-APPLICATIONCOMPONENT
+      - id: N-REL-7-T
+        element: EL-APPLICATIONSERVICE
+      - id: N-REL-8-S
+        element: EL-APPLICATIONCOMPONENT
+      - id: N-REL-8-T
+        element: EL-APPLICATIONSERVICE
+      - id: N-REL-9-S
+        element: EL-APPLICATIONCOMPONENT
+      - id: N-REL-9-T
+        element: EL-APPLICATIONSERVICE
+      - id: N-REL-10-S
+        element: EL-APPLICATIONCOMPONENT
+      - id: N-REL-10-T
+        element: EL-APPLICATIONSERVICE
+      - id: N-J-A
+        element: EL-BUSINESSEVENT
+      - id: N-J-AND
+        element: EL-ANDJUNCTION
+      - id: N-J-B
+        element: EL-BUSINESSPROCESS
+      - id: N-J-C
+        element: EL-BUSINESSFUNCTION
+      - id: N-NOTE
+        note: Toutes les notations ArchiMate 3.2 de la spécification.
+      - id: N-CADRE
+        cadre: Cadre de regroupement
+        enfants:
+          - id: N-IMBRIQUE-PARENT
+            element: EL-APPLICATIONCOMPONENT
+            enfants:
+              - id: N-IMBRIQUE-ENFANT
+                element: EL-APPLICATIONINTERFACE
+    connexions:
+      - id: C-COMPOSITION
+        relationship: REL-COMPOSITION
+        de: N-REL-0-S
+        vers: N-REL-0-T
+      - id: C-AGGREGATION
+        relationship: REL-AGGREGATION
+        de: N-REL-1-S
+        vers: N-REL-1-T
+      - id: C-ASSIGNMENT
+        relationship: REL-ASSIGNMENT
+        de: N-REL-2-S
+        vers: N-REL-2-T
+      - id: C-REALIZATION
+        relationship: REL-REALIZATION
+        de: N-REL-3-S
+        vers: N-REL-3-T
+      - id: C-SERVING
+        relationship: REL-SERVING
+        de: N-REL-4-S
+        vers: N-REL-4-T
+      - id: C-ACCESS
+        relationship: REL-ACCESS
+        de: N-REL-5-S
+        vers: N-REL-5-T
+      - id: C-INFLUENCE
+        relationship: REL-INFLUENCE
+        de: N-REL-6-S
+        vers: N-REL-6-T
+      - id: C-TRIGGERING
+        relationship: REL-TRIGGERING
+        de: N-REL-7-S
+        vers: N-REL-7-T
+      - id: C-FLOW
+        relationship: REL-FLOW
+        de: N-REL-8-S
+        vers: N-REL-8-T
+      - id: C-SPECIALIZATION
+        relationship: REL-SPECIALIZATION
+        de: N-REL-9-S
+        vers: N-REL-9-T
+      - id: C-ASSOCIATION
+        relationship: REL-ASSOCIATION
+        de: N-REL-10-S
+        vers: N-REL-10-T
+      - id: C-J-1
+        relationship: REL-VERS-JONCTION
+        de: N-J-A
+        vers: N-J-AND
+      - id: C-J-2
+        relationship: REL-JONCTION-B
+        de: N-J-AND
+        vers: N-J-B
+      - id: C-J-3
+        relationship: REL-JONCTION-C
+        de: N-J-AND
+        vers: N-J-C

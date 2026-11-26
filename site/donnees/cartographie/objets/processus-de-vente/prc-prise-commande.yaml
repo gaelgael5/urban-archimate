@@ -1,0 +1,8 @@
+cle: PRC-PRISE-COMMANDE
+type: processus-de-vente
+nom: Prise de commande
+documentation: |
+  Du panier validé jusqu'à la commande **enregistrée et confirmée**.
+proprietes:
+  canal: site
+  volume_jour: 160

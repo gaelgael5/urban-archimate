@@ -1,0 +1,5 @@
+cle: REL-CATALOGUE-SERT-PRISE
+type: service
+source: SAP-CATALOGUE
+cible: PRC-PRISE-COMMANDE
+nom: sert

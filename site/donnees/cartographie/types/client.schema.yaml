@@ -1,0 +1,7 @@
+title: Client
+x-archimate: BusinessActor
+properties:
+  segment:
+    title: Segment
+    type: string
+    enum: [ particulier, professionnel ]

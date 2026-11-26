@@ -1,0 +1,5 @@
+cle: APP-BOUTIQUE
+type: application
+nom: Boutique en ligne
+proprietes:
+  responsable: Équipe vente

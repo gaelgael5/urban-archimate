@@ -1,0 +1,7 @@
+cle: REL-PRISE-ECRIT-COMMANDE
+type: acces
+source: PRC-PRISE-COMMANDE
+cible: OBJ-COMMANDE
+nom: Écrit la commande
+proprietes:
+  acces: Write

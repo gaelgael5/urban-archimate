@@ -1,0 +1,5 @@
+cle: REL-SERVEUR-BOUTIQUE
+type: affectation
+source: SRV-WEB-01
+cible: APP-BOUTIQUE
+nom: héberge

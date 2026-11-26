@@ -1,0 +1,7 @@
+title: Flux
+x-archimate: Flow
+properties:
+  frequence:
+    title: Fréquence
+    type: string
+    enum: [ continu, quotidien, hebdomadaire ]
