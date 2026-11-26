@@ -50,6 +50,28 @@ export class Toolbox {
 
     this._container.classList.add('ua-toolbox');
 
+    // header: the collapse button; collapsed, the panel is a thin bar
+    const header = document.createElement('div');
+    header.className = 'ua-toolbox-entete';
+
+    const collapse = document.createElement('button');
+    collapse.type = 'button';
+    collapse.className = 'ua-toolbox-replier';
+    collapse.setAttribute('aria-expanded', 'true');
+    collapse.title = 'Replier la boîte à outils';
+    collapse.textContent = '‹';
+    collapse.addEventListener('click', () => {
+      const repliee = this._container.classList.toggle('ua-toolbox-repliee');
+      collapse.setAttribute('aria-expanded', String(!repliee));
+      collapse.title = repliee
+        ? 'Déplier la boîte à outils'
+        : 'Replier la boîte à outils';
+      collapse.textContent = repliee ? '›' : '‹';
+    });
+
+    header.appendChild(collapse);
+    this._container.appendChild(header);
+
     const search = document.createElement('input');
     search.type = 'search';
     search.placeholder = 'Rechercher un outil…';
@@ -110,7 +132,7 @@ export class Toolbox {
   }
 
   destroy(): void {
-    this._container.classList.remove('ua-toolbox');
+    this._container.classList.remove('ua-toolbox', 'ua-toolbox-repliee');
     this._container.innerHTML = '';
   }
 

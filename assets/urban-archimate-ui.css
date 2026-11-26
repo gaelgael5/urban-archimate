@@ -205,6 +205,47 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
+  transition: width 0.15s ease;
+}
+
+.ua-toolbox-entete {
+  display: flex;
+  justify-content: flex-end;
+  flex: 0 0 auto;
+}
+
+.ua-toolbox-replier {
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 1px solid var(--ua-bordure-forte);
+  border-radius: var(--ua-rayon-sm);
+  background: none;
+  color: var(--ua-texte-secondaire);
+  font: inherit;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.ua-toolbox-replier:hover {
+  background: var(--ua-fond);
+  color: var(--ua-texte);
+}
+
+/* Collapsed: a thin bar with just the reopen button. */
+.ua-toolbox-repliee {
+  width: 46px;
+  overflow: hidden;
+}
+
+.ua-toolbox-repliee .ua-toolbox-entete {
+  justify-content: center;
+}
+
+.ua-toolbox-repliee .ua-toolbox-recherche,
+.ua-toolbox-repliee .ua-toolbox-groupes,
+.ua-toolbox-repliee .ua-toolbox-statut {
+  display: none;
 }
 
 .ua-toolbox-recherche {

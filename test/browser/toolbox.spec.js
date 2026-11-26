@@ -1,5 +1,8 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 
+// la feuille du composant, pour tester les états pilotés par le CSS
+import '../../assets/urban-archimate-ui.css';
+
 import { UrbanArchimateEditor } from '../../src/editor/UrbanArchimateEditor.ts';
 
 import exampleYaml from '../../examples/boutique/modele-hydrate.yaml?raw';
@@ -170,6 +173,27 @@ describe('boîte à outils fournie par l\'hôte', () => {
     expect(modele.documents).toContain(
       'cartographie/objets/document-metier/obj-facture.yaml');
     expect(modele.vues[0].noeuds.some((n) => n.element === 'OBJ-FACTURE')).toBe(true);
+  });
+
+  it('la boîte à outils se replie en barre fine et se déplie', () => {
+    const toolbox = container.querySelector('.ua-toolbox');
+    const bouton = toolbox.querySelector('.ua-toolbox-replier');
+    const largeurDepliee = toolbox.getBoundingClientRect().width;
+
+    bouton.click();
+
+    expect(toolbox.classList.contains('ua-toolbox-repliee')).toBe(true);
+    expect(bouton.getAttribute('aria-expanded')).toBe('false');
+    expect(getComputedStyle(
+      toolbox.querySelector('.ua-toolbox-groupes')).display).toBe('none');
+
+    bouton.click();
+
+    expect(toolbox.classList.contains('ua-toolbox-repliee')).toBe(false);
+    expect(bouton.getAttribute('aria-expanded')).toBe('true');
+    expect(getComputedStyle(
+      toolbox.querySelector('.ua-toolbox-groupes')).display).not.toBe('none');
+    expect(toolbox.getBoundingClientRect().width).toBe(largeurDepliee);
   });
 
   it('glisser-déposer un outil sur le dessin le pose à l\'endroit du dépôt', async () => {
