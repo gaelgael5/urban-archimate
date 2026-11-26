@@ -10,6 +10,7 @@ import ReplacePreviewModule from '../../lib/features/replace-preview/index.js';
 
 import EditingModule from './editing-module.ts';
 import ImportCropModule from './import-crop-module.ts';
+import { makeResizablePanel } from './resize.ts';
 
 import type {
   CartographyObject,
@@ -174,6 +175,8 @@ export class UrbanArchimateEditor {
         this._onCanvasClick(event);
       });
 
+      makeResizablePanel(toolboxHost, 'droite');
+
       // Échap désarme l'outil en attente de pose
       this._onEscape = (event: KeyboardEvent) => {
         if (event.key === 'Escape' && this._armedTool) {
@@ -252,6 +255,8 @@ export class UrbanArchimateEditor {
     if (!this._gridEnabled) {
       this._grid.setCollapsed(true);
     }
+
+    makeResizablePanel(gridHost, 'gauche');
 
     // the component never creates free elements: the legacy palette,
     // double-click creation, copy-paste and the catalogue-driven

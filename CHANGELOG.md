@@ -16,6 +16,8 @@ Versionnage sémantique. Le paquet est publié sur PyPI
 - Barre de zoom en bas à droite du dessin : moins, pourcentage
   cliquable (retour à 100 %), plus, ajustement à la fenêtre ;
   disponible aussi en lecture seule.
+- Les deux panneaux latéraux se redimensionnent par une poignée sur
+  leur bord intérieur ; la largeur choisie survit au masquage.
 
 ## 0.1.2 — 26 novembre 2026
 

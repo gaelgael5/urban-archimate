@@ -195,6 +195,26 @@ describe('boîte à outils fournie par l\'hôte', () => {
     expect(getComputedStyle(rouvrir).display).toBe('none');
   });
 
+  it('la boîte à outils se redimensionne par sa poignée', () => {
+    const toolbox = container.querySelector('.ua-toolbox');
+    const poignee = toolbox.nextElementSibling;
+    expect(poignee.classList.contains('ua-poignee')).toBe(true);
+
+    const avant = toolbox.getBoundingClientRect().width;
+
+    poignee.dispatchEvent(new PointerEvent('pointerdown', {
+      bubbles: true, button: 0, pointerId: 1, clientX: 300, clientY: 300
+    }));
+    window.dispatchEvent(new PointerEvent('pointermove', {
+      bubbles: true, pointerId: 1, clientX: 380, clientY: 300
+    }));
+    window.dispatchEvent(new PointerEvent('pointerup', {
+      bubbles: true, pointerId: 1, clientX: 380, clientY: 300
+    }));
+
+    expect(toolbox.getBoundingClientRect().width).toBeCloseTo(avant + 80, 0);
+  });
+
   it('glisser-déposer un outil sur le dessin le pose à l\'endroit du dépôt', async () => {
     const bouton = container.querySelector('.ua-outil[data-cle="OBJ-FACTURE"]');
     const canvasHost = container.querySelector('.ua-canvas');

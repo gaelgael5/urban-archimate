@@ -196,6 +196,7 @@
 /* --- toolbox -------------------------------------------------------- */
 
 .ua-toolbox {
+  position: relative;
   width: 232px;
   height: 100%;
   overflow-y: auto;
@@ -337,6 +338,25 @@
   stroke: currentColor;
 }
 
+/* --- resizable side panels ------------------------------------------- */
+
+/* A flex separator between a panel and the drawing. */
+.ua-poignee {
+  flex: 0 0 6px;
+  cursor: col-resize;
+  touch-action: none;
+}
+
+.ua-poignee:hover {
+  background: var(--ua-accent-fond);
+}
+
+/* the handle goes away with its collapsed panel */
+.ua-toolbox-repliee + .ua-poignee,
+.ua-poignee:has(+ .ua-grille-repliee) {
+  display: none;
+}
+
 /* --- zoom controls --------------------------------------------------- */
 
 .ua-zoom {
@@ -474,6 +494,7 @@
 /* --- property grid -------------------------------------------------- */
 
 .ua-grille {
+  position: relative;
   width: 272px;
   height: 100%;
   overflow-y: auto;
