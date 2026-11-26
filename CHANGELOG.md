@@ -3,7 +3,16 @@
 Versionnage sémantique. Le paquet est publié sur PyPI
 (`pip install urban-archimate==x.y.z`) à chaque étiquette `vx.y.z`.
 
-## 0.1.0 — non publié
+## 0.1.1 — non publié
+
+- Notation dans le ton « Cartographe » : blocs blancs, bande de
+  couleur de couche (qui épouse les arrondis des éléments de
+  comportement), palette par tokens ; icônes de la boîte à outils du
+  site alignées sur ces tokens.
+- Outillage de test en conteneur (Dockerfile, docker-compose,
+  dev-deploy.sh, E2E browserless).
+
+## 0.1.0 — 26 novembre 2026
 
 Première version.
 
