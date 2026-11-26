@@ -93,6 +93,7 @@ export class UrbanArchimateEditor {
   private _grid: PropertyGrid | null = null;
   private _viewTabs: ViewTabs | null = null;
   private _canvasHost: HTMLElement;
+  private _resizeObserver: ResizeObserver | null = null;
   private _armedTool: ArmedTool | null = null;
   private _placing = false;
 
@@ -214,6 +215,17 @@ export class UrbanArchimateEditor {
             this._toolbox?.showError(String(error.message || error));
           });
         });
+    }
+
+    // diagram-js caches the canvas size taken at creation, often before the
+    // host layout has settled (the canvas was measured 246×372 in the demo
+    // page): `fit-viewport` then zoomed for that stale size. Tell it about
+    // every size change of its container.
+    if (typeof ResizeObserver !== 'undefined') {
+      this._resizeObserver = new ResizeObserver(() => {
+        this._viewer.get('canvas').resized();
+      });
+      this._resizeObserver.observe(this._canvasHost);
     }
 
     const eventBus = this._viewer.get('eventBus');
@@ -780,6 +792,8 @@ export class UrbanArchimateEditor {
   }
 
   destroy(): void {
+    this._resizeObserver?.disconnect();
+    this._resizeObserver = null;
     this._viewer.destroy();
     this._toolbox?.destroy();
     this._grid?.destroy();

@@ -142,6 +142,26 @@ describe('<urban-archimate> (composant web)', () => {
     hostStyle.remove();
   });
 
+  it('suit la taille de son conteneur (fit-viewport sur la taille réelle)', async () => {
+    // créé petit, agrandi ensuite par la mise en page de l'hôte : c'est ce qui
+    // rendait le diagramme minuscule sur le site de démonstration
+    element = createElement();
+    element.style.width = '600px';
+    element.style.height = '300px';
+    await element.loadModel(exampleYaml);
+
+    element.style.width = '1200px';
+    element.style.height = '700px';
+    await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+
+    const canvas = element.editor.getDiagram().get('canvas');
+    canvas.zoom('fit-viewport');
+
+    const host = element.shadowRoot.querySelector('.ua-canvas');
+    expect(canvas.viewbox().outer.width).toBe(host.clientWidth);
+    expect(canvas.viewbox().outer.height).toBe(host.clientHeight);
+  });
+
   it('mode lecture seule par attribut', async () => {
     element = createElement({ 'read-only': '' });
 
