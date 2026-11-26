@@ -108,7 +108,7 @@ Le composant garde le modèle **propre** : il ne rend pas un document
 dont aucun objet n'est retenu, ni un nœud qui désigne une clé non
 retenue.
 
-## Attributs ArchiMate de base des relations
+## Attributs ArchiMate de base
 
 Convention partagée avec Ossie-studio (« les attributs propres à
 ArchiMate sont stockés avec les valeurs ArchiMate, l'écran affichant
@@ -119,6 +119,14 @@ les libellés français ») :
 | `Access` | `proprietes.acces` | `Read`, `Write`, `ReadWrite` (absente = non précisé) | lecture, écriture, lecture-écriture |
 | `Influence` | `proprietes.modificateur` | texte libre (`+`, `++`, `-`, …) | — |
 | `Association` | `proprietes.dirigee` | `true` (absente = non dirigée) | dirigée |
+| `Junction` | `proprietes.jonction` | `And`, `Or` (absente = `And`) | et, ou |
+
+L'hôte n'a qu'un type `Junction` ; le composant résout l'attribut en
+jonction « et » (rond plein) ou « ou » (rond creux) au rendu comme à
+l'export Open Group (`AndJunction` / `OrJunction`). Dans un bloc de
+règles, la clé `junctionType` peut désigner où lire la valeur (chemin
+`$.proprietes.jonction` ou littéral) ; sans bloc, la propriété
+`jonction` de l'objet est lue directement.
 
 La grille de propriétés d'une nouvelle relation est construite à
 partir du schéma du type rendu par le délégué `allowedRelations`

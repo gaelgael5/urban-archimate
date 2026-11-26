@@ -49,3 +49,7 @@ declare module '*?inline' {
   const css: string;
   export default css;
 }
+
+declare module '*lib/util/ModelUtil.js' {
+  export const FULL_ELEMENT_MAP: Map<string, unknown>;
+}

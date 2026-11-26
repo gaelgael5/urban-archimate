@@ -9,6 +9,10 @@ import type {
 
 import hydratedModelSchema from '../../schema/hydrated-model.schema.json' with { type: 'json' };
 
+// la notation connaît les types ArchiMate : un objet dont le type est
+// déjà un type ArchiMate n'a pas besoin de schéma fourni par l'hôte
+import { FULL_ELEMENT_MAP } from '../../lib/util/ModelUtil.js';
+
 const ajv = new Ajv2020({ allErrors: true, allowUnionTypes: true });
 
 const validateShape = ajv.compile(hydratedModelSchema);
@@ -169,7 +173,9 @@ export function validateHydratedModel(
     (model.types || []).map((type) => slugOfTypePath(type.chemin)));
 
   for (const doc of documents) {
-    if (typeSlugs.size && !typeSlugs.has(doc.data.type)) {
+    if (typeSlugs.size && !typeSlugs.has(doc.data.type) &&
+        !(FULL_ELEMENT_MAP as Map<string, unknown>).has(doc.data.type) &&
+        doc.data.type !== 'Junction') {
       warnings.push({
         code: 'type-sans-schema',
         message: `l'objet « ${ doc.data.cle } » a le type « ${ doc.data.type } », dont le schéma n'est pas fourni`,

@@ -2,6 +2,11 @@
 id: MOD-TOUS-ELEMENTS
 nom: Toutes les notations ArchiMate 3.2
 description: 'Vue de contrôle : chaque élément, chaque relation, jonction, note, cadre, imbrication.'
+types:
+  - chemin: cartographie/types/jonction.schema.yaml
+    data:
+      title: Jonction
+      x-archimate: Junction
 regles:
   chemin: cartographie/regles/standard.rules.yaml
   data:
@@ -843,16 +848,18 @@ documents:
       cle: EL-LOCATION
       type: Location
       nom: Location
-  - chemin: cartographie/objets/andjunction/el-andjunction.yaml
+  - chemin: cartographie/objets/jonction/el-andjunction.yaml
     data:
       cle: EL-ANDJUNCTION
-      type: AndJunction
-      nom: AndJunction
-  - chemin: cartographie/objets/orjunction/el-orjunction.yaml
+      type: jonction
+      nom: Jonction « et »
+  - chemin: cartographie/objets/jonction/el-orjunction.yaml
     data:
       cle: EL-ORJUNCTION
-      type: OrJunction
-      nom: OrJunction
+      type: jonction
+      nom: Jonction « ou »
+      proprietes:
+        jonction: Or
   - chemin: cartographie/objets/composition/rel-composition.yaml
     data:
       cle: REL-COMPOSITION
