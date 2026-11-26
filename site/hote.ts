@@ -95,20 +95,23 @@ export function hydrate(modelePath: string): HydratedModel {
 
 // --- toolbox ----------------------------------------------------------
 
-const LAYER_COLOR: Record<string, string> = {
-  client: '#FFFFB5', vendeur: '#FFFFB5', 'processus-de-vente': '#FFFFB5',
-  'evenement-metier': '#FFFFB5', 'service-metier': '#FFFFB5',
-  'document-metier': '#FFFFB5',
-  application: '#B5FFFF', 'service-applicatif': '#B5FFFF', donnees: '#B5FFFF',
-  serveur: '#C9E7B7'
+// Couche ArchiMate de chaque type de l'hôte. L'icône pointe sur le token de
+// notation de la couche (--ua-notation-<couche>) : rendue dans le shadow DOM
+// du composant, elle suit le thème au lieu d'une couleur écrite ici.
+const LAYER_OF: Record<string, string> = {
+  client: 'metier', vendeur: 'metier', 'processus-de-vente': 'metier',
+  'evenement-metier': 'metier', 'service-metier': 'metier',
+  'document-metier': 'metier',
+  application: 'application', 'service-applicatif': 'application', donnees: 'application',
+  serveur: 'technologie'
 };
 
 function iconeOf(objet: CartographyObject): string {
-  const couleur = LAYER_COLOR[ objet.type ] || '#E8E8E8';
+  const couche = LAYER_OF[ objet.type ] || 'autre';
 
-  return `<svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">` +
-    `<rect x="1" y="3" width="14" height="10" rx="2" fill="${ couleur }" ` +
-    `stroke="#00000066"/></svg>`;
+  return '<svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">' +
+    '<rect x="1.5" y="3.5" width="13" height="9" rx="1.5" ' +
+    `style="fill: var(--ua-notation-${ couche }); stroke: var(--ua-notation-trait)"/></svg>`;
 }
 
 const GROUPES: { id: string, libelle: string, types: string[] }[] = [

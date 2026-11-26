@@ -158,6 +158,13 @@ le style par défaut des éléments dessinés) : un changement de token
 prend effet au prochain chargement du composant. Elles ne sont écrites
 ni dans le graphique enregistré ni dans l'export Open Group.
 
+Les **icônes de la boîte à outils** sont fournies par l'hôte. Pour
+qu'elles restent dans la même palette que le diagramme, une icône en SVG
+en ligne peut pointer sur les tokens : elle est rendue dans le shadow DOM
+du composant, où ils sont définis — par exemple
+`<rect … style="fill: var(--ua-notation-metier); stroke: var(--ua-notation-trait)"/>`
+(c'est ce que fait le site de démonstration, `site/hote.ts`).
+
 Toute couleur de l'interface est un token `--ua-*` ; l'hôte les pose
 sur l'élément (les propriétés personnalisées traversent le shadow DOM,
 et une règle de l'hôte sur `urban-archimate { … }` l'emporte sur les
