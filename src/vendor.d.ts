@@ -44,6 +44,7 @@ declare module 'diagram-js/lib/features/context-pad/index.js' {
   export default ContextPadModule;
 }
 declare module 'diagram-js/lib/features/rules/RuleProvider.js' { const RuleProvider: unknown; export default RuleProvider; }
+declare module 'diagram-js/lib/layout/CroppingConnectionDocking.js' { const CroppingConnectionDocking: unknown; export default CroppingConnectionDocking; }
 
 declare module '*?inline' {
   const css: string;

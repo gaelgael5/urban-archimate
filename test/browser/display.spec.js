@@ -111,6 +111,33 @@ describe('affichage — toutes les vues ArchiMate 3.2', () => {
     }
   });
 
+  it('les connexions chargées s\'arrêtent au bord des formes, pas à leur centre', async () => {
+    editor = new UrbanArchimateEditor({ container });
+    await editor.load(tousElementsYaml);
+
+    const registry = editor.getDiagram().get('elementRegistry');
+    const connections = registry.filter(
+      (element) => element.waypoints && element.source && element.target);
+
+    expect(connections.length).toBeGreaterThan(0);
+
+    const distance = (p1, p2) => Math.hypot(p1.x - p2.x, p1.y - p2.y);
+    const centerOf = (shape) => ({
+      x: shape.x + shape.width / 2, y: shape.y + shape.height / 2
+    });
+
+    for (const connection of connections) {
+      const premier = connection.waypoints[0];
+      const dernier = connection.waypoints[connection.waypoints.length - 1];
+
+      // un ancrage croppé est posé sur le contour, jamais au centre
+      expect(distance(premier, centerOf(connection.source)), connection.id)
+        .toBeGreaterThan(5);
+      expect(distance(dernier, centerOf(connection.target)), connection.id)
+        .toBeGreaterThan(5);
+    }
+  });
+
   it('note et cadre de regroupement s\'affichent', async () => {
     editor = new UrbanArchimateEditor({ container });
     await editor.load(tousElementsYaml);
