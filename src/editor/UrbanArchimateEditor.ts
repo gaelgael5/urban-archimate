@@ -198,7 +198,7 @@ export class UrbanArchimateEditor {
     // (--ua-police-diagramme); the renderer also measures text with this
     // font, so it is set at creation rather than overridden in CSS
     const textRenderer = { defaultStyle: { fontFamily: diagramFont(this._canvasHost) } };
-    // same for the notation colors (layer fills, strokes, labels): resolved
+    // same for the notation colors (blocks, layer lines, strokes, labels): resolved
     // from the --ua-notation-* tokens, they become the default style of the
     // drawn elements (the specification does not standardize colors)
     const archimateNotation = notationTokens(this._canvasHost);
@@ -837,8 +837,8 @@ function diagramFont(element: HTMLElement): string {
 /** Keys of the notation palette, read from `--ua-notation-<key>`. */
 export const NOTATION_KEYS = [
   'strategie', 'metier', 'application', 'technologie', 'physique',
-  'implementation', 'motivation', 'autre', 'note',
-  'trait', 'relation', 'texte', 'pictogramme', 'fond'
+  'implementation', 'motivation', 'autre', 'element', 'note',
+  'trait', 'relation', 'texte', 'fond'
 ] as const;
 
 /**

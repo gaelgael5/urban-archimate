@@ -59,29 +59,30 @@
   --ua-ombre: 0 6px 18px rgba(13, 28, 38, 0.14);
 
   /*
-   * Notation palette (read when the editor is created). The specification
-   * does not standardize colors: each layer keeps the hue family of the
-   * ArchiMate convention so it stays recognizable, at one even lightness,
-   * cooled toward the night / teal palette; strokes are crisp slate lines.
-   * Same values as NOTATION_DEFAULTS (lib/util/ColorUtil.js).
+   * Notation palette (read when the editor is created), in the style of
+   * the diagrams of Ossie Studio: white blocks with a crisp border; the
+   * layer is a « line » — 4px band on the left edge and pictogram — in the
+   * RailMap line palette of Ossie (Okabe-Ito). Same values as
+   * NOTATION_DEFAULTS (lib/util/ColorUtil.js).
    */
-  --ua-notation-strategie: #F2E4C9;
-  --ua-notation-metier: #F7EFC4;
-  --ua-notation-application: #D3E8F4;
-  --ua-notation-technologie: #D9EBD2;
-  --ua-notation-physique: #D9EBD2;
-  --ua-notation-implementation: #F5DEDC;
-  --ua-notation-motivation: #E1DEF3;
-  --ua-notation-autre: #E6EDF1;
+  /* line colors of the layers */
+  --ua-notation-strategie: #D55E00;
+  --ua-notation-metier: #E69F00;
+  --ua-notation-application: #0072B2;
+  --ua-notation-technologie: #009E73;
+  --ua-notation-physique: #009E73;
+  --ua-notation-implementation: #CC79A7;
+  --ua-notation-motivation: #56B4E9;
+  --ua-notation-autre: #4F626E;
+  /* fill of the element blocks, and of notes */
+  --ua-notation-element: #FFFFFF;
   --ua-notation-note: #FFFFFF;
-  /* outline of the shapes, of groups and junctions */
-  --ua-notation-trait: #4F626E;
-  /* relationship lines and their arrowheads */
-  --ua-notation-relation: #2E4350;
+  /* border of the blocks, groups and notes */
+  --ua-notation-trait: #B4C3CC;
+  /* relationship lines, their arrowheads, junctions */
+  --ua-notation-relation: #4F626E;
   /* labels drawn in the diagram */
   --ua-notation-texte: #0D1C26;
-  /* pictogram in the corner of a shape */
-  --ua-notation-pictogramme: #2E4350;
   /* hollow marks: open arrowheads, open diamond, Or junction */
   --ua-notation-fond: #FFFFFF;
 }

@@ -95,9 +95,9 @@ describe('thème de l\'interface — tokens --ua-*', () => {
 
 describe('thème de la notation — tokens --ua-notation-*', () => {
 
-  const couches = [
+  const lignes = [
     'strategie', 'metier', 'application', 'technologie', 'physique',
-    'implementation', 'motivation', 'autre', 'note'
+    'implementation', 'motivation', 'autre'
   ];
 
   it('les tokens et les valeurs par défaut du rendu sont identiques', () => {
@@ -112,47 +112,38 @@ describe('thème de la notation — tokens --ua-notation-*', () => {
     expect(tokens).toEqual(defaults);
   });
 
-  it('les libellés restent lisibles (AA) sur le fond de chaque couche', () => {
-    const failing = couches
-      .map((couche) => ({
-        couche,
-        ratio: contrast('var(--ua-notation-texte)', `var(--ua-notation-${ couche })`)
-      }))
-      .filter(({ ratio }) => ratio < 4.5);
-
-    expect(failing).toEqual([]);
+  it('les éléments sont des blocs blancs à filet --ua-bordure-forte, comme les blocs d\'Ossie', () => {
+    expect(resolve('var(--ua-notation-element)').toUpperCase()).toBe(resolve('var(--ua-fond-panneau)').toUpperCase());
+    expect(resolve('var(--ua-notation-trait)').toUpperCase()).toBe(resolve('var(--ua-bordure-forte)').toUpperCase());
   });
 
-  it('traits, relations et pictogrammes se détachent des fonds (≥ 3)', () => {
-    const fonds = [ ...couches.map((c) => `--ua-notation-${ c }`), '--ua-fond' ];
-    const failing = [];
+  it('les libellés sont lisibles (AA) sur les blocs et les notes', () => {
+    expect(contrast('var(--ua-notation-texte)', 'var(--ua-notation-element)')).toBeGreaterThanOrEqual(4.5);
+    expect(contrast('var(--ua-notation-texte)', 'var(--ua-notation-note)')).toBeGreaterThanOrEqual(4.5);
+  });
 
-    for (const trait of [ '--ua-notation-trait', '--ua-notation-relation', '--ua-notation-pictogramme' ]) {
-      for (const fond of fonds) {
-        const ratio = contrast(`var(${ trait })`, `var(${ fond })`);
-        if (ratio < 3) {
-          failing.push({ trait, fond, ratio });
-        }
-      }
+  it('les relations se détachent des blocs et de la surface (≥ 3)', () => {
+    for (const fond of [ '--ua-notation-element', '--ua-fond' ]) {
+      expect(contrast('var(--ua-notation-relation)', `var(${ fond })`)).toBeGreaterThanOrEqual(3);
     }
+  });
+
+  it('la bande de chaque couche se voit sur le bloc blanc (≥ 2)', () => {
+    // palette du RailMap d'Ossie : l'orange et le ciel sont les plus clairs
+    const failing = lignes
+      .map((ligne) => ({ ligne, ratio: contrast(`var(--ua-notation-${ ligne })`, 'var(--ua-notation-element)') }))
+      .filter(({ ratio }) => ratio < 2);
 
     expect(failing).toEqual([]);
   });
 
-  it('les couches restent distinctes les unes des autres', () => {
-    // technologie et physique partagent leur teinte, comme dans la convention
-    const teintes = couches
-      .filter((c) => c !== 'physique' && c !== 'note')
-      .map((c) => resolve(`var(--ua-notation-${ c })`).toUpperCase());
+  it('les lignes de couche restent distinctes, et distinctes de la sélection', () => {
+    // technologie et physique partagent leur ligne, comme dans la convention
+    const teintes = lignes
+      .filter((ligne) => ligne !== 'physique')
+      .map((ligne) => resolve(`var(--ua-notation-${ ligne })`).toUpperCase());
 
     expect(new Set(teintes).size).toBe(teintes.length);
-  });
-
-  it('aucun fond de couche ne se confond avec la sélection (--ua-accent-fond)', () => {
-    const selection = resolve('var(--ua-accent-fond)').toUpperCase();
-    const teintes = couches.map((c) => resolve(`var(--ua-notation-${ c })`).toUpperCase());
-
-    expect(teintes).not.toContain(selection);
+    expect(teintes).not.toContain(resolve('var(--ua-accent)').toUpperCase());
   });
 });
-

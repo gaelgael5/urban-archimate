@@ -146,23 +146,43 @@ surface de dessin, onglet actif en « station » sur sa ligne, une seule
 couleur de ligne (sarcelle). **Les valeurs par défaut sont celles de
 cette identité** : sans aucun réglage, le composant est dans le ton.
 
-La **notation** est dans le même ton. La spécification ArchiMate ne
-normalise pas les couleurs : les teintes habituelles (jaune métier,
-cyan application, vert technologie…) ne sont qu'une convention de ses
-figures. Le composant garde la **famille de teinte** de chaque couche,
-pour qu'un lecteur la reconnaisse, mais à une luminosité égale,
-refroidie vers la palette nuit / sarcelle ; les traits sont des filets
-ardoise nets au lieu d'un noir à 40 %. Ces couleurs sont des tokens
-`--ua-notation-*`, lus **à la création de l'éditeur** (ils deviennent
-le style par défaut des éléments dessinés) : un changement de token
-prend effet au prochain chargement du composant. Elles ne sont écrites
-ni dans le graphique enregistré ni dans l'export Open Group.
+La **notation** suit le style des diagrammes d'Ossie (vue
+« Application », graphe raw) : chaque élément est un **bloc blanc** à
+filet `--border-strong`, libellé demi-gras couleur `--text`, comme les
+blocs d'Ossie. La spécification ArchiMate ne normalise pas les couleurs
+(les fonds jaune / cyan / vert ne sont qu'une convention de ses
+figures) ; la **couche** d'un élément est ici une **ligne**, au sens du
+plan de métro : une **bande de 4 px sur le bord gauche** et le
+**pictogramme**, dans la couleur de la ligne de la couche, prise dans la
+palette du `RailMap` d'Ossie (Okabe-Ito, lisible par les daltoniens) en
+gardant la famille de teinte de la convention quand c'est possible :
+
+| Couche | Ligne |
+|---|---|
+| Stratégie | vermillon `#D55E00` |
+| Métier | orange `#E69F00` |
+| Application | bleu `#0072B2` |
+| Technologie, Physique | vert `#009E73` |
+| Implémentation et migration | rose `#CC79A7` |
+| Motivation | ciel `#56B4E9` |
+| Autres (lieu, regroupement) | ardoise `#4F626E` |
+
+Les relations sont des filets ardoise (`--muted`), plus marqués que les
+liens d'Ossie (`--border-strong`) parce qu'en ArchiMate le tireté et la
+pointe portent le type de la relation. La sélection reste sarcelle.
+
+Ces couleurs sont des tokens `--ua-notation-*`, lus **à la création de
+l'éditeur** (ils deviennent le style par défaut des éléments dessinés) :
+un changement de token prend effet au prochain chargement du composant.
+Elles ne sont écrites ni dans le graphique enregistré ni dans l'export
+Open Group.
 
 Les **icônes de la boîte à outils** sont fournies par l'hôte. Pour
 qu'elles restent dans la même palette que le diagramme, une icône en SVG
 en ligne peut pointer sur les tokens : elle est rendue dans le shadow DOM
 du composant, où ils sont définis — par exemple
-`<rect … style="fill: var(--ua-notation-metier); stroke: var(--ua-notation-trait)"/>`
+`<rect … style="fill: var(--ua-notation-element); stroke: var(--ua-notation-trait)"/>`
+suivi d'une bande `style="fill: var(--ua-notation-metier)"`
 (c'est ce que fait le site de démonstration, `site/hote.ts`).
 
 Toute couleur de l'interface est un token `--ua-*` ; l'hôte les pose
@@ -196,19 +216,19 @@ texte / fond sous le seuil WCAG AA.
 | `--ua-rayon` | rayon des panneaux | `--radius` |
 | `--ua-rayon-sm` | rayon des boutons, champs, puces | `--radius-sm` |
 | `--ua-ombre` | ombre de ce qui flotte (pad contextuel, menus) | `--shadow` |
-| `--ua-notation-strategie` | fond des éléments Stratégie (sable) | — |
-| `--ua-notation-metier` | fond des éléments Métier (paille) | — |
-| `--ua-notation-application` | fond des éléments Application (bleu glacier) | — |
-| `--ua-notation-technologie` | fond des éléments Technologie (sauge) | — |
-| `--ua-notation-physique` | fond des éléments Physique (sauge) | — |
-| `--ua-notation-implementation` | fond des éléments Implémentation et migration (rose poudré) | — |
-| `--ua-notation-motivation` | fond des éléments Motivation (lavande) | — |
-| `--ua-notation-autre` | fond des autres éléments (lieu, regroupement) | `--surface-muted` |
+| `--ua-notation-strategie` | ligne de la couche Stratégie (bande, pictogramme) | — |
+| `--ua-notation-metier` | ligne de la couche Métier | — |
+| `--ua-notation-application` | ligne de la couche Application | — |
+| `--ua-notation-technologie` | ligne de la couche Technologie | — |
+| `--ua-notation-physique` | ligne de la couche Physique | — |
+| `--ua-notation-implementation` | ligne de la couche Implémentation et migration | — |
+| `--ua-notation-motivation` | ligne de la couche Motivation | — |
+| `--ua-notation-autre` | ligne des autres éléments (lieu, regroupement) | `--muted` |
+| `--ua-notation-element` | fond des blocs | `--panel` |
 | `--ua-notation-note` | fond des notes | `--panel` |
-| `--ua-notation-trait` | contour des formes, des cadres, des jonctions | `--muted` |
-| `--ua-notation-relation` | relations et leurs pointes | — |
+| `--ua-notation-trait` | filet des blocs, des cadres, des notes | `--border-strong` |
+| `--ua-notation-relation` | relations, leurs pointes, jonctions | `--muted` |
 | `--ua-notation-texte` | libellés du diagramme | `--text` |
-| `--ua-notation-pictogramme` | pictogramme au coin des formes | — |
 | `--ua-notation-fond` | marques creuses (pointes ouvertes, losange vide, jonction Ou) | `--panel` |
 
 Raccord à poser dans Ossie Studio (`frontend/src/styles.css`), pour
@@ -236,10 +256,13 @@ urban-archimate {
   --ua-rayon: var(--radius);
   --ua-rayon-sm: var(--radius-sm);
   --ua-ombre: var(--shadow);
-  /* notation : les teintes de couche gardent leurs valeurs par défaut */
-  --ua-notation-autre: var(--surface-muted);
+  /* notation : blocs et filets d'Ossie ; les lignes de couche gardent la
+     palette du RailMap (couleurs de données, sans token côté Ossie) */
+  --ua-notation-autre: var(--muted);
+  --ua-notation-element: var(--panel);
   --ua-notation-note: var(--panel);
-  --ua-notation-trait: var(--muted);
+  --ua-notation-trait: var(--border-strong);
+  --ua-notation-relation: var(--muted);
   --ua-notation-texte: var(--text);
   --ua-notation-fond: var(--panel);
 }

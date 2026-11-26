@@ -109,9 +109,11 @@ const LAYER_OF: Record<string, string> = {
 function iconeOf(objet: CartographyObject): string {
   const couche = LAYER_OF[ objet.type ] || 'autre';
 
+  // le bloc blanc et sa bande de couche, comme dans le diagramme
   return '<svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">' +
-    '<rect x="1.5" y="3.5" width="13" height="9" rx="1.5" ' +
-    `style="fill: var(--ua-notation-${ couche }); stroke: var(--ua-notation-trait)"/></svg>`;
+    '<rect x="1.5" y="3.5" width="13" height="9" rx="1" ' +
+    'style="fill: var(--ua-notation-element); stroke: var(--ua-notation-trait)"/>' +
+    `<rect x="1.5" y="3.5" width="3" height="9" style="fill: var(--ua-notation-${ couche })"/></svg>`;
 }
 
 const GROUPES: { id: string, libelle: string, types: string[] }[] = [
