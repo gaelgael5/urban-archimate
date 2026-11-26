@@ -68,8 +68,9 @@ urban_archimate.mount(app, "/api/archimate")   # FastAPI / Starlette
 </script>
 ```
 
-Styles isolés (shadow DOM), thème par variables CSS `--ua-*` ; les
-couleurs de notation ArchiMate restent celles de la spécification.
+Styles isolés (shadow DOM), thème par variables CSS `--ua-*`, palette
+de notation comprise (couleurs des couches, traits, libellés) : par
+défaut, l'identité « Cartographe » d'Ossie Studio.
 Contrat complet : [docs/contrat.md](./docs/contrat.md). La publication
 PyPI est faite par la CI à chaque étiquette `vx.y.z` (versionnage
 sémantique, [CHANGELOG](./CHANGELOG.md)) — configurer le dépôt comme

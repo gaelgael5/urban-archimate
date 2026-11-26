@@ -132,6 +132,144 @@ attributs de base. Une valeur facultative vide n'est pas envoyée.
 - **Événements** : `changed` à chaque modification (indicateur
   « modifié » de l'hôte) ; `selection` quand un élément ou une
   connexion est sélectionné, avec la clé de l'objet.
-- **Thème** : variables CSS pour l'interface (panneaux, boîte à
-  outils, grille) ; les couleurs de notation ArchiMate restent celles
-  de la spécification.
+- **Thème** : voir ci-dessous.
+
+## Thème
+
+L'interface du composant (boîte à outils, grille de propriétés,
+onglets des vues, surface de dessin, marques de sélection) suit
+l'identité d'Ossie Studio, « Cartographe » (`docs/identite-visuelle.md`
+d'ossie-studio) : IBM Plex Sans / Mono, lettrage en chasse fixe pour
+les étiquettes courtes et les identifiants, angles vifs et traits d'un
+pixel, pas d'ombre sauf sur ce qui flotte, trame de points sur la
+surface de dessin, onglet actif en « station » sur sa ligne, une seule
+couleur de ligne (sarcelle). **Les valeurs par défaut sont celles de
+cette identité** : sans aucun réglage, le composant est dans le ton.
+
+La **notation** suit le style des diagrammes d'Ossie (vue
+« Application », graphe raw) : chaque élément est un **bloc blanc** à
+filet `--border-strong`, libellé demi-gras couleur `--text`, comme les
+blocs d'Ossie. La spécification ArchiMate ne normalise pas les couleurs
+(les fonds jaune / cyan / vert ne sont qu'une convention de ses
+figures) ; la **couche** d'un élément est ici une **ligne**, au sens du
+plan de métro : une **bande de 4 px sur le bord gauche** et le
+**pictogramme**, dans la couleur de la ligne de la couche, prise dans la
+palette du `RailMap` d'Ossie (Okabe-Ito, lisible par les daltoniens) en
+gardant la famille de teinte de la convention quand c'est possible :
+
+| Couche | Ligne |
+|---|---|
+| Stratégie | vermillon `#D55E00` |
+| Métier | orange `#E69F00` |
+| Application | bleu `#0072B2` |
+| Technologie, Physique | vert `#009E73` |
+| Implémentation et migration | rose `#CC79A7` |
+| Motivation | ciel `#56B4E9` |
+| Autres (lieu, regroupement) | ardoise `#4F626E` |
+
+Les relations sont des filets ardoise (`--muted`), plus marqués que les
+liens d'Ossie (`--border-strong`) parce qu'en ArchiMate le tireté et la
+pointe portent le type de la relation. La sélection reste sarcelle.
+
+Ces couleurs sont des tokens `--ua-notation-*`, lus **à la création de
+l'éditeur** (ils deviennent le style par défaut des éléments dessinés) :
+un changement de token prend effet au prochain chargement du composant.
+Elles ne sont écrites ni dans le graphique enregistré ni dans l'export
+Open Group.
+
+Les **icônes de la boîte à outils** sont fournies par l'hôte. Pour
+qu'elles restent dans la même palette que le diagramme, une icône en SVG
+en ligne peut pointer sur les tokens : elle est rendue dans le shadow DOM
+du composant, où ils sont définis — par exemple
+`<rect … style="fill: var(--ua-notation-element); stroke: var(--ua-notation-trait)"/>`
+suivi d'une bande `style="fill: var(--ua-notation-metier)"`
+(c'est ce que fait le site de démonstration, `site/hote.ts`).
+
+Toute couleur de l'interface est un token `--ua-*` ; l'hôte les pose
+sur l'élément (les propriétés personnalisées traversent le shadow DOM,
+et une règle de l'hôte sur `urban-archimate { … }` l'emporte sur les
+valeurs par défaut). `test/unit/theme.spec.js` refuse une couleur en
+dur, un token non déclaré ou non documenté ici, et un couple
+texte / fond sous le seuil WCAG AA.
+
+| Token | Rôle | Token Ossie |
+|---|---|---|
+| `--ua-police` | police de l'interface | `--font-ui` |
+| `--ua-police-mono` | chasse fixe : étiquettes, identifiants | `--mono` |
+| `--ua-police-diagramme` | libellés dessinés dans le diagramme (lu à la création de l'éditeur) ; défaut : `--ua-police` | — |
+| `--ua-texte` | texte | `--text` |
+| `--ua-texte-secondaire` | texte secondaire, étiquettes | `--muted` |
+| `--ua-fond` | fond de la surface de dessin, survol neutre | `--bg` |
+| `--ua-trame-point` | points de la trame (`transparent` : sans trame) | `--grid-dot` |
+| `--ua-fond-panneau` | panneaux, champs | `--panel` |
+| `--ua-fond-discret` | puces (point de vue) | `--surface-muted` |
+| `--ua-bordure` | filets, ligne des onglets | `--border` |
+| `--ua-bordure-forte` | bordures de panneaux, de champs, de boutons | `--border-strong` |
+| `--ua-accent` | couleur de ligne : bouton principal, sélection, onglet actif | `--primary` |
+| `--ua-accent-survol` | survol du bouton principal | `--primary-hover` |
+| `--ua-accent-texte` | texte sur l'accent | `--primary-fg` |
+| `--ua-accent-fond` | fond d'une entrée sélectionnée (outil armé) | `--chip-bg` |
+| `--ua-accent-fond-texte` | texte sur ce fond | `--chip-fg` |
+| `--ua-erreur` | texte d'erreur | `--danger-fg` |
+| `--ua-erreur-fond` | fond teinté d'erreur | `--danger-bg` |
+| `--ua-focus` | anneau de focus clavier ; défaut : `--ua-accent` | — |
+| `--ua-rayon` | rayon des panneaux | `--radius` |
+| `--ua-rayon-sm` | rayon des boutons, champs, puces | `--radius-sm` |
+| `--ua-ombre` | ombre de ce qui flotte (pad contextuel, menus) | `--shadow` |
+| `--ua-notation-strategie` | ligne de la couche Stratégie (bande, pictogramme) | — |
+| `--ua-notation-metier` | ligne de la couche Métier | — |
+| `--ua-notation-application` | ligne de la couche Application | — |
+| `--ua-notation-technologie` | ligne de la couche Technologie | — |
+| `--ua-notation-physique` | ligne de la couche Physique | — |
+| `--ua-notation-implementation` | ligne de la couche Implémentation et migration | — |
+| `--ua-notation-motivation` | ligne de la couche Motivation | — |
+| `--ua-notation-autre` | ligne des autres éléments (lieu, regroupement) | `--muted` |
+| `--ua-notation-element` | fond des blocs | `--panel` |
+| `--ua-notation-note` | fond des notes | `--panel` |
+| `--ua-notation-trait` | filet des blocs, des cadres, des notes | `--border-strong` |
+| `--ua-notation-relation` | relations, leurs pointes, jonctions | `--muted` |
+| `--ua-notation-texte` | libellés du diagramme | `--text` |
+| `--ua-notation-fond` | marques creuses (pointes ouvertes, losange vide, jonction Ou) | `--panel` |
+
+Raccord à poser dans Ossie Studio (`frontend/src/styles.css`), pour
+qu'un changement de la palette d'Ossie se propage au composant :
+
+```css
+urban-archimate {
+  --ua-police: var(--font-ui);
+  --ua-police-mono: var(--mono);
+  --ua-texte: var(--text);
+  --ua-texte-secondaire: var(--muted);
+  --ua-fond: var(--bg);
+  --ua-trame-point: var(--grid-dot);
+  --ua-fond-panneau: var(--panel);
+  --ua-fond-discret: var(--surface-muted);
+  --ua-bordure: var(--border);
+  --ua-bordure-forte: var(--border-strong);
+  --ua-accent: var(--primary);
+  --ua-accent-survol: var(--primary-hover);
+  --ua-accent-texte: var(--primary-fg);
+  --ua-accent-fond: var(--chip-bg);
+  --ua-accent-fond-texte: var(--chip-fg);
+  --ua-erreur: var(--danger-fg);
+  --ua-erreur-fond: var(--danger-bg);
+  --ua-rayon: var(--radius);
+  --ua-rayon-sm: var(--radius-sm);
+  --ua-ombre: var(--shadow);
+  /* notation : blocs et filets d'Ossie ; les lignes de couche gardent la
+     palette du RailMap (couleurs de données, sans token côté Ossie) */
+  --ua-notation-autre: var(--muted);
+  --ua-notation-element: var(--panel);
+  --ua-notation-note: var(--panel);
+  --ua-notation-trait: var(--border-strong);
+  --ua-notation-relation: var(--muted);
+  --ua-notation-texte: var(--text);
+  --ua-notation-fond: var(--panel);
+}
+```
+
+Les polices ne sont pas embarquées dans le composant : il emploie
+celles que la page a chargées (Ossie charge IBM Plex Sans 400/500/600/700
+et Mono 400/500/600 par `@fontsource`, ce qui couvre les graisses
+utilisées ici). Le site de démonstration (`site/`) est habillé comme un
+écran d'Ossie et pose exactement ce raccord.

@@ -34,6 +34,12 @@ const browser = await chromium.connectOverCDP(BROWSERLESS_WS);
 try {
   const context = await browser.newContext({ viewport: { width: 1600, height: 900 } });
   const page = await context.newPage();
+  // Par connectOverCDP, browserless ignore le viewport du contexte comme
+  // setViewportSize (page rendue en 800×600, capture en 1600×900 : diagramme
+  // ajusté pour l'une, photographié dans l'autre). On le pose par CDP.
+  const cdp = await context.newCDPSession(page);
+  await cdp.send('Emulation.setDeviceMetricsOverride',
+    { width: 1600, height: 900, deviceScaleFactor: 1, mobile: false });
 
   const erreurs = [];
   page.on('pageerror', (error) => erreurs.push(error.message));
@@ -49,6 +55,18 @@ try {
   await formes.first().waitFor({ timeout: 15000 }).catch(() => {});
   const nbFormes = await formes.count();
   verifier('le composant affiche le premier modèle', nbFormes > 0, `${ nbFormes } formes`);
+
+  // L'ajustement se fait sur la taille réelle du canevas, pas sur celle
+  // mesurée à sa création (diagramme minuscule sinon).
+  const taille = await page.evaluate(() => {
+    const editeur = document.getElementById('editeur');
+    const canvas = editeur.editor.getDiagram().get('canvas');
+    const hote = editeur.shadowRoot.querySelector('.ua-canvas');
+    return { canevas: canvas.viewbox().outer.width, hote: hote.clientWidth, zoom: canvas.zoom() };
+  });
+  verifier('le diagramme est ajusté à la taille réelle du canevas',
+    taille.canevas === taille.hote && taille.zoom > 0.4,
+    `canevas ${ taille.canevas } px / conteneur ${ taille.hote } px, zoom ${ taille.zoom.toFixed(2) }`);
 
   const options = await page.locator('#choix-modele option').count();
   verifier('les deux modèles sont proposés', options === 2, `${ options } options`);

@@ -93,6 +93,7 @@ export class UrbanArchimateEditor {
   private _grid: PropertyGrid | null = null;
   private _viewTabs: ViewTabs | null = null;
   private _canvasHost: HTMLElement;
+  private _resizeObserver: ResizeObserver | null = null;
   private _armedTool: ArmedTool | null = null;
   private _placing = false;
 
@@ -193,11 +194,22 @@ export class UrbanArchimateEditor {
       .filter((module) => !excluded.has(module))
       .concat([ EditingModule ]);
 
+    // labels drawn in the diagram follow the host theme
+    // (--ua-police-diagramme); the renderer also measures text with this
+    // font, so it is set at creation rather than overridden in CSS
+    const textRenderer = { defaultStyle: { fontFamily: diagramFont(this._canvasHost) } };
+    // same for the notation colors (blocks, layer lines, strokes, labels): resolved
+    // from the --ua-notation-* tokens, they become the default style of the
+    // drawn elements (the specification does not standardize colors)
+    const archimateNotation = notationTokens(this._canvasHost);
+
     this._viewer = this._readOnly
-      ? new (NavigatedViewer as any)({ container: this._canvasHost })
+      ? new (NavigatedViewer as any)({ container: this._canvasHost, textRenderer, archimateNotation })
       : new (Modeler as any)({
         container: this._canvasHost,
-        modules: editingModules
+        modules: editingModules,
+        textRenderer,
+        archimateNotation
       });
 
     if (!this._readOnly) {
@@ -208,6 +220,17 @@ export class UrbanArchimateEditor {
             this._toolbox?.showError(String(error.message || error));
           });
         });
+    }
+
+    // diagram-js caches the canvas size taken at creation, often before the
+    // host layout has settled (the canvas was measured 246×372 in the demo
+    // page): `fit-viewport` then zoomed for that stale size. Tell it about
+    // every size change of its container.
+    if (typeof ResizeObserver !== 'undefined') {
+      this._resizeObserver = new ResizeObserver(() => {
+        this._viewer.get('canvas').resized();
+      });
+      this._resizeObserver.observe(this._canvasHost);
     }
 
     const eventBus = this._viewer.get('eventBus');
@@ -774,6 +797,8 @@ export class UrbanArchimateEditor {
   }
 
   destroy(): void {
+    this._resizeObserver?.disconnect();
+    this._resizeObserver = null;
     this._viewer.destroy();
     this._toolbox?.destroy();
     this._grid?.destroy();
@@ -791,3 +816,53 @@ export class UrbanArchimateEditor {
     }
   }
 }
+
+
+/** Default font of the diagram labels when no theme is reachable. */
+export const DIAGRAM_FONT_DEFAULT = '\'IBM Plex Sans\', system-ui, sans-serif';
+
+/**
+ * Font of the labels drawn in the diagram: the `--ua-police-diagramme`
+ * token as resolved on the canvas (the host may override it), else the
+ * component default.
+ */
+function diagramFont(element: HTMLElement): string {
+  const value = element.isConnected
+    ? getComputedStyle(element).getPropertyValue('--ua-police-diagramme').trim()
+    : '';
+
+  return value || DIAGRAM_FONT_DEFAULT;
+}
+
+/** Keys of the notation palette, read from `--ua-notation-<key>`. */
+export const NOTATION_KEYS = [
+  'strategie', 'metier', 'application', 'technologie', 'physique',
+  'implementation', 'motivation', 'autre', 'element', 'note',
+  'trait', 'relation', 'texte', 'fond'
+] as const;
+
+/**
+ * The notation palette as set by the theme: every `--ua-notation-*` token
+ * resolved on the canvas. Unset tokens are left out (the renderer falls
+ * back to its defaults, identical to the component stylesheet).
+ */
+function notationTokens(element: HTMLElement): Record<string, string> {
+  const palette: Record<string, string> = {};
+
+  if (!element.isConnected) {
+    return palette;
+  }
+
+  const computed = getComputedStyle(element);
+
+  for (const key of NOTATION_KEYS) {
+    const value = computed.getPropertyValue(`--ua-notation-${ key }`).trim();
+
+    if (value) {
+      palette[key] = value;
+    }
+  }
+
+  return palette;
+}
+

@@ -89,15 +89,92 @@ describe('<urban-archimate> (composant web)', () => {
     // …mais la variable CSS du thème, si
     expect(computed.backgroundColor).toBe('rgb(1, 2, 3)');
 
-    // les couleurs de notation ArchiMate restent celles de la spécification
+    // la notation suit le style des diagrammes d'Ossie : bloc blanc à filet
+    // --border-strong, couche en bande de ligne (bleu RailMap pour
+    // l'application), pictogramme de la même couleur, libellé nuit
     const registry = element.editor.getDiagram().get('elementRegistry');
     const gfx = registry.getGraphics(registry.get('n-VUE-COOPERATION-N1'));
     const rect = gfx.querySelector('.djs-visual rect');
 
-    // #B5FFFF, la couleur de la couche application de la spécification
-    expect(rect.style.fill).toBe('rgb(181, 255, 255)');
+    expect(rect.style.fill).toBe('rgb(255, 255, 255)');
+    expect(rect.style.stroke).toBe('rgb(180, 195, 204)');
+    expect(gfx.querySelector('.djs-visual .ua-bande-couche').style.fill).toBe('rgb(0, 114, 178)');
+    expect(gfx.querySelector('.djs-visual path:not(.ua-bande-couche)').style.stroke).toBe('rgb(0, 114, 178)');
+    expect(gfx.querySelector('.djs-visual text').style.fill).toBe('rgb(13, 28, 38)');
 
     hostileStyle.remove();
+  });
+
+  it('est dans le ton d\'Ossie sans réglage de l\'hôte (valeurs par défaut sur :host)', async () => {
+    element = createElement();
+    await element.loadModel(exampleYaml);
+
+    const shadow = element.shadowRoot;
+
+    // panneau blanc, filet --ua-bordure-forte : les tokens sont bien définis
+    // dans le shadow root (déclarés sur `:root` seul, ils ne l'étaient pas)
+    const toolbox = getComputedStyle(shadow.querySelector('.ua-toolbox'));
+    expect(toolbox.backgroundColor).toBe('rgb(255, 255, 255)');
+    expect(toolbox.borderRightColor).toBe('rgb(180, 195, 204)');
+
+    // l'onglet actif est dans la couleur de ligne (sarcelle) et porte sa station
+    const active = shadow.querySelector('.ua-vue-active');
+    expect(getComputedStyle(active).color).toBe('rgb(11, 110, 106)');
+    expect(getComputedStyle(active, '::after').borderTopColor).toBe('rgb(11, 110, 106)');
+
+    // étiquette de panneau en chasse fixe
+    expect(getComputedStyle(shadow.querySelector('.ua-toolbox-groupe-titre')).fontFamily)
+      .toContain('IBM Plex Mono');
+
+    // libellés du diagramme dans la police du thème, plus « Quicksand »
+    const label = shadow.querySelector('.djs-visual text');
+    expect(label.style.fontFamily).toContain('IBM Plex Sans');
+  });
+
+  it('suit les tokens posés par l\'hôte (raccord Ossie)', async () => {
+    const hostStyle = document.createElement('style');
+    hostStyle.textContent =
+      'urban-archimate { --ua-accent: rgb(1, 2, 3); --ua-police-diagramme: "Courier New", monospace;'
+      + ' --ua-notation-application: rgb(4, 5, 6); --ua-notation-relation: rgb(7, 8, 9); }';
+    document.head.appendChild(hostStyle);
+
+    element = createElement();
+    await element.loadModel(exampleYaml);
+
+    const shadow = element.shadowRoot;
+    expect(getComputedStyle(shadow.querySelector('.ua-vue-active')).color).toBe('rgb(1, 2, 3)');
+    expect(shadow.querySelector('.djs-visual text').style.fontFamily).toContain('Courier New');
+
+    // palette de notation de l'hôte : ligne de couche et trait des relations
+    const registry = element.editor.getDiagram().get('elementRegistry');
+    const shape = registry.getGraphics(registry.get('n-VUE-COOPERATION-N1'));
+    expect(shape.querySelector('.djs-visual .ua-bande-couche').style.fill).toBe('rgb(4, 5, 6)');
+
+    const connection = registry.filter((e) => e.waypoints)[ 0 ];
+    expect(registry.getGraphics(connection).querySelector('.djs-visual path').style.stroke)
+      .toBe('rgb(7, 8, 9)');
+
+    hostStyle.remove();
+  });
+
+  it('suit la taille de son conteneur (fit-viewport sur la taille réelle)', async () => {
+    // créé petit, agrandi ensuite par la mise en page de l'hôte : c'est ce qui
+    // rendait le diagramme minuscule sur le site de démonstration
+    element = createElement();
+    element.style.width = '600px';
+    element.style.height = '300px';
+    await element.loadModel(exampleYaml);
+
+    element.style.width = '1200px';
+    element.style.height = '700px';
+    await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+
+    const canvas = element.editor.getDiagram().get('canvas');
+    canvas.zoom('fit-viewport');
+
+    const host = element.shadowRoot.querySelector('.ua-canvas');
+    expect(canvas.viewbox().outer.width).toBe(host.clientWidth);
+    expect(canvas.viewbox().outer.height).toBe(host.clientHeight);
   });
 
   it('mode lecture seule par attribut', async () => {
