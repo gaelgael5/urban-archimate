@@ -9,3 +9,5 @@ python/urban_archimate/static/
 python/.pytest_cache/
 .pytest_cache/
 dist-site/
+deploy-logs/
+.env
