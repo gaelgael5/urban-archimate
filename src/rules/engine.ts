@@ -76,7 +76,9 @@ export class RuleResolutionError extends Error {
 }
 
 /** Keys of a rule block that are not ArchiMate attributes. */
-const BLOCK_META_KEYS = new Set([ 'type', 'name', 'documentation', 'properties' ]);
+const BLOCK_META_KEYS = new Set([
+  'type', 'name', 'documentation', 'properties', 'junctionType'
+]);
 
 /** ArchiMate identifier of a concept, derived from its functional key. */
 export function archimateIdOf(cle: string): string {
@@ -149,20 +151,49 @@ export function findRuleBlock(
  * The ArchiMate type of an object: from the schema of its host type
  * (`x-archimate`), or the object's type itself when it already is an
  * ArchiMate type (a rule block may address ArchiMate types directly).
+ *
+ * The host has a single `Junction` type, with its own `jonction`
+ * attribute (`And` / `Or`, absent = `And`), like the ArchiMate
+ * specification and Archi: the component resolves it to the concrete
+ * `AndJunction` / `OrJunction`. A rule block may override where the
+ * value is read with `junctionType` (a value path or a literal).
  */
 export function archimateTypeOf(
     objet: CartographyObject,
-    schemasByType: Map<string, TypeSchema>
+    schemasByType: Map<string, TypeSchema>,
+    bloc?: RuleBlock
 ): string {
 
   const schema = schemasByType.get(objet.type);
 
+  let type: string;
+
   if (schema && typeof schema[ 'x-archimate' ] === 'string') {
-    return schema[ 'x-archimate' ];
+    type = schema[ 'x-archimate' ];
+  } else {
+    // the host may hand objects whose type is directly an ArchiMate type
+    type = objet.type;
   }
 
-  // the host may hand objects whose type is directly an ArchiMate type
-  return objet.type;
+  if (type === 'Junction') {
+    const raw = bloc && bloc.junctionType !== undefined
+      ? resolveRuleValue(objet, bloc.junctionType)
+      : objet.proprietes && objet.proprietes.jonction;
+
+    const valeur = asString(raw) || 'And';
+
+    if (valeur === 'And') {
+      type = 'AndJunction';
+    } else if (valeur === 'Or') {
+      type = 'OrJunction';
+    } else {
+      throw new Error(
+        `la jonction « ${ objet.cle } » porte la valeur inattendue ` +
+        `« ${ valeur } » (attendu : And ou Or)`);
+    }
+  }
+
+  return type;
 }
 
 /** Index of type schemas by host type slug. */
@@ -294,7 +325,7 @@ export function translateObject(
   }
 
   return {
-    archimateType: archimateTypeOf(objet, schemasByType),
+    archimateType: archimateTypeOf(objet, schemasByType, bloc),
     name: translated.name,
     documentation: translated.documentation,
     properties: translated.properties,

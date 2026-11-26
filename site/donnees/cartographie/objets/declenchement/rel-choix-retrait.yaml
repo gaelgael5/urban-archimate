@@ -1,0 +1,5 @@
+cle: REL-CHOIX-RETRAIT
+type: declenchement
+source: JCT-MODE-LIVRAISON
+cible: PRC-RETRAIT
+nom: retrait

@@ -68,10 +68,29 @@ const COLS = 6, STEP_X = 190, STEP_Y = 95, W = 150, H = 60;
 ELEMENT_TYPES.forEach((type, index) => {
   const cle = keyOf(type);
 
-  documents.push({
-    chemin: `cartographie/objets/${ type.toLowerCase() }/${ cle.toLowerCase() }.yaml`,
-    data: { cle, type, nom: type }
-  });
+  if (type === 'AndJunction' || type === 'OrJunction') {
+    // la forme de l'hôte : un seul type « jonction », l'attribut tranche
+    const data = {
+      cle,
+      type: 'jonction',
+      nom: type === 'OrJunction' ? 'Jonction « ou »' : 'Jonction « et »'
+    };
+
+    if (type === 'OrJunction') {
+      data.proprietes = { jonction: 'Or' };
+    }
+
+    documents.push({
+      chemin: `cartographie/objets/jonction/${ cle.toLowerCase() }.yaml`,
+      data
+    });
+  } else {
+    documents.push({
+      chemin: `cartographie/objets/${ type.toLowerCase() }/${ cle.toLowerCase() }.yaml`,
+      data: { cle, type, nom: type }
+    });
+  }
+
   elements.push(cle);
 
   const nodeId = `N-${ type.toUpperCase() }`;
@@ -196,6 +215,12 @@ const model = {
   nom: 'Toutes les notations ArchiMate 3.2',
   description:
     'Vue de contrôle : chaque élément, chaque relation, jonction, note, cadre, imbrication.',
+  types: [
+    {
+      chemin: 'cartographie/types/jonction.schema.yaml',
+      data: { title: 'Jonction', 'x-archimate': 'Junction' }
+    }
+  ],
   regles: {
     chemin: 'cartographie/regles/standard.rules.yaml',
     data: {

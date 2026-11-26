@@ -9,6 +9,7 @@ import CopyPasteModule from '../../lib/features/copy-paste/index.js';
 import ReplacePreviewModule from '../../lib/features/replace-preview/index.js';
 
 import EditingModule from './editing-module.ts';
+import ImportCropModule from './import-crop-module.ts';
 
 import type {
   CartographyObject,
@@ -192,7 +193,7 @@ export class UrbanArchimateEditor {
 
     const editingModules = (modeler.prototype._modules as any[])
       .filter((module) => !excluded.has(module))
-      .concat([ EditingModule ]);
+      .concat([ EditingModule, ImportCropModule ]);
 
     // labels drawn in the diagram follow the host theme
     // (--ua-police-diagramme); the renderer also measures text with this
@@ -204,7 +205,12 @@ export class UrbanArchimateEditor {
     const archimateNotation = notationTokens(this._canvasHost);
 
     this._viewer = this._readOnly
-      ? new (NavigatedViewer as any)({ container: this._canvasHost, textRenderer, archimateNotation })
+      ? new (NavigatedViewer as any)({
+        container: this._canvasHost,
+        additionalModules: [ ImportCropModule ],
+        textRenderer,
+        archimateNotation
+      })
       : new (Modeler as any)({
         container: this._canvasHost,
         modules: editingModules,

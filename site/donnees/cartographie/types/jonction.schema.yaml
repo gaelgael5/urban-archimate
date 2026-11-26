@@ -1,0 +1,9 @@
+title: Jonction
+x-archimate: Junction
+type: object
+properties:
+  jonction:
+    title: Sorte de jonction
+    type: string
+    enum: [ And, Or ]
+    description: Absente, la jonction est « et » (And).

@@ -3,7 +3,22 @@
 Versionnage sémantique. Le paquet est publié sur PyPI
 (`pip install urban-archimate==x.y.z`) à chaque étiquette `vx.y.z`.
 
-## 0.1.1 — non publié
+## 0.1.2 — non publié
+
+- Jonction : le composant accepte le type `Junction` de l'hôte avec
+  son attribut `proprietes.jonction` (`And` / `Or`, absente = `And`),
+  résolu en jonction « et » / « ou » au rendu, à la pose et à
+  l'export Open Group (`AndJunction` / `OrJunction`, valide XSD 3.1) ;
+  clé de règle `junctionType` ; contrat documenté et exemple
+  `tous-elements` sous cette forme.
+- Un objet dont le type est déjà un type ArchiMate ne déclenche plus
+  l'avertissement « schéma non fourni ».
+- Site de démonstration : la vue « Parcours de commande » passe par une
+  jonction « ou » (livraison ou retrait en boutique), et la boîte à
+  outils gagne un groupe « Jonctions » (une « et », une « ou ») à poser
+  et relier soi-même.
+
+## 0.1.1 — 26 novembre 2026
 
 - Notation dans le ton « Cartographe » : blocs blancs, bande de
   couleur de couche (qui épouse les arrondis des éléments de
