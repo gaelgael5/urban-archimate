@@ -34,6 +34,9 @@ jobs:
         run: npm run build:site
 
       - uses: actions/configure-pages@v5
+        with:
+          # active Pages (source « GitHub Actions ») au premier déploiement
+          enablement: true
 
       - uses: actions/upload-pages-artifact@v3
         with:
