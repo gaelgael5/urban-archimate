@@ -198,13 +198,18 @@ export class UrbanArchimateEditor {
     // (--ua-police-diagramme); the renderer also measures text with this
     // font, so it is set at creation rather than overridden in CSS
     const textRenderer = { defaultStyle: { fontFamily: diagramFont(this._canvasHost) } };
+    // same for the notation colors (layer fills, strokes, labels): resolved
+    // from the --ua-notation-* tokens, they become the default style of the
+    // drawn elements (the specification does not standardize colors)
+    const archimateNotation = notationTokens(this._canvasHost);
 
     this._viewer = this._readOnly
-      ? new (NavigatedViewer as any)({ container: this._canvasHost, textRenderer })
+      ? new (NavigatedViewer as any)({ container: this._canvasHost, textRenderer, archimateNotation })
       : new (Modeler as any)({
         container: this._canvasHost,
         modules: editingModules,
-        textRenderer
+        textRenderer,
+        archimateNotation
       });
 
     if (!this._readOnly) {
@@ -827,5 +832,37 @@ function diagramFont(element: HTMLElement): string {
     : '';
 
   return value || DIAGRAM_FONT_DEFAULT;
+}
+
+/** Keys of the notation palette, read from `--ua-notation-<key>`. */
+export const NOTATION_KEYS = [
+  'strategie', 'metier', 'application', 'technologie', 'physique',
+  'implementation', 'motivation', 'autre', 'note',
+  'trait', 'relation', 'texte', 'pictogramme', 'fond'
+] as const;
+
+/**
+ * The notation palette as set by the theme: every `--ua-notation-*` token
+ * resolved on the canvas. Unset tokens are left out (the renderer falls
+ * back to its defaults, identical to the component stylesheet).
+ */
+function notationTokens(element: HTMLElement): Record<string, string> {
+  const palette: Record<string, string> = {};
+
+  if (!element.isConnected) {
+    return palette;
+  }
+
+  const computed = getComputedStyle(element);
+
+  for (const key of NOTATION_KEYS) {
+    const value = computed.getPropertyValue(`--ua-notation-${ key }`).trim();
+
+    if (value) {
+      palette[key] = value;
+    }
+  }
+
+  return palette;
 }
 

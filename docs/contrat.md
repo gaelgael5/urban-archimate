@@ -146,8 +146,17 @@ surface de dessin, onglet actif en « station » sur sa ligne, une seule
 couleur de ligne (sarcelle). **Les valeurs par défaut sont celles de
 cette identité** : sans aucun réglage, le composant est dans le ton.
 
-Les couleurs de notation ArchiMate ne sont pas des tokens : elles
-restent celles de la spécification.
+La **notation** est dans le même ton. La spécification ArchiMate ne
+normalise pas les couleurs : les teintes habituelles (jaune métier,
+cyan application, vert technologie…) ne sont qu'une convention de ses
+figures. Le composant garde la **famille de teinte** de chaque couche,
+pour qu'un lecteur la reconnaisse, mais à une luminosité égale,
+refroidie vers la palette nuit / sarcelle ; les traits sont des filets
+ardoise nets au lieu d'un noir à 40 %. Ces couleurs sont des tokens
+`--ua-notation-*`, lus **à la création de l'éditeur** (ils deviennent
+le style par défaut des éléments dessinés) : un changement de token
+prend effet au prochain chargement du composant. Elles ne sont écrites
+ni dans le graphique enregistré ni dans l'export Open Group.
 
 Toute couleur de l'interface est un token `--ua-*` ; l'hôte les pose
 sur l'élément (les propriétés personnalisées traversent le shadow DOM,
@@ -180,6 +189,20 @@ texte / fond sous le seuil WCAG AA.
 | `--ua-rayon` | rayon des panneaux | `--radius` |
 | `--ua-rayon-sm` | rayon des boutons, champs, puces | `--radius-sm` |
 | `--ua-ombre` | ombre de ce qui flotte (pad contextuel, menus) | `--shadow` |
+| `--ua-notation-strategie` | fond des éléments Stratégie (sable) | — |
+| `--ua-notation-metier` | fond des éléments Métier (paille) | — |
+| `--ua-notation-application` | fond des éléments Application (bleu glacier) | — |
+| `--ua-notation-technologie` | fond des éléments Technologie (sauge) | — |
+| `--ua-notation-physique` | fond des éléments Physique (sauge) | — |
+| `--ua-notation-implementation` | fond des éléments Implémentation et migration (rose poudré) | — |
+| `--ua-notation-motivation` | fond des éléments Motivation (lavande) | — |
+| `--ua-notation-autre` | fond des autres éléments (lieu, regroupement) | `--surface-muted` |
+| `--ua-notation-note` | fond des notes | `--panel` |
+| `--ua-notation-trait` | contour des formes, des cadres, des jonctions | `--muted` |
+| `--ua-notation-relation` | relations et leurs pointes | — |
+| `--ua-notation-texte` | libellés du diagramme | `--text` |
+| `--ua-notation-pictogramme` | pictogramme au coin des formes | — |
+| `--ua-notation-fond` | marques creuses (pointes ouvertes, losange vide, jonction Ou) | `--panel` |
 
 Raccord à poser dans Ossie Studio (`frontend/src/styles.css`), pour
 qu'un changement de la palette d'Ossie se propage au composant :
@@ -206,6 +229,12 @@ urban-archimate {
   --ua-rayon: var(--radius);
   --ua-rayon-sm: var(--radius-sm);
   --ua-ombre: var(--shadow);
+  /* notation : les teintes de couche gardent leurs valeurs par défaut */
+  --ua-notation-autre: var(--surface-muted);
+  --ua-notation-note: var(--panel);
+  --ua-notation-trait: var(--muted);
+  --ua-notation-texte: var(--text);
+  --ua-notation-fond: var(--panel);
 }
 ```
 

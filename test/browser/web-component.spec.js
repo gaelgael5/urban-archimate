@@ -89,13 +89,16 @@ describe('<urban-archimate> (composant web)', () => {
     // …mais la variable CSS du thème, si
     expect(computed.backgroundColor).toBe('rgb(1, 2, 3)');
 
-    // les couleurs de notation ArchiMate restent celles de la spécification
+    // la notation suit la palette « Cartographe » : couche application en
+    // bleu glacier (#D3E8F4) au lieu du cyan des figures de la spécification
     const registry = element.editor.getDiagram().get('elementRegistry');
     const gfx = registry.getGraphics(registry.get('n-VUE-COOPERATION-N1'));
     const rect = gfx.querySelector('.djs-visual rect');
 
-    // #B5FFFF, la couleur de la couche application de la spécification
-    expect(rect.style.fill).toBe('rgb(181, 255, 255)');
+    expect(rect.style.fill).toBe('rgb(211, 232, 244)');
+    // contour ardoise (#4F626E), libellé nuit (#0D1C26)
+    expect(rect.style.stroke).toBe('rgb(79, 98, 110)');
+    expect(gfx.querySelector('.djs-visual text').style.fill).toBe('rgb(13, 28, 38)');
 
     hostileStyle.remove();
   });
@@ -129,7 +132,8 @@ describe('<urban-archimate> (composant web)', () => {
   it('suit les tokens posés par l\'hôte (raccord Ossie)', async () => {
     const hostStyle = document.createElement('style');
     hostStyle.textContent =
-      'urban-archimate { --ua-accent: rgb(1, 2, 3); --ua-police-diagramme: "Courier New", monospace; }';
+      'urban-archimate { --ua-accent: rgb(1, 2, 3); --ua-police-diagramme: "Courier New", monospace;'
+      + ' --ua-notation-application: rgb(4, 5, 6); --ua-notation-relation: rgb(7, 8, 9); }';
     document.head.appendChild(hostStyle);
 
     element = createElement();
@@ -138,6 +142,15 @@ describe('<urban-archimate> (composant web)', () => {
     const shadow = element.shadowRoot;
     expect(getComputedStyle(shadow.querySelector('.ua-vue-active')).color).toBe('rgb(1, 2, 3)');
     expect(shadow.querySelector('.djs-visual text').style.fontFamily).toContain('Courier New');
+
+    // palette de notation de l'hôte : fond de couche et trait des relations
+    const registry = element.editor.getDiagram().get('elementRegistry');
+    const shape = registry.getGraphics(registry.get('n-VUE-COOPERATION-N1'));
+    expect(shape.querySelector('.djs-visual rect').style.fill).toBe('rgb(4, 5, 6)');
+
+    const connection = registry.filter((e) => e.waypoints)[ 0 ];
+    expect(registry.getGraphics(connection).querySelector('.djs-visual path').style.stroke)
+      .toBe('rgb(7, 8, 9)');
 
     hostStyle.remove();
   });

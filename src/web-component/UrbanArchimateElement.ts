@@ -3,9 +3,9 @@
  * without any framework and from React.
  *
  * - styles are isolated from the host page (shadow DOM);
- * - the interface theme follows the host through CSS variables
- *   (`--ua-*`), which pierce the shadow boundary; the ArchiMate
- *   notation colors stay those of the specification;
+ * - the theme follows the host through CSS variables (`--ua-*`), which
+ *   pierce the shadow boundary: interface and notation palette (layer
+ *   colors, strokes, labels — read when the editor is created);
  * - same contract as the `UrbanArchimateEditor` facade: `delegates`,
  *   `loadModel`, `save`, `exportExchange`, view management, and the
  *   `changed` / `selection` / `vue-changed` / `import-done` events

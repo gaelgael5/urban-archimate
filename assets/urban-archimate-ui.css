@@ -1,7 +1,6 @@
 /**
  * Interface panels of the component (toolbox, property grid, view
- * tabs, canvas surface). The ArchiMate notation colors are untouched:
- * they belong to the specification, not to the host.
+ * tabs, canvas surface) and notation palette of the diagram.
  *
  * Visual identity: the one of the reference host, Ossie Studio
  * (« Cartographe », ossie-studio docs/identite-visuelle.md) — IBM Plex
@@ -12,7 +11,7 @@
  * selection. The defaults below ARE that identity, so the component is in
  * tone even before the host maps its tokens.
  *
- * Every interface color is a `--ua-*` token: no color is written anywhere
+ * Every interface and notation color is a `--ua-*` token: no color is written anywhere
  * else in this file (test/unit/theme.spec.js checks it). The host aligns
  * the component on its own design by setting these tokens on the element
  * — custom properties pierce the shadow boundary, and a rule written by the
@@ -58,6 +57,33 @@
   --ua-rayon-sm: 3px;
   /* Reserved to what floats (context pad, popup menus): panels have none. */
   --ua-ombre: 0 6px 18px rgba(13, 28, 38, 0.14);
+
+  /*
+   * Notation palette (read when the editor is created). The specification
+   * does not standardize colors: each layer keeps the hue family of the
+   * ArchiMate convention so it stays recognizable, at one even lightness,
+   * cooled toward the night / teal palette; strokes are crisp slate lines.
+   * Same values as NOTATION_DEFAULTS (lib/util/ColorUtil.js).
+   */
+  --ua-notation-strategie: #F2E4C9;
+  --ua-notation-metier: #F7EFC4;
+  --ua-notation-application: #D3E8F4;
+  --ua-notation-technologie: #D9EBD2;
+  --ua-notation-physique: #D9EBD2;
+  --ua-notation-implementation: #F5DEDC;
+  --ua-notation-motivation: #E1DEF3;
+  --ua-notation-autre: #E6EDF1;
+  --ua-notation-note: #FFFFFF;
+  /* outline of the shapes, of groups and junctions */
+  --ua-notation-trait: #4F626E;
+  /* relationship lines and their arrowheads */
+  --ua-notation-relation: #2E4350;
+  /* labels drawn in the diagram */
+  --ua-notation-texte: #0D1C26;
+  /* pictogram in the corner of a shape */
+  --ua-notation-pictogramme: #2E4350;
+  /* hollow marks: open arrowheads, open diamond, Or junction */
+  --ua-notation-fond: #FFFFFF;
 }
 
 .ua-editeur {

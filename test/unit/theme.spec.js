@@ -10,6 +10,8 @@ import { readFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import { NOTATION_DEFAULTS } from '../../lib/util/ColorUtil.js';
+
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '../..');
 const css = readFileSync(join(ROOT, 'assets/urban-archimate-ui.css'), 'utf8')
   .replace(/\/\*[\s\S]*?\*\//g, '');
@@ -90,3 +92,67 @@ describe('thème de l\'interface — tokens --ua-*', () => {
     expect(contrast('var(--ua-focus)', 'var(--ua-fond-panneau)')).toBeGreaterThanOrEqual(3);
   });
 });
+
+describe('thème de la notation — tokens --ua-notation-*', () => {
+
+  const couches = [
+    'strategie', 'metier', 'application', 'technologie', 'physique',
+    'implementation', 'motivation', 'autre', 'note'
+  ];
+
+  it('les tokens et les valeurs par défaut du rendu sont identiques', () => {
+    const tokens = Object.fromEntries(
+      [ ...declared ]
+        .filter(([ name ]) => name.startsWith('--ua-notation-'))
+        .map(([ name, value ]) => [ name.slice('--ua-notation-'.length), value.toUpperCase() ]));
+
+    const defaults = Object.fromEntries(
+      Object.entries(NOTATION_DEFAULTS).map(([ key, value ]) => [ key, value.toUpperCase() ]));
+
+    expect(tokens).toEqual(defaults);
+  });
+
+  it('les libellés restent lisibles (AA) sur le fond de chaque couche', () => {
+    const failing = couches
+      .map((couche) => ({
+        couche,
+        ratio: contrast('var(--ua-notation-texte)', `var(--ua-notation-${ couche })`)
+      }))
+      .filter(({ ratio }) => ratio < 4.5);
+
+    expect(failing).toEqual([]);
+  });
+
+  it('traits, relations et pictogrammes se détachent des fonds (≥ 3)', () => {
+    const fonds = [ ...couches.map((c) => `--ua-notation-${ c }`), '--ua-fond' ];
+    const failing = [];
+
+    for (const trait of [ '--ua-notation-trait', '--ua-notation-relation', '--ua-notation-pictogramme' ]) {
+      for (const fond of fonds) {
+        const ratio = contrast(`var(${ trait })`, `var(${ fond })`);
+        if (ratio < 3) {
+          failing.push({ trait, fond, ratio });
+        }
+      }
+    }
+
+    expect(failing).toEqual([]);
+  });
+
+  it('les couches restent distinctes les unes des autres', () => {
+    // technologie et physique partagent leur teinte, comme dans la convention
+    const teintes = couches
+      .filter((c) => c !== 'physique' && c !== 'note')
+      .map((c) => resolve(`var(--ua-notation-${ c })`).toUpperCase());
+
+    expect(new Set(teintes).size).toBe(teintes.length);
+  });
+
+  it('aucun fond de couche ne se confond avec la sélection (--ua-accent-fond)', () => {
+    const selection = resolve('var(--ua-accent-fond)').toUpperCase();
+    const teintes = couches.map((c) => resolve(`var(--ua-notation-${ c })`).toUpperCase());
+
+    expect(teintes).not.toContain(selection);
+  });
+});
+
