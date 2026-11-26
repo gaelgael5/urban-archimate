@@ -98,8 +98,8 @@ describe('<urban-archimate> (composant web)', () => {
 
     expect(rect.style.fill).toBe('rgb(255, 255, 255)');
     expect(rect.style.stroke).toBe('rgb(180, 195, 204)');
-    expect(gfx.querySelector('.djs-visual .ua-bande-couche').style.stroke).toBe('rgb(0, 114, 178)');
-    expect(gfx.querySelector('.djs-visual path').style.stroke).toBe('rgb(0, 114, 178)');
+    expect(gfx.querySelector('.djs-visual .ua-bande-couche').style.fill).toBe('rgb(0, 114, 178)');
+    expect(gfx.querySelector('.djs-visual path:not(.ua-bande-couche)').style.stroke).toBe('rgb(0, 114, 178)');
     expect(gfx.querySelector('.djs-visual text').style.fill).toBe('rgb(13, 28, 38)');
 
     hostileStyle.remove();
@@ -148,7 +148,7 @@ describe('<urban-archimate> (composant web)', () => {
     // palette de notation de l'hôte : ligne de couche et trait des relations
     const registry = element.editor.getDiagram().get('elementRegistry');
     const shape = registry.getGraphics(registry.get('n-VUE-COOPERATION-N1'));
-    expect(shape.querySelector('.djs-visual .ua-bande-couche').style.stroke).toBe('rgb(4, 5, 6)');
+    expect(shape.querySelector('.djs-visual .ua-bande-couche').style.fill).toBe('rgb(4, 5, 6)');
 
     const connection = registry.filter((e) => e.waypoints)[ 0 ];
     expect(registry.getGraphics(connection).querySelector('.djs-visual path').style.stroke)
