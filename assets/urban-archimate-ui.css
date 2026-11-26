@@ -234,7 +234,9 @@
 
 /* Collapsed: a thin bar with just the reopen button. */
 .ua-toolbox-repliee {
-  width: 46px;
+  width: 36px;
+  padding-left: 5px;
+  padding-right: 5px;
   overflow: hidden;
 }
 
