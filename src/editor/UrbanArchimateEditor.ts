@@ -65,6 +65,13 @@ export interface EditorOptions {
    * selection) but not modified, and no modification event is emitted.
    */
   readOnly?: boolean;
+
+  /**
+   * Built-in property panel (default true). Set it to false when the
+   * host plugs its own grid on the `selection` event: the panel stays
+   * hidden, and only shows up while a new relation is being filled.
+   */
+  propertyPanel?: boolean;
 }
 
 type Listener = (payload: unknown) => void;
@@ -92,6 +99,7 @@ export class UrbanArchimateEditor {
 
   private _toolbox: Toolbox | null = null;
   private _grid: PropertyGrid | null = null;
+  private _gridEnabled = true;
   private _viewTabs: ViewTabs | null = null;
   private _canvasHost: HTMLElement;
   private _resizeObserver: ResizeObserver | null = null;
@@ -210,11 +218,40 @@ export class UrbanArchimateEditor {
 
     middle.appendChild(this._canvasHost);
 
-    // property grid panel (read-only display in every mode)
+    // property grid panel (read-only display in every mode); the host
+    // can turn it off (propertyPanel: false) and plug its own grid on
+    // the `selection` event — the panel then only shows up while a
+    // new relation is being filled
+    this._gridEnabled = options.propertyPanel !== false;
+
     const gridHost = document.createElement('div');
     gridHost.style.flex = '0 0 auto';
     root.appendChild(gridHost);
-    this._grid = new PropertyGrid(gridHost);
+
+    const reopenGrid = document.createElement('button');
+    reopenGrid.type = 'button';
+    reopenGrid.className = 'ua-grille-rouvrir';
+    reopenGrid.title = 'Afficher le panneau des propriétés';
+    reopenGrid.innerHTML =
+      '<svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">' +
+      '<rect x="1.5" y="2.5" width="13" height="11" rx="1.5"/>' +
+      '<line x1="10" y1="2.5" x2="10" y2="13.5"/></svg>';
+    reopenGrid.addEventListener('click', () => {
+      this._grid?.setCollapsed(false);
+    });
+    this._canvasHost.appendChild(reopenGrid);
+
+    this._grid = new PropertyGrid(gridHost, {
+      onCollapse: (repliee) => {
+        // a disabled panel has no reopen icon: it is the host's grid
+        reopenGrid.classList.toggle(
+          'ua-grille-rouvrir-visible', repliee && this._gridEnabled);
+      }
+    });
+
+    if (!this._gridEnabled) {
+      this._grid.setCollapsed(true);
+    }
 
     // the component never creates free elements: the legacy palette,
     // double-click creation, copy-paste and the catalogue-driven
@@ -254,6 +291,8 @@ export class UrbanArchimateEditor {
         textRenderer,
         archimateNotation
       });
+
+    this._buildZoomBar();
 
     if (!this._readOnly) {
       // the connect gesture asks the host which relations are allowed
@@ -631,6 +670,19 @@ export class UrbanArchimateEditor {
       return;
     }
 
+    // a hidden panel (collapsed, or host grid) shows up for the form
+    const masque = this._grid!.isCollapsed();
+
+    if (masque) {
+      this._grid!.setCollapsed(false);
+    }
+
+    const terminer = () => {
+      if (masque) {
+        this._grid!.setCollapsed(true);
+      }
+    };
+
     return new Promise((resolve) => {
       this._grid!.openNewRelation({
         cleSource,
@@ -640,9 +692,13 @@ export class UrbanArchimateEditor {
         typesPermis,
         onValidate: (objet) => {
           this._addNewRelation(objet, typesPermis, sourceShape, targetShape);
+          terminer();
           resolve();
         },
-        onCancel: () => resolve()
+        onCancel: () => {
+          terminer();
+          resolve();
+        }
       });
     });
   }
@@ -704,6 +760,49 @@ export class UrbanArchimateEditor {
     Object.assign(relationship, attributes);
 
     this._newRelationships.push(objet);
+  }
+
+  /** The floating zoom controls at the bottom right of the drawing. */
+  private _buildZoomBar(): void {
+    const canvas = this._viewer.get('canvas');
+
+    const bar = document.createElement('div');
+    bar.className = 'ua-zoom';
+
+    const clamp = (niveau: number) => Math.min(4, Math.max(0.2, niveau));
+
+    const bouton = (libelle: string, title: string, action: () => void) => {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'ua-zoom-bouton';
+      button.title = title;
+      button.textContent = libelle;
+      button.addEventListener('click', action);
+      bar.appendChild(button);
+    };
+
+    bouton('−', 'Zoom arrière',
+      () => canvas.zoom(clamp(canvas.zoom() / 1.25), 'auto'));
+
+    const niveau = document.createElement('button');
+    niveau.type = 'button';
+    niveau.className = 'ua-zoom-bouton ua-zoom-niveau';
+    niveau.title = 'Revenir à 100 %';
+    niveau.textContent = '100 %';
+    niveau.addEventListener('click', () => canvas.zoom(1, 'auto'));
+    bar.appendChild(niveau);
+
+    bouton('+', 'Zoom avant',
+      () => canvas.zoom(clamp(canvas.zoom() * 1.25), 'auto'));
+    bouton('⤢', 'Ajuster la vue à la fenêtre',
+      () => canvas.zoom('fit-viewport'));
+
+    this._viewer.get('eventBus').on('canvas.viewbox.changed', (event: any) => {
+      const scale = (event.viewbox && event.viewbox.scale) || canvas.zoom();
+      niveau.textContent = `${ Math.round(scale * 100) } %`;
+    });
+
+    this._canvasHost.appendChild(bar);
   }
 
   private _placementContext(): PlacementContext {

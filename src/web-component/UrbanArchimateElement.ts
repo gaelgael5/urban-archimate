@@ -51,7 +51,7 @@ const COMPONENT_CSS = `
 export class UrbanArchimateElement extends HTMLElement {
 
   static get observedAttributes(): string[] {
-    return [ 'read-only' ];
+    return [ 'read-only', 'no-properties' ];
   }
 
   private _editor: UrbanArchimateEditor | null = null;
@@ -83,7 +83,8 @@ export class UrbanArchimateElement extends HTMLElement {
   }
 
   attributeChangedCallback(name: string): void {
-    if (name === 'read-only' && this.shadowRoot && this._editor) {
+    if ((name === 'read-only' || name === 'no-properties') &&
+        this.shadowRoot && this._editor) {
       // the mode changes the editing surface: rebuild the editor
       this._createEditor();
 
@@ -104,6 +105,23 @@ export class UrbanArchimateElement extends HTMLElement {
 
     if (this._editor) {
       this._editor.delegates = this._delegates;
+    }
+  }
+
+  /**
+   * `no-properties`: the built-in property panel stays hidden — the
+   * host plugs its own grid on the `selection` event. The panel only
+   * shows up while a new relation is being filled.
+   */
+  get noProperties(): boolean {
+    return this.hasAttribute('no-properties');
+  }
+
+  set noProperties(value: boolean) {
+    if (value) {
+      this.setAttribute('no-properties', '');
+    } else {
+      this.removeAttribute('no-properties');
     }
   }
 
@@ -174,7 +192,8 @@ export class UrbanArchimateElement extends HTMLElement {
     this._editor = new UrbanArchimateEditor({
       container,
       delegates: this._delegates,
-      readOnly: this.readOnly
+      readOnly: this.readOnly,
+      propertyPanel: !this.noProperties
     });
 
     this._editor.on('changed', (detail) => this._dispatch('changed', detail));
