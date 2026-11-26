@@ -172,6 +172,46 @@ describe('boîte à outils fournie par l\'hôte', () => {
     expect(modele.vues[0].noeuds.some((n) => n.element === 'OBJ-FACTURE')).toBe(true);
   });
 
+  it('glisser-déposer un outil sur le dessin le pose à l\'endroit du dépôt', async () => {
+    const bouton = container.querySelector('.ua-outil[data-cle="OBJ-FACTURE"]');
+    const canvasHost = container.querySelector('.ua-canvas');
+    const rect = canvasHost.getBoundingClientRect();
+    const depot = { x: rect.left + 500, y: rect.top + 320 };
+
+    const debut = bouton.getBoundingClientRect();
+    bouton.dispatchEvent(new PointerEvent('pointerdown', {
+      bubbles: true, button: 0, pointerId: 1,
+      clientX: debut.left + 10, clientY: debut.top + 10
+    }));
+
+    // un premier mouvement franchit le seuil, un second suit le curseur
+    for (const point of [
+      { x: debut.left + 60, y: debut.top + 20 }, depot ]) {
+      window.dispatchEvent(new PointerEvent('pointermove', {
+        bubbles: true, pointerId: 1, clientX: point.x, clientY: point.y
+      }));
+    }
+
+    // le fantôme accompagne le geste
+    expect(container.querySelector('.ua-outil-fantome')).toBeTruthy();
+
+    window.dispatchEvent(new PointerEvent('pointerup', {
+      bubbles: true, pointerId: 1, clientX: depot.x, clientY: depot.y
+    }));
+
+    await new Promise((resolve) => setTimeout(resolve, 30));
+
+    expect(container.querySelector('.ua-outil-fantome')).toBeFalsy();
+    expect(dropDelegate).toHaveBeenCalledWith('OBJ-FACTURE');
+
+    const registry = editor.getDiagram().get('elementRegistry');
+    const shape = registry.getAll().find(
+      (element) => element.businessObject &&
+        element.businessObject.hostKey === 'OBJ-FACTURE');
+
+    expect(shape).toBeTruthy();
+  });
+
   it('le délégué échoue : rien n\'est posé et le message de l\'hôte s\'affiche (critère 3)', async () => {
     const registry = editor.getDiagram().get('elementRegistry');
     const avant = registry.getAll().length;

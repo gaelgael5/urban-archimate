@@ -96,6 +96,7 @@ export class UrbanArchimateEditor {
   private _canvasHost: HTMLElement;
   private _resizeObserver: ResizeObserver | null = null;
   private _armedTool: ArmedTool | null = null;
+  private _onEscape: ((event: KeyboardEvent) => void) | null = null;
   private _placing = false;
 
   constructor(options: EditorOptions) {
@@ -132,12 +133,30 @@ export class UrbanArchimateEditor {
         onArm: (tool) => {
           this._armedTool = tool;
           this._canvasHost.style.cursor = tool ? 'crosshair' : '';
+        },
+        onDrop: (tool, clientX, clientY) => {
+          const rect = this._canvasHost.getBoundingClientRect();
+
+          if (clientX >= rect.left && clientX <= rect.right &&
+              clientY >= rect.top && clientY <= rect.bottom) {
+            this._placeTool(tool, { clientX, clientY });
+          }
         }
       });
 
       this._canvasHost.addEventListener('click', (event) => {
         this._onCanvasClick(event);
       });
+
+      // Échap désarme l'outil en attente de pose
+      this._onEscape = (event: KeyboardEvent) => {
+        if (event.key === 'Escape' && this._armedTool) {
+          this._toolbox?.disarm();
+          this._armedTool = null;
+          this._canvasHost.style.cursor = '';
+        }
+      };
+      window.addEventListener('keydown', this._onEscape);
     }
 
     root.appendChild(middle);
@@ -682,7 +701,9 @@ export class UrbanArchimateEditor {
     };
   }
 
-  private _diagramPositionOf(event: MouseEvent): { x: number, y: number } {
+  private _diagramPositionOf(
+      event: { clientX: number, clientY: number }
+  ): { x: number, y: number } {
     const canvas = this._viewer.get('canvas');
     const viewbox = canvas.viewbox();
     const rect = this._canvasHost.getBoundingClientRect();
@@ -694,13 +715,23 @@ export class UrbanArchimateEditor {
   }
 
   private async _onCanvasClick(event: MouseEvent): Promise<void> {
-    const tool = this._armedTool;
-
-    if (!tool || this._placing || !this._hydrated) {
+    if (!this._armedTool) {
       return;
     }
 
-    const position = this._diagramPositionOf(event);
+    await this._placeTool(this._armedTool, event);
+  }
+
+  private async _placeTool(
+      tool: ArmedTool,
+      point: { clientX: number, clientY: number }
+  ): Promise<void> {
+
+    if (this._placing || !this._hydrated) {
+      return;
+    }
+
+    const position = this._diagramPositionOf(point);
     const context = this._placementContext();
 
     this._placing = true;
@@ -803,6 +834,10 @@ export class UrbanArchimateEditor {
   }
 
   destroy(): void {
+    if (this._onEscape) {
+      window.removeEventListener('keydown', this._onEscape);
+      this._onEscape = null;
+    }
     this._resizeObserver?.disconnect();
     this._resizeObserver = null;
     this._viewer.destroy();
