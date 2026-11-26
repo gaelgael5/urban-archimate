@@ -13,7 +13,7 @@ the ``<urban-archimate>`` element.
 
 from pathlib import Path
 
-__version__ = "0.1.2"
+__version__ = "0.1.3"
 
 STATIC_DIR = Path(__file__).parent / "static"
 

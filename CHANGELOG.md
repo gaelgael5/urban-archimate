@@ -3,7 +3,21 @@
 Versionnage sémantique. Le paquet est publié sur PyPI
 (`pip install urban-archimate==x.y.z`) à chaque étiquette `vx.y.z`.
 
-## 0.1.2 — non publié
+## 0.1.3 — 26 novembre 2026
+
+- Les panneaux latéraux se masquent entièrement : boîte à outils à
+  gauche, panneau des propriétés à droite ; une icône flottante de
+  chaque côté du dessin les ramène.
+- L'hôte peut brancher sa propre grille de propriétés : l'attribut
+  `no-properties` du composant (option `propertyPanel: false` de
+  l'éditeur) coupe le panneau intégré, la sélection restant publiée
+  par l'événement `selection` ; le panneau ne revient que le temps de
+  saisir une nouvelle relation.
+- Barre de zoom en bas à droite du dessin : moins, pourcentage
+  cliquable (retour à 100 %), plus, ajustement à la fenêtre ;
+  disponible aussi en lecture seule.
+
+## 0.1.2 — 26 novembre 2026
 
 - Jonction : le composant accepte le type `Junction` de l'hôte avec
   son attribut `proprietes.jonction` (`And` / `Or`, absente = `And`),
@@ -17,6 +31,11 @@ Versionnage sémantique. Le paquet est publié sur PyPI
   jonction « ou » (livraison ou retrait en boutique), et la boîte à
   outils gagne un groupe « Jonctions » (une « et », une « ou ») à poser
   et relier soi-même.
+- Les connexions importées s'ancrent au bord des formes, plus à leur
+  centre : les flèches ne traversent plus les blocs ni leurs libellés.
+- Boîte à outils : glisser-déposer un outil sur le dessin le pose à
+  l'endroit du dépôt ; le clic puis clic reste disponible, avec un
+  message d'aide à l'armement et Échap pour annuler.
 
 ## 0.1.1 — 26 novembre 2026
 
