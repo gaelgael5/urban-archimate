@@ -1,0 +1,11 @@
+.git
+node_modules
+dist
+dist-site
+coverage
+deploy-logs
+.env
+python/dist
+python/urban_archimate/static
+**/__pycache__
+**/.pytest_cache

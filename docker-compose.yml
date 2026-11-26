@@ -1,0 +1,32 @@
+# Stack de la machine de test : le site de démonstration (statique, sans état).
+# Port publié sur l'hôte : SITE_PORT dans .env (complété par dev-deploy.sh).
+# Le service `tests` (profil « tests ») n'est jamais démarré par `up` : il est
+# lancé à la demande par dev-deploy.sh (`run --rm`).
+name: urban-archimate
+
+services:
+  site:
+    build:
+      context: .
+      target: site
+    image: urban-archimate-site:dev
+    restart: unless-stopped
+    ports:
+      - "${SITE_PORT:-8120}:80"
+    # Rotation des journaux : sans plafond, json-file grossit sans fin sur une
+    # machine qui reste allumée.
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  tests:
+    profiles: [ "tests" ]
+    build:
+      context: .
+      target: tests
+    image: urban-archimate-tests:dev
+    # Chromium dans un conteneur : /dev/shm par défaut (64 Mo) trop petit.
+    ipc: host
+    init: true
